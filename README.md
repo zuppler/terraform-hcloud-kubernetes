@@ -164,7 +164,7 @@ For more detailed information and examples, please visit:
 
 <!-- Usage -->
 ## :recycle: Lifecycle
-The Talos Terraform provider does not support declarative upgrades of Talos or Kubernetes versions. This module compensates for these limitations using `talosctl` to implement the required functionalities. Any minor or major upgrades to Talos and Kubernetes will result in a major version change of this module. Please be aware that downgrades are typically neither supported nor tested.
+The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolabs/talos) does not support declarative upgrades of Talos or Kubernetes versions. This module compensates for these limitations using `talosctl` to implement the required functionalities. Any minor or major upgrades to Talos and Kubernetes will result in a major version change of this module. Please be aware that downgrades are typically neither supported nor tested.
 
 > [!IMPORTANT]  
 > Before upgrading to the next major version of this module, ensure you are on the latest release of the current version. Do not skip any major release upgrades.
