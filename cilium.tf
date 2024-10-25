@@ -1,0 +1,128 @@
+data "helm_template" "cilium" {
+  name      = "cilium"
+  namespace = "kube-system"
+
+  repository   = "https://helm.cilium.io"
+  chart        = "cilium"
+  version      = var.cilium_version
+  kube_version = var.kubernetes_version
+
+  set {
+    name  = "operator.replicas"
+    value = local.control_plane_sum > 1 ? 2 : 1
+  }
+  set {
+    name  = "ipam.mode"
+    value = "kubernetes"
+  }
+  set {
+    name  = "k8s.requireIPv4PodCIDR"
+    value = true
+  }
+  set {
+    name  = "routingMode"
+    value = "native"
+  }
+  set {
+    name  = "ipv4NativeRoutingCIDR"
+    value = local.native_routing_cidr
+  }
+  set {
+    name  = "kubeProxyReplacement"
+    value = true
+  }
+  set {
+    name  = "kubeProxyReplacementHealthzBindAddr"
+    value = "0.0.0.0:10256"
+  }
+  set {
+    name  = "bpf.masquerade"
+    value = true
+  }
+  # Netkit requires kernel >= 6.8
+  # set {
+  #   name  = "bpf.datapathMode"
+  #   value = "netkit"
+  # }
+  set {
+    name  = "loadBalancer.acceleration"
+    value = "native"
+  }
+  set {
+    name  = "installNoConntrackIptablesRules"
+    value = true
+  }
+  set {
+    name  = "encryption.enabled"
+    value = var.cilium_encryption_enabled
+  }
+  set {
+    name  = "encryption.type"
+    value = "wireguard"
+  }
+  set {
+    name  = "egressGateway.enabled"
+    value = var.cilium_egress_gateway_enabled
+  }
+  set {
+    name  = "securityContext.capabilities.ciliumAgent"
+    value = "{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}"
+  }
+  set {
+    name  = "securityContext.capabilities.cleanCiliumState"
+    value = "{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}"
+  }
+  set {
+    name  = "cgroup.autoMount.enabled"
+    value = false
+  }
+  set {
+    name  = "cgroup.hostRoot"
+    value = "/sys/fs/cgroup"
+  }
+  set {
+    name  = "k8sServiceHost"
+    value = local.kube_prism_host
+  }
+  set {
+    name  = "k8sServicePort"
+    value = local.kube_prism_port
+  }
+
+  set {
+    name  = "hubble.peerService.clusterDomain"
+    value = var.cluster_domain
+  }
+  set {
+    name  = "hubble.enabled"
+    value = var.cilium_hubble_enabled ? true : false
+  }
+  set {
+    name  = "hubble.relay.enabled"
+    value = var.cilium_hubble_relay_enabled ? true : false
+  }
+  set {
+    name  = "hubble.ui.enabled"
+    value = var.cilium_hubble_ui_enabled ? true : false
+  }
+
+  set {
+    name  = "prometheus.serviceMonitor.enabled"
+    value = var.cilium_service_monitor_enabled ? true : false
+  }
+  set {
+    name  = "prometheus.serviceMonitor.trustCRDsExist"
+    value = var.cilium_service_monitor_enabled ? true : false
+  }
+  set {
+    name  = "operator.prometheus.serviceMonitor.enabled"
+    value = var.cilium_service_monitor_enabled ? true : false
+  }
+}
+
+locals {
+  cilium_manifest = {
+    name     = "cilium"
+    contents = data.helm_template.cilium.manifest
+  }
+}
