@@ -70,7 +70,7 @@ This project includes commonly used and essential Kubernetes software, optimized
   Provides a robust web routing and load balancing solution for Kubernetes, utilizing NGINX as a reverse proxy to manage traffic and enhance network performance.
 - **[Cert Manager](https://cert-manager.io)**\
   Automates the management of certificates in Kubernetes, handling the issuance and renewal of certificates from various sources like Let's Encrypt, and ensures certificates are valid and updated.
-- **[Cluster Autoscaler](https://kubernetes.io/docs/concepts/cluster-administration/cluster-autoscaling/#autoscaling-horizontal)**\
+- **[Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)**\
   Dynamically adjusts Kubernetes cluster size based on resource demands and node utilization, scaling nodes in or out to optimize cost and performance.
 - **[Metrics Server](https://kubernetes-sigs.github.io/metrics-server/)**\
   Collects and provides container resource metrics for Kubernetes, enabling features like autoscaling by interacting with Horizontal and Vertical Pod Autoscalers.
