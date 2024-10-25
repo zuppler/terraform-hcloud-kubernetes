@@ -47,7 +47,7 @@
 ## :star2: About the Project
 Hcloud Kubernetes is a Terraform module for deploying a fully declarative, managed Kubernetes cluster on Hetzner Cloud. It employs Talos, a secure, immutable, and minimal operating system tailored for Kubernetes. Talos features a streamlined architecture with only 12 binaries and is entirely managed through an API.
 
-This project is dedicated to production-grade configurations and lifecycle management, ensuring all components are set up for high availability. It includes a curated selection of widely used and officially recognized Kubernetes components. If you encounter any issues, suboptimal settings, or missing elements, please file an [issue](https://github.com/hcloud-k8s/terraform-hcloud-kubernetes/issues) to support and improve this project :pray:
+This project is dedicated to production-grade configurations and lifecycle management, ensuring all components are set up for high availability. It includes a curated selection of widely used and officially recognized Kubernetes components. If you encounter any issues, suboptimal settings, or missing elements, please file an [issue](https://github.com/hcloud-k8s/terraform-hcloud-kubernetes/issues) to support and improve this project.
 
 > [!TIP]
 > If you don't yet have a Hetzner account, feel free to use this [Hetzner Cloud Referral Link](https://hetzner.cloud/?ref=GMylKeDmqtsD) to claim a €20 credit and support this project.
