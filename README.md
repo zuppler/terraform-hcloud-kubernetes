@@ -119,7 +119,7 @@ module "kubernetes" {
   ingress_nginx_enabled = true
 
   control_plane_nodepools = [
-    { name = "control", location = "fsn1", type = "cax21", count = 3 }
+    { name = "control", location = "fsn1", type = "cax11", count = 3 }
   ]
   worker_nodepools = [
     { name = "worker", location = "fsn1", type = "cax11", count = 3 }
