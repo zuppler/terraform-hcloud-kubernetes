@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="assets/hcloud-k8s.png" alt="logo" width="200" height="auto" />
+  <img src="https://raw.githubusercontent.com/hcloud-k8s/terraform-hcloud-kubernetes/refs/heads/main/assets/hcloud-k8s.png" alt="logo" width="200" height="auto" />
   <h1>Hcloud Kubernetes</h1>
 
   <p>
@@ -212,7 +212,7 @@ Contributions are always welcome!
 <!-- License -->
 ## :balance_scale: License
 
-Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+Distributed under the MIT License. See [LICENSE](https://github.com/hcloud-k8s/terraform-hcloud-kubernetes/blob/main/LICENSE) for more information.
 
 <!-- Acknowledgments -->
 ## :gem: Acknowledgements
