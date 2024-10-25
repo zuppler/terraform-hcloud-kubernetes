@@ -170,10 +170,10 @@ The Talos Terraform provider does not support declarative upgrades of Talos or K
 > Before upgrading to the next major version of this module, ensure you are on the latest release of the current version. Do not skip any major release upgrades.
 
 ### Version Compatibility Matrix
-| Hcloud Kubernetes | K8s    | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Cilium   | Ingress Nginx | Cert Manager | Autoscaler |
-| ----------------- | ------ | ----- | --------- | ---------- | ---------- | -------- | ------------- | ------------ | ---------- |
-| (**1.x.x**)       | 1.31.x | 1.8.x | 1.8.x     | (1.21.x)   | (2.10.x)   | (1.17.x) | (4.12.x)      | 1.15.x       | 9.38.x     |
-| **0.x.x**         | 1.30.x | 1.7.x | 1.6.x     | 1.20.x     | 2.9.x      | 1.16.x   | 4.10.1        | 1.14.x       | 9.37.x     |
+| Hcloud K8s  | K8s    | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Cilium   | Ingress Nginx | Cert Manager | Autoscaler |
+| ----------- | ------ | ----- | --------- | ---------- | ---------- | -------- | ------------- | ------------ | ---------- |
+| (**1.x.x**) | 1.31.x | 1.8.x | 1.8.x     | (1.21.x)   | (2.10.x)   | (1.17.x) | (4.12.x)      | 1.15.x       | 9.38.x     |
+| **0.x.x**   | 1.30.x | 1.7.x | 1.6.x     | 1.20.x     | 2.9.x      | 1.16.x   | 4.10.1        | 1.14.x       | 9.37.x     |
 
 In this module, upgrades are conducted with care and conservatism. You will consistently receive the most tested and compatible releases of all components, avoiding the latest untested or incompatible releases that could disrupt your cluster.
 
