@@ -95,7 +95,7 @@ Talos Linux is a secure, minimal, and immutable OS for Kubernetes, removing SSH 
 - [talosctl](https://www.talos.dev/v1.8/introduction/getting-started/#talosctl) to control the Talos Cluster
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) to control Kubernetes (optional)
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > Keep the CLI tools up to date. Ensure that `talosctl` matches your Talos version for compatibility, especially before a Talos upgrade.
 
 <!-- Installation -->
@@ -166,18 +166,18 @@ For more detailed information and examples, please visit:
 ## :recycle: Lifecycle
 The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolabs/talos) does not support declarative upgrades of Talos or Kubernetes versions. This module compensates for these limitations using `talosctl` to implement the required functionalities. Any minor or major upgrades to Talos and Kubernetes will result in a major version change of this module. Please be aware that downgrades are typically neither supported nor tested.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > Before upgrading to the next major version of this module, ensure you are on the latest release of the current major version. Do not skip any major release upgrades.
 
 ### Version Compatibility Matrix
-| Hcloud K8s  | K8s    | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Cilium   | Ingress NGINX | Cert Manager | Auto-scaler |
-| ----------- | ------ | ----- | --------- | ---------- | ---------- | -------- | ------------- | ------------ | ---------- |
-| (**1.x.x**) | 1.31.x | 1.8.x | 1.8.x     | (1.21.x)   | (2.10.x)   | (1.17.x) | (4.12.x)      | 1.15.x       | 9.38.x     |
-| **0.x.x**   | 1.30.x | 1.7.x | 1.6.x     | 1.20.x     | 2.9.x      | 1.16.x   | 4.10.1        | 1.14.x       | 9.37.x     |
+| Hcloud K8s | K8s  | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Cilium | Ingress NGINX | Cert Manager | Auto-scaler |
+| ---------- | ---- | ----- | --------- | ---------- | ---------- | ------ | ------------- | ------------ | ----------- |
+| (**1**)    | 1.31 | 1.8   | 1.8       | (1.21)     | (2.10)     | (1.17) | (4.12)        | 1.15         | 9.38        |
+| **0**      | 1.30 | 1.7   | 1.6       | 1.20       | 2.9        | 1.16   | 4.10.1        | 1.14         | 9.37        |
 
 In this module, upgrades are conducted with care and conservatism. You will consistently receive the most tested and compatible releases of all components, avoiding the latest untested or incompatible releases that could disrupt your cluster.
 
-> [!WARNING]  
+> [!WARNING]
 > Do not change any software versions in this project on your own. Each component is tailored to ensure compatibility with new Kubernetes releases. This project specifies versions that are supported and have been thoroughly tested to work together.
 
 <!--
