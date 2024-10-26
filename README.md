@@ -58,9 +58,9 @@ This project includes commonly used and essential Kubernetes software, optimized
 
 - **[Talos Cloud Controller Manager (CCM)](https://github.com/siderolabs/talos-cloud-controller-manager)**\
   Manages node resources by updating with cloud metadata, handling lifecycle deletions, and automatically approving node CSRs.
-- **[Talos Backup](https://github.com/siderolabs/talos-backup)**\
+- **[Talos Backup](https://github.com/siderolabs/talos-backup)** \
   Automates etcd snapshots and S3 storage for backup in Talos Linux-based Kubernetes clusters.
-- **[Hcloud Cloud Controller Manager (CCM)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**\
+- **[Hcloud Cloud Controller Manager (CCM)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**<br>
   Manages the integration of Kubernetes clusters with Hetzner Cloud services, ensuring the update of node data, private network traffic control, and load balancer setup.
 - **[Hcloud Container Storage Interface (CSI)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**\
   Manages persistent storage in Kubernetes clusters using Hetzner Cloud Volumes, ensuring seamless storage integration and management.
