@@ -169,7 +169,7 @@ The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolab
 > [!IMPORTANT]
 > Before upgrading to the next major version of this module, ensure you are on the latest release of the current major version. Do not skip any major release upgrades.
 
-### Version Compatibility Matrix
+### :white_check_mark: Version Compatibility Matrix
 | Hcloud Kubernetes |  K8s   | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Cilium | Ingress NGINX | Cert Manager | Auto-scaler |
 | :---------------: | :----: | :---: | :-------: | :--------: | :--------: | :----: | :-----------: | :----------: | :---------: |
 |      (**2**)      | (1.32) | (1.9) |     ?     |     ?      |     ?      |   ?    |       ?       |      ?       |      ?      |
