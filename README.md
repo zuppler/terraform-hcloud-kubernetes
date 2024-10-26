@@ -56,23 +56,23 @@ This project is dedicated to production-grade configurations and lifecycle manag
 ### :sparkles: Additional Components
 This project includes commonly used and essential Kubernetes software, optimized for seamless integration with Hetzner Cloud.
 
-- **[Talos Cloud Controller Manager (CCM)](https://github.com/siderolabs/talos-cloud-controller-manager)**\
+- **[Talos Cloud Controller Manager (CCM)](https://github.com/siderolabs/talos-cloud-controller-manager)**<br>
   Manages node resources by updating with cloud metadata, handling lifecycle deletions, and automatically approving node CSRs.
-- **[Talos Backup](https://github.com/siderolabs/talos-backup)** \
+- **[Talos Backup](https://github.com/siderolabs/talos-backup)**<br>
   Automates etcd snapshots and S3 storage for backup in Talos Linux-based Kubernetes clusters.
 - **[Hcloud Cloud Controller Manager (CCM)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**<br>
   Manages the integration of Kubernetes clusters with Hetzner Cloud services, ensuring the update of node data, private network traffic control, and load balancer setup.
-- **[Hcloud Container Storage Interface (CSI)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**\
+- **[Hcloud Container Storage Interface (CSI)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**<br>
   Manages persistent storage in Kubernetes clusters using Hetzner Cloud Volumes, ensuring seamless storage integration and management.
-- **[Cilium Container Network Interface (CNI)](https://cilium.io)**\
+- **[Cilium Container Network Interface (CNI)](https://cilium.io)**<br>
   A high performance CNI plugin that enhances and secures network connectivity and observability for container workloads through the use of eBPF technology in Linux kernels.
-- **[Ingress NGINX Controller](https://kubernetes.github.io/ingress-nginx/)**\
+- **[Ingress NGINX Controller](https://kubernetes.github.io/ingress-nginx/)**<br>
   Provides a robust web routing and load balancing solution for Kubernetes, utilizing NGINX as a reverse proxy to manage traffic and enhance network performance.
-- **[Cert Manager](https://cert-manager.io)**\
+- **[Cert Manager](https://cert-manager.io)**<br>
   Automates the management of certificates in Kubernetes, handling the issuance and renewal of certificates from various sources like Let's Encrypt, and ensures certificates are valid and updated.
-- **[Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)**\
+- **[Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)**<br>
   Dynamically adjusts Kubernetes cluster size based on resource demands and node utilization, scaling nodes in or out to optimize cost and performance.
-- **[Metrics Server](https://kubernetes-sigs.github.io/metrics-server/)**\
+- **[Metrics Server](https://kubernetes-sigs.github.io/metrics-server/)**<br>
   Collects and provides container resource metrics for Kubernetes, enabling features like autoscaling by interacting with Horizontal and Vertical Pod Autoscalers.
 
 <!-- Security -->
@@ -194,9 +194,9 @@ In this module, upgrades are conducted with care and conservatism. You will cons
 <!-- Roadmap -->
 ## :compass: Roadmap
 
-* [ ] **Upgrade to Talos 1.8 and Kubernetes 1.31**\
+* [ ] **Upgrade to Talos 1.8 and Kubernetes 1.31**<br>
       Once all components have compatible versions, the upgrade can be performed.
-* [ ] **Integrate native IPv6 for pod traffic**\
+* [ ] **Integrate native IPv6 for pod traffic**<br>
       Completion requires Hetzner's addition of IPv6 support to cloud networks, expected at the beginning of 2025 as announced at Hetzner Summit 2024.
 
 <!-- Contributing -->
