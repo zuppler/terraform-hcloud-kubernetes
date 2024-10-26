@@ -49,7 +49,8 @@ locals {
       machine = {
         install = { image = local.talos_installer_image_url }
         nodeLabels = merge(
-          local.allow_scheduling_on_control_plane ? { "node.kubernetes.io/exclude-from-external-load-balancers" = { "$patch" = "delete" } } : {},
+          #local.allow_scheduling_on_control_plane ? { "node.kubernetes.io/exclude-from-external-load-balancers" = { "$patch" = "delete" } } : {},
+          local.allow_scheduling_on_control_plane ? {} : { "node.kubernetes.io/exclude-from-external-load-balancers" = "" },
           nodepool.labels
         )
         nodeAnnotations = nodepool.annotations
