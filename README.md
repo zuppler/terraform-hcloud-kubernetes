@@ -65,7 +65,7 @@ This project includes commonly used and essential Kubernetes software, optimized
 - **[Hetzner Cloud Container Storage Interface (CSI)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**\
   Manages persistent storage in Kubernetes clusters using Hetzner Cloud Volumes, ensuring seamless storage integration and management.
 - **[Cilium Container Network Interface (CNI)](https://cilium.io)**\
-  A High Performance CNI plugin that enhances and secures network connectivity and observability for container workloads through the use of eBPF technology in Linux kernels.
+  A high performance CNI plugin that enhances and secures network connectivity and observability for container workloads through the use of eBPF technology in Linux kernels.
 - **[Ingress NGINX Controller](https://kubernetes.github.io/ingress-nginx/)**\
   Provides a robust web routing and load balancing solution for Kubernetes, utilizing NGINX as a reverse proxy to manage traffic and enhance network performance.
 - **[Cert Manager](https://cert-manager.io)**\
@@ -170,7 +170,7 @@ The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolab
 > Before upgrading to the next major version of this module, ensure you are on the latest release of the current version. Do not skip any major release upgrades.
 
 ### Version Compatibility Matrix
-| Hcloud K8s  | K8s    | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Cilium   | Ingress Nginx | Cert Manager | Auto-scaler |
+| Hcloud K8s  | K8s    | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Cilium   | Ingress NGINX | Cert Manager | Auto-scaler |
 | ----------- | ------ | ----- | --------- | ---------- | ---------- | -------- | ------------- | ------------ | ---------- |
 | (**1.x.x**) | 1.31.x | 1.8.x | 1.8.x     | (1.21.x)   | (2.10.x)   | (1.17.x) | (4.12.x)      | 1.15.x       | 9.38.x     |
 | **0.x.x**   | 1.30.x | 1.7.x | 1.6.x     | 1.20.x     | 2.9.x      | 1.16.x   | 4.10.1        | 1.14.x       | 9.37.x     |
