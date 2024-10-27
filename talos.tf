@@ -5,6 +5,7 @@ locals {
   talos_primary_node_public_ipv4  = hcloud_server.control_plane[local.talos_primary_node_name].ipv4_address
   talos_primary_node_public_ipv6  = hcloud_server.control_plane[local.talos_primary_node_name].ipv6_address
 
+  # Talos API
   talos_api_port = 50000
   talos_primary_endpoint = var.cluster_access == "private" ? local.talos_primary_node_private_ipv4 : coalesce(
     local.talos_primary_node_public_ipv4, local.talos_primary_node_public_ipv6
@@ -47,14 +48,6 @@ locals {
   cluster_initialized = length(data.hcloud_certificates.state.certificates) > 0
 }
 
-resource "talos_machine_secrets" "this" {
-  talos_version = var.talos_version
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 data "hcloud_certificates" "state" {
   with_selector = join(",",
     [
@@ -62,6 +55,14 @@ data "hcloud_certificates" "state" {
       "state=initialized"
     ]
   )
+}
+
+resource "talos_machine_secrets" "this" {
+  talos_version = var.talos_version
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "terraform_data" "upgrade_control_plane" {

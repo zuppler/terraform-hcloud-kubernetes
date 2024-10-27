@@ -1,4 +1,7 @@
 locals {
+  allow_scheduling_on_control_plane = ((local.worker_sum + local.autoscaler_max_sum) == 0)
+
+  # Kubernetes Manifests for Talos
   talos_inline_manifests = concat(
     [
       local.talos_backup_manifest,
@@ -16,8 +19,6 @@ locals {
     "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager-daemonset.yml",
     "https://github.com/prometheus-operator/prometheus-operator/releases/download/${var.prometheus_operator_crds_version}/stripped-down-crds.yaml"
   ]
-
-  allow_scheduling_on_control_plane = ((local.worker_sum + local.autoscaler_max_sum) == 0)
 
   # Talos and Kubernetes Certificates
   certificate_san = distinct(
@@ -52,6 +53,7 @@ locals {
     var.talos_extra_host_entries
   )
 
+  # Disk Encryption
   systemDiskEncryption = var.talos_system_disk_encryption_enabled ? {
     state = {
       provider = "luks2"
@@ -71,6 +73,7 @@ locals {
     }
   } : {}
 
+  # Control Plane Config
   control_plane_nodepool_config = {
     for nodepool in local.control_plane_nodepools : nodepool.name => {
       machine = {
@@ -226,6 +229,7 @@ locals {
     }
   }
 
+  # Worker Config
   worker_nodepool_config = {
     for nodepool in local.worker_nodepools : nodepool.name => {
       machine = {
@@ -321,6 +325,7 @@ locals {
     }
   }
 
+  # Autoscaler Config
   autoscaler_nodepool_config = {
     for nodepool in local.autoscaler_nodepools : nodepool.name => {
       machine = {
