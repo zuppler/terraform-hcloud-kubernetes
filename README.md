@@ -37,6 +37,7 @@
 # :notebook_with_decorative_cover: Table of Contents
 - [:star2: About the Project](#star2-about-the-project)
 - [:rocket: Getting Started](#rocket-getting-started)
+- [:hammer_and_pick: Advanced Configuration](#hammer_and_pick-advanced-configuration)
 - [:recycle: Lifecycle](#recycle-lifecycle)
 - [:compass: Roadmap](#compass-roadmap)
 - [:wave: Contributing](#wave-contributing)
@@ -176,8 +177,59 @@ For more detailed information and examples, please visit:
 - [Talos CLI Documentation](https://www.talos.dev/v1.8/reference/cli/)
 - [Kubernetes CLI Documentation](https://kubernetes.io/docs/reference/kubectl/introduction/)
 
+<!-- Advanced Configuration -->
+## :hammer_and_pick: Advanced Configuration
 
-<!-- Usage -->
+<details open>
+<summary>Egress Gateway</summary>
+Cilium offers an Egress Gateway to ensure network compatibility with legacy systems and firewalls requiring fixed IPs.
+
+> [!WARNING]  
+> The use of Cilium Egress Gateway does not provide high availability and increases latency due to extra network hops and tunneling. Consider this configuration only as a last resort.
+
+Example `kubernetes.tf` snippet:
+```hcl
+cilium_egress_gateway_enabled = true
+
+worker_nodepools = [
+  [...]
+  {
+    name     = "egress",
+    location = "fsn1",
+    type     = "cax11",
+    labels   = { "egress-node" = "true" },
+    taints   = [ "egress-node=true:NoSchedule" ]
+  }
+]
+```
+
+Example Egress Gateway Policy:
+```yml
+apiVersion: cilium.io/v2
+kind: CiliumEgressGatewayPolicy
+metadata:
+  name: sample-egress-policy
+spec:
+  selectors:
+    - podSelector:
+        matchLabels:
+          io.kubernetes.pod.namespace: sample-namespace
+          app: sample-app
+
+  destinationCIDRs:
+    - "0.0.0.0/0"
+
+  egressGateway:
+    nodeSelector:
+      matchLabels:
+        egress-node: "true"
+```
+
+Please visit the Cilium [documentation](https://docs.cilium.io/en/stable/network/egress-gateway) for more details.
+</details>
+
+
+<!-- Lifecycle -->
 ## :recycle: Lifecycle
 The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolabs/talos) does not support declarative upgrades of Talos or Kubernetes versions. This module compensates for these limitations using `talosctl` to implement the required functionalities. Any minor or major upgrades to Talos and Kubernetes will result in a major version change of this module. Please be aware that downgrades are typically neither supported nor tested.
 
