@@ -67,7 +67,7 @@ This setup includes several features for a seamless, best-practice Kubernetes de
 - **Automated Backups**: Leverages Talos Backup with support for S3-compatible storage solutions like Hetzner's Object Storage.
 
 <!-- Components -->
-### :package: Additional Components
+### :package: Components
 This project includes commonly used and essential Kubernetes software, optimized for seamless integration with Hetzner Cloud.
 
 - **[Talos Cloud Controller Manager (CCM)](https://github.com/siderolabs/talos-cloud-controller-manager)**<br>
