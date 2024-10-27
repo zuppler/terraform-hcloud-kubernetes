@@ -54,6 +54,18 @@ This project is committed to production-grade configuration and lifecycle manage
 > [!TIP]
 > If you don't yet have a Hetzner account, feel free to use this [Hetzner Cloud Referral Link](https://hetzner.cloud/?ref=GMylKeDmqtsD) to claim a €20 credit and support this project.
 
+<!-- Features -->
+### :sparkles: Features
+
+This setup includes several features for a seamless, best-practice Kubernetes deployment on Hetzner Cloud:
+- **Fully Declarative & Immutable**: Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
+- **Cross-Architecture**: Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
+- **High Availability**: Configured for production-grade high availability, ensuring consistent and reliable system performance.
+- **Plug-and-Play Kubernetes**: Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
+- **Dual-Stack Ingress**: Employs Hetzner Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
+- **Enhanced Security**: Built with security as a priority, incorporating firewalls and encryption by default to protect your infrastructure.
+- **Automated Backups**: Leverages Talos Backup with support for S3-compatible storage solutions like Hetzner's Object Storage.
+
 <!-- Components -->
 ### :package: Additional Components
 This project includes commonly used and essential Kubernetes software, optimized for seamless integration with Hetzner Cloud.
@@ -84,18 +96,6 @@ This project includes commonly used and essential Kubernetes software, optimized
 
 **[Metrics Server](https://kubernetes-sigs.github.io/metrics-server/)**<br>
   Collects and provides container resource metrics for Kubernetes, enabling features like autoscaling by interacting with Horizontal and Vertical Pod Autoscalers.
-
-<!-- Features -->
-### :sparkles: Features
-
-This setup includes several features for a seamless, best-practice Kubernetes deployment on Hetzner Cloud:
-- **Fully Declarative & Immutable**: Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
-- **Cross-Architecture**: Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
-- **High Availability**: Configured for production-grade high availability, ensuring consistent and reliable system performance.
-- **Plug-and-Play Kubernetes**: Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
-- **Dual-Stack Ingress**: Employs Hetzner Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
-- **Enhanced Security**: Built with security as a priority, incorporating firewalls and encryption by default to protect your infrastructure.
-- **Automated Backups**: Leverages Talos Backup with support for S3-compatible storage solutions like Hetzner's Object Storage.
 
 <!-- Security -->
 ### :shield: Security
