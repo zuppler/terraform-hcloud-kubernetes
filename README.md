@@ -52,7 +52,7 @@ This project is dedicated to production-grade configurations and lifecycle manag
 > [!TIP]
 > If you don't yet have a Hetzner account, feel free to use this [Hetzner Cloud Referral Link](https://hetzner.cloud/?ref=GMylKeDmqtsD) to claim a €20 credit and support this project.
 
-<!-- Features -->
+<!-- Components -->
 ### :package: Additional Components
 This project includes commonly used and essential Kubernetes software, optimized for seamless integration with Hetzner Cloud.
 
@@ -86,6 +86,7 @@ This project includes commonly used and essential Kubernetes software, optimized
 <!-- Features -->
 ### :sparkles: Features
 
+This setup includes several features for a seamless, best-practice Kubernetes deployment on Hetzner Cloud:
 - **Fully Declarative & Immutable**: Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
 - **Cross-Architecture**: Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
 - **High Availability**: Configured for production-grade high availability, ensuring consistent and reliable system performance.
