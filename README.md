@@ -243,4 +243,4 @@ Distributed under the MIT License. See [LICENSE](https://github.com/hcloud-k8s/t
 
 - [Talos Linux](https://www.talos.dev) for its impressively secure, immutable, and minimalistic Kubernetes distribution.
 - [Hetzner Cloud](https://www.hetzner.com/cloud) for offering excellent cloud infrastructure with robust Kubernetes integrations.
-- Other projects like [Kube-Hetzner](https://github.com/kube-hetzner/terraform-hcloud-kube-hetzner) and [Terraform - Hcloud - Talos](https://github.com/hcloud-talos/terraform-hcloud-talos), where I’ve contributed and gained valuable insights into Kubernetes deployments on Hetzner.
+- Other projects like [Kube-Hetzner](https://github.com/kube-hetzner/terraform-hcloud-kube-hetzner) and [Terraform - Hcloud - Talos](https://github.com/hcloud-talos/terraform-hcloud-talos), where we’ve contributed and gained valuable insights into Kubernetes deployments on Hetzner.
