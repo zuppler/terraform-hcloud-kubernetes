@@ -45,9 +45,11 @@
 
 <!-- About the Project -->
 ## :star2: About the Project
-Hcloud Kubernetes is a Terraform module for deploying a fully declarative, managed Kubernetes cluster on Hetzner Cloud. It employs Talos, a secure, immutable, and minimal operating system tailored for Kubernetes. Talos features a streamlined architecture with only 12 binaries and is entirely managed through an API.
+Hcloud Kubernetes is a Terraform module for deploying a fully declarative, managed Kubernetes cluster on Hetzner Cloud. It utilizes Talos, a secure, immutable, and minimal operating system specifically designed for Kubernetes, featuring a streamlined architecture with just 12 binaries and managed entirely through an API.
 
-This project is dedicated to production-grade configurations and lifecycle management, ensuring all components are set up for high availability. It includes a curated selection of widely used and officially recognized Kubernetes components. If you encounter any issues, suboptimal settings, or missing elements, please file an [issue](https://github.com/hcloud-k8s/terraform-hcloud-kubernetes/issues) to support and improve this project.
+While several other projects aim to deploy Kubernetes on Hetzner Cloud, none fully met our standards for reliable, production-ready clusters. Existing solutions are often overly complex, introduce unwanted dependencies through custom-written software, lack robust lifecycle management, or fail to maintain version compatibility across components.
+
+This project is committed to production-grade configuration and lifecycle management, ensuring all components are set up for high availability. It includes a curated selection of widely used and officially recognized Kubernetes components. If you encounter any issues, suboptimal settings, or missing elements, please file an [issue](https://github.com/hcloud-k8s/terraform-hcloud-kubernetes/issues) to help us improve this project.
 
 > [!TIP]
 > If you don't yet have a Hetzner account, feel free to use this [Hetzner Cloud Referral Link](https://hetzner.cloud/?ref=GMylKeDmqtsD) to claim a €20 credit and support this project.
