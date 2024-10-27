@@ -43,33 +43,6 @@ locals {
   kube_prism_host = "127.0.0.1"
   kube_prism_port = 7445
 
-  # Talos and Kubernetes Certificates
-  certificate_san = distinct(
-    compact(
-      concat(
-        var.control_plane_public_vip_ipv4_enabled ? [local.control_plane_public_vip_ipv4] : [],
-        [local.control_plane_private_vip_ipv4],
-        [local.kube_api_load_balancer_private_ipv4],
-        local.control_plane_public_ipv4_list,
-        local.control_plane_private_ipv4_list,
-        local.control_plane_public_ipv6_list,
-        [local.kube_api_host],
-        ["127.0.0.1", "::1", "localhost"],
-      )
-    )
-  )
-
-  # Extra Host Entries
-  extra_host_entries = concat(
-    var.kube_api_hostname != null ? [
-      {
-        ip      = local.kube_api_private_ipv4
-        aliases = [var.kube_api_hostname]
-      }
-    ] : [],
-    var.talos_extra_host_entries
-  )
-
   # Cluster Status
   cluster_initialized = length(data.hcloud_certificates.state.certificates) > 0
 }
