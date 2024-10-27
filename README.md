@@ -180,7 +180,7 @@ For more detailed information and examples, please visit:
 <!-- Advanced Configuration -->
 ## :hammer_and_pick: Advanced Configuration
 
-<details open>
+<details>
 <summary>Egress Gateway</summary>
 Cilium offers an Egress Gateway to ensure network compatibility with legacy systems and firewalls requiring fixed IPs.
 
