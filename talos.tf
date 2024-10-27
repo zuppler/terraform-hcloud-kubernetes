@@ -1,11 +1,3 @@
-resource "talos_machine_secrets" "this" {
-  talos_version = var.talos_version
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 locals {
   # Talos Nodes
   talos_primary_node_name         = sort(keys(hcloud_server.control_plane))[0]
@@ -80,6 +72,14 @@ locals {
 
   # Cluster Status
   cluster_initialized = length(data.hcloud_certificates.state.certificates) > 0
+}
+
+resource "talos_machine_secrets" "this" {
+  talos_version = var.talos_version
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 data "hcloud_certificates" "state" {
