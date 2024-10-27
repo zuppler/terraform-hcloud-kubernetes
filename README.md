@@ -62,7 +62,7 @@ This project includes commonly used and essential Kubernetes software, optimized
 **[Talos Backup](https://github.com/siderolabs/talos-backup)**<br>
   Automates etcd snapshots and S3 storage for backup in Talos Linux-based Kubernetes clusters.
 
-**[Hcloud Cloud Controller Manager (CCM)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**
+**[Hcloud Cloud Controller Manager (CCM)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**<br>
   Manages the integration of Kubernetes clusters with Hetzner Cloud services, ensuring the update of node data, private network traffic control, and load balancer setup.
 
 **[Hcloud Container Storage Interface (CSI)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**<br>
@@ -87,7 +87,7 @@ This project includes commonly used and essential Kubernetes software, optimized
 ### :sparkles: Features
 
 - **Fully Declarative & Immutable**: Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
-- **Cross-Architecture**: Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner.
+- **Cross-Architecture**: Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
 - **High Availability**: Configured for production-grade high availability, ensuring consistent and reliable system performance.
 - **Plug-and-Play Kubernetes**: Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
 - **Dual-Stack Ingress**: Employs Hetzner Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
@@ -98,6 +98,7 @@ This project includes commonly used and essential Kubernetes software, optimized
 ### :shield: Security
 Talos Linux is a secure, minimal, and immutable OS for Kubernetes, removing SSH and shell access to reduce attack surfaces. Managed through a secure API with mTLS, Talos prevents configuration drift, enhancing both security and predictability. It follows [NIST](https://www.nist.gov/publications/application-container-security-guide) and [CIS](https://www.cisecurity.org/benchmark/kubernetes) hardening standards, operates in memory, and is built to support modern, production-grade Kubernetes environments.
 
+**Firewall Protection:** This module combines [Hetzner Cloud Firewalls](https://docs.hetzner.com/cloud/firewalls/) with [Talos Linux Ingress Firewall](https://www.talos.dev/latest/talos-guides/network/ingress-firewall/) to restrict external access to Talos nodes. For internal pod-to-pod communication, support for Kubernetes Network Policies is provided through [Cilium CNI](https://docs.cilium.io/en/stable/network/kubernetes/policy/).
 
 **Encryption in Transit:** In this module, all pod network traffic is encrypted by default using [WireGuard via Cilium CNI](https://cilium.io/use-cases/transparent-encryption/). It includes automatic key rotation and efficient in-kernel encryption, covering all traffic types.
 
