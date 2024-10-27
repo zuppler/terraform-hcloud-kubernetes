@@ -40,7 +40,7 @@
 - [:recycle: Lifecycle](#recycle-lifecycle)
 - [:compass: Roadmap](#compass-roadmap)
 - [:wave: Contributing](#wave-contributing)
-- [:balance_scale: License](#warning-license)
+- [:balance_scale: License](#balance_scale-license)
 - [:gem: Acknowledgements](#gem-acknowledgements)
 
 <!-- About the Project -->
