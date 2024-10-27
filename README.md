@@ -94,7 +94,7 @@ This project includes commonly used and essential Kubernetes software, optimized
 ### :shield: Security
 Talos Linux is a secure, minimal, and immutable OS for Kubernetes, removing SSH and shell access to reduce attack surfaces. Managed through a secure API with mTLS, Talos prevents configuration drift, enhancing both security and predictability. It follows [NIST](https://www.nist.gov/publications/application-container-security-guide) and [CIS](https://www.cisecurity.org/benchmark/kubernetes) hardening standards, operates in memory, and is built to support modern, production-grade Kubernetes environments.
 
-**Firewall Protection:** This module combines [Hetzner Cloud Firewalls](https://docs.hetzner.com/cloud/firewalls/) with [Talos Linux Ingress Firewall](https://www.talos.dev/latest/talos-guides/network/ingress-firewall/) to restrict external access to Talos nodes. For internal pod-to-pod communication, support for Kubernetes Network Policies is provided through [Cilium CNI](https://docs.cilium.io/en/stable/network/kubernetes/policy/).
+**Firewall Protection:** This module uses [Hetzner Cloud Firewalls](https://docs.hetzner.com/cloud/firewalls/) to manage external access to nodes. For internal pod-to-pod communication, support for Kubernetes Network Policies is provided through [Cilium CNI](https://docs.cilium.io/en/stable/network/kubernetes/policy/).
 
 **Encryption in Transit:** In this module, all pod network traffic is encrypted by default using [WireGuard via Cilium CNI](https://cilium.io/use-cases/transparent-encryption/). It includes automatic key rotation and efficient in-kernel encryption, covering all traffic types.
 
