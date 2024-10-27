@@ -77,7 +77,10 @@ locals {
   control_plane_nodepool_config = {
     for nodepool in local.control_plane_nodepools : nodepool.name => {
       machine = {
-        install = { image = local.talos_installer_image_url }
+        install = {
+          image           = local.talos_installer_image_url
+          extraKernelArgs = var.talos_extra_kernel_args
+        }
         nodeLabels = merge(
           #local.allow_scheduling_on_control_plane ? { "node.kubernetes.io/exclude-from-external-load-balancers" = { "$patch" = "delete" } } : {},
           local.allow_scheduling_on_control_plane ? {} : { "node.kubernetes.io/exclude-from-external-load-balancers" = "" },
@@ -146,7 +149,7 @@ locals {
           }
         }
         kernel = {
-          modules = var.talos_kernel_modules_to_load
+          modules = var.talos_kernel_modules
         }
         sysctls = merge(
           {
@@ -233,7 +236,10 @@ locals {
   worker_nodepool_config = {
     for nodepool in local.worker_nodepools : nodepool.name => {
       machine = {
-        install         = { image = local.talos_installer_image_url }
+        install = {
+          image           = local.talos_installer_image_url
+          extraKernelArgs = var.talos_extra_kernel_args
+        }
         nodeLabels      = nodepool.labels
         nodeAnnotations = nodepool.annotations
         certSANs        = local.certificate_san
@@ -284,7 +290,7 @@ locals {
           }
         }
         kernel = {
-          modules = var.talos_kernel_modules_to_load
+          modules = var.talos_kernel_modules
         }
         sysctls = merge(
           {
@@ -329,7 +335,10 @@ locals {
   autoscaler_nodepool_config = {
     for nodepool in local.autoscaler_nodepools : nodepool.name => {
       machine = {
-        install         = { image = local.talos_installer_image_url }
+        install = {
+          image           = local.talos_installer_image_url
+          extraKernelArgs = var.talos_extra_kernel_args
+        }
         nodeLabels      = nodepool.labels
         nodeAnnotations = nodepool.annotations
         certSANs        = local.certificate_san
@@ -380,7 +389,7 @@ locals {
           }
         }
         kernel = {
-          modules = var.talos_kernel_modules_to_load
+          modules = var.talos_kernel_modules
         }
         sysctls = merge(
           {

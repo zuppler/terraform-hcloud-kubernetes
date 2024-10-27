@@ -34,15 +34,20 @@ data "talos_image_factory_extensions_versions" "this" {
 resource "talos_image_factory_schematic" "this" {
   count = var.talos_schematic_id == null ? 1 : 0
 
-  schematic = length(var.talos_image_extensions) > 0 ? yamlencode(
+  schematic = yamlencode(
     {
       customization = {
+        extraKernelArgs = var.talos_extra_kernel_args
         systemExtensions = {
-          officialExtensions = data.talos_image_factory_extensions_versions.this[0].extensions_info.*.name
+          officialExtensions = (
+            length(var.talos_image_extensions) > 0 ?
+            data.talos_image_factory_extensions_versions.this[0].extensions_info.*.name :
+            []
+          )
         }
       }
     }
-  ) : null
+  )
 }
 
 data "talos_image_factory_urls" "amd64" {

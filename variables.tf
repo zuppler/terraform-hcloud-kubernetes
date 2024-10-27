@@ -361,6 +361,33 @@ variable "talos_image_extensions" {
   description = "Specifies Talos image extensions for additional functionality on top of the default Talos Linux capabilities. See: https://github.com/siderolabs/extensions"
 }
 
+variable "talos_extra_kernel_args" {
+  type        = list(string)
+  default     = []
+  description = "Defines a list of extra kernel commandline parameters."
+}
+
+variable "talos_kernel_modules" {
+  type = list(object({
+    name       = string
+    parameters = optional(list(string))
+  }))
+  default     = null
+  description = "Defines a list of kernel modules to be loaded during system boot, along with optional parameters for each module. This allows for customized kernel behavior in the Talos environment."
+}
+
+variable "talos_sysctls_extra_args" {
+  type        = map(string)
+  default     = {}
+  description = "Specifies a map of sysctl key-value pairs for configuring additional kernel parameters. These settings allow for detailed customization of the operating system's behavior at runtime."
+}
+
+variable "talos_system_disk_encryption_enabled" {
+  type        = bool
+  default     = true
+  description = "Enables encryption for STATE (contains sensitive node data like secrets and certs) and EPHEMERAL (may contain sensitive workload data) partitions. Attention: Changing this value for an existing cluster requires manual actions according to Talos documentation. If you ignore this, it may break your cluster!"
+}
+
 variable "talos_ipv6_enabled" {
   type        = bool
   default     = true
@@ -377,6 +404,17 @@ variable "talos_public_ipv6_enabled" {
   type        = bool
   default     = true
   description = "Determines whether public IPv6 addresses are enabled for nodes in the cluster. If true, each node is assigned a public IPv4 address."
+}
+
+variable "talos_extra_routes" {
+  type        = list(string)
+  default     = []
+  description = "Specifies CIDR blocks to be added as extra routes for the internal network interface, using the Hetzner router (first usable IP in the network) as the gateway."
+
+  validation {
+    condition     = alltrue([for cidr in var.talos_extra_routes : can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", cidr))])
+    error_message = "All entries in extra_routes must be valid CIDR notations."
+  }
 }
 
 variable "talos_coredns_enabled" {
@@ -407,38 +445,6 @@ variable "talos_time_servers" {
   type        = list(string)
   default     = ["ntp1.hetzner.de", "ntp2.hetzner.com", "ntp3.hetzner.net"]
   description = "Specifies a list of time server addresses used for network time synchronization across the cluster. These servers ensure that all cluster nodes maintain accurate and synchronized time."
-}
-
-variable "talos_extra_routes" {
-  type        = list(string)
-  default     = []
-  description = "Specifies CIDR blocks to be added as extra routes for the internal network interface, using the Hetzner router (first usable IP in the network) as the gateway."
-
-  validation {
-    condition     = alltrue([for cidr in var.talos_extra_routes : can(regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$", cidr))])
-    error_message = "All entries in extra_routes must be valid CIDR notations."
-  }
-}
-
-variable "talos_kernel_modules_to_load" {
-  type = list(object({
-    name       = string
-    parameters = optional(list(string))
-  }))
-  default     = null
-  description = "Defines a list of kernel modules to be loaded during system boot, along with optional parameters for each module. This allows for customized kernel behavior in the Talos environment."
-}
-
-variable "talos_sysctls_extra_args" {
-  type        = map(string)
-  default     = {}
-  description = "Specifies a map of sysctl key-value pairs for configuring additional kernel parameters. These settings allow for detailed customization of the operating system's behavior at runtime."
-}
-
-variable "talos_system_disk_encryption_enabled" {
-  type        = bool
-  default     = true
-  description = "Enables encryption for STATE (contains sensitive node data like secrets and certs) and EPHEMERAL (may contain sensitive workload data) partitions. Attention: Changing this value for an existing cluster requires manual actions according to Talos documentation. If you ignore this, it may break your cluster!"
 }
 
 variable "talos_registries" {
