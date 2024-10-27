@@ -182,10 +182,7 @@ For more detailed information and examples, please visit:
 
 <details>
 <summary>Egress Gateway</summary>
-Cilium offers an Egress Gateway to ensure network compatibility with legacy systems and firewalls requiring fixed IPs.
-
-> [!WARNING]
-> The use of Cilium Egress Gateway does not provide high availability and increases latency due to extra network hops and tunneling. Consider this configuration only as a last resort.
+Cilium offers an Egress Gateway to ensure network compatibility with legacy systems and firewalls requiring fixed IPs. The use of Cilium Egress Gateway does not provide high availability and increases latency due to extra network hops and tunneling. Consider this configuration only as a last resort.
 
 Example `kubernetes.tf` snippet:
 ```hcl
