@@ -70,7 +70,7 @@ data "hcloud_image" "amd64" {
   with_architecture = "x86"
   most_recent       = true
 
-  depends_on = [terraform_data.create_amd64_image]
+  depends_on = [terraform_data.amd64_image]
 }
 
 data "hcloud_image" "arm64" {
@@ -79,7 +79,7 @@ data "hcloud_image" "arm64" {
   with_architecture = "arm"
   most_recent       = true
 
-  depends_on = [terraform_data.create_arm64_image]
+  depends_on = [terraform_data.arm64_image]
 }
 
 data "hcloud_images" "amd64" {
@@ -105,7 +105,7 @@ resource "terraform_data" "packer_init" {
   }
 }
 
-resource "terraform_data" "create_amd64_image" {
+resource "terraform_data" "amd64_image" {
   count = local.amd64_image_required ? 1 : 0
 
   triggers_replace = [
@@ -137,7 +137,7 @@ resource "terraform_data" "create_amd64_image" {
   depends_on = [terraform_data.packer_init]
 }
 
-resource "terraform_data" "create_arm64_image" {
+resource "terraform_data" "arm64_image" {
   count = local.arm64_image_required ? 1 : 0
 
   triggers_replace = [

@@ -136,10 +136,10 @@ module "kubernetes" {
   ingress_nginx_enabled = true
 
   control_plane_nodepools = [
-    { name = "control", location = "fsn1", type = "cax11", count = 3 }
+    { name = "control", type = "cax11", location = "fsn1", count = 3 }
   ]
   worker_nodepools = [
-    { name = "worker", location = "fsn1", type = "cax11", count = 3 }
+    { name = "worker", type = "cax11", location = "fsn1", count = 3 }
   ]
 }
 ```
@@ -183,7 +183,9 @@ For more detailed information and examples, please visit:
 
 <details>
 <summary>Cluster Autoscaler</summary>
+The Cluster Autoscaler dynamically adjusts the number of nodes in a Kubernetes cluster based on the demand, ensuring that there are enough nodes to run all pods and no unneeded nodes when the workload decreases.
 
+Example `kubernetes.tf` snippet:
 ```hcl
 # Optionally enforce always having the minimum number of nodes
 autoscaler_enforce_node_group_min_size = true
@@ -192,11 +194,12 @@ autoscaler_enforce_node_group_min_size = true
 autoscaler_nodepools = [
   {
     name     = "autoscaler"
-    location = "fsn1"
     type     = "cax11"
+    location = "fsn1"
     min      = 2
     max      = 6
     labels   = { "autoscaler-node" = "true" }
+    taints   = [ "autoscaler-node=true:NoExecute" ]
   }
 ]
 ```
@@ -217,8 +220,8 @@ worker_nodepools = [
   # ... (other node pool configurations)
   {
     name     = "egress"
-    location = "fsn1"
     type     = "cax11"
+    location = "fsn1"
     labels   = { "egress-node" = "true" }
     taints   = [ "egress-node=true:NoSchedule" ]
   }

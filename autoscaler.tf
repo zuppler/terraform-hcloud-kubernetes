@@ -125,8 +125,8 @@ data "helm_template" "cluster_autoscaler" {
   ]
 
   depends_on = [
-    terraform_data.create_amd64_image,
-    terraform_data.create_arm64_image,
+    terraform_data.amd64_image,
+    terraform_data.arm64_image,
   ]
 }
 
