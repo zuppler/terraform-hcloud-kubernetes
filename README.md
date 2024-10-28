@@ -62,6 +62,7 @@ This setup includes several features for a seamless, best-practice Kubernetes de
 - **Fully Declarative & Immutable**: Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
 - **Cross-Architecture**: Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
 - **High Availability**: Configured for production-grade high availability, ensuring consistent and reliable system performance.
+- **Autoscaling**: Includes Cluster Autoscaler to dynamically adjust node counts based on workload demands, optimizing resource allocation.
 - **Plug-and-Play Kubernetes**: Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
 - **Dual-Stack Ingress**: Employs Hetzner Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
 - **Enhanced Security**: Built with security as a priority, incorporating firewalls and encryption by default to protect your infrastructure.
@@ -180,21 +181,45 @@ For more detailed information and examples, please visit:
 <!-- Advanced Configuration -->
 ## :hammer_and_pick: Advanced Configuration
 
+<details open>
+<summary>Cluster Autoscaler</summary>
+
+```hcl
+# Optionally enforce always having the minimum number of nodes
+autoscaler_enforce_node_group_min_size = true
+
+# Configure autoscaler nodepools
+autoscaler_nodepools = [
+  {
+    name     = "autoscaler"
+    location = "fsn1"
+    type     = "cax11"
+    min      = 2
+    max      = 6
+    labels   = { "autoscaler-node" = "true" }
+  }
+]
+```
+
+</details>
+
 <details>
 <summary>Egress Gateway</summary>
 Cilium offers an Egress Gateway to ensure network compatibility with legacy systems and firewalls requiring fixed IPs. The use of Cilium Egress Gateway does not provide high availability and increases latency due to extra network hops and tunneling. Consider this configuration only as a last resort.
 
 Example `kubernetes.tf` snippet:
 ```hcl
+# Enable Cilium Egress Gateway
 cilium_egress_gateway_enabled = true
 
+# Define worker nodepools including an egress-specific node pool
 worker_nodepools = [
-  [...]
+  # ... (other node pool configurations)
   {
-    name     = "egress",
-    location = "fsn1",
-    type     = "cax11",
-    labels   = { "egress-node" = "true" },
+    name     = "egress"
+    location = "fsn1"
+    type     = "cax11"
+    labels   = { "egress-node" = "true" }
     taints   = [ "egress-node=true:NoSchedule" ]
   }
 ]
