@@ -253,7 +253,7 @@ Please visit the Cilium [documentation](https://docs.cilium.io/en/stable/network
 <details>
 <summary>Network Configuration</summary>
 
-By default, this module calculates optimal subnets based on the provided network CIDR (`network_ipv4_cidr`). The network is segmented as follows:
+By default, this module calculates optimal subnets based on the provided network CIDR (`network_ipv4_cidr`). The network is segmented automatically as follows:
 
 - **1st Quarter**: Reserved for other uses such as classic VMs.
 - **2nd Quarter**:
