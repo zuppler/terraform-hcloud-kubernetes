@@ -277,7 +277,6 @@ Please consider the following Hetzner Cloud limits:
 - Up to **100 routes** can be created per network.
 - Up to **50 subnets** can be created per network.
 - A project can have up to **50 placement groups**.
-- Each placement group can contain up to **10 servers**.
 
 A `/16` Network CIDR is sufficient to fully utilize Hetzner Cloud's scaling capabilities. It supports:
 - Up to 100 nodes, each with its own `/24` Pod subnet route.
