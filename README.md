@@ -300,7 +300,7 @@ mc alias set <alias> \
 Create a bucket with automatic retention policies to protect your backups:
 ```sh
 mc mb --with-lock --region <location> <alias>/<bucket>
-mc retention set GOVERNANCE 30d --default <alias>/<bucket>
+mc retention set GOVERNANCE 14d --default <alias>/<bucket>
 ```
 
 Configure your `kubernetes.tf` file:
