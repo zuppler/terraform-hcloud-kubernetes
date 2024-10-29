@@ -107,7 +107,7 @@ Talos Linux is a secure, minimal, and immutable OS for Kubernetes, removing SSH 
 
 - [terraform](https://developer.hashicorp.com/terraform/install) to deploy Kubernetes on Hetzner Cloud
 - [packer](https://developer.hashicorp.com/packer/install) to upload Talos Images to Hetzner Cloud
-- [talosctl](https://www.talos.dev/v1.8/introduction/getting-started/#talosctl) to control the Talos Cluster
+- [talosctl](https://www.talos.dev/latest/talos-guides/install/talosctl/) to control the Talos Cluster
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) to control Kubernetes (optional)
 
 > [!IMPORTANT]
