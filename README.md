@@ -281,6 +281,17 @@ Please consider the following Hetzner Cloud limits:
 A `/16` Network CIDR is sufficient to fully utilize Hetzner Cloud's scaling capabilities. It supports:
 - Up to 100 nodes, each with its own `/24` Pod subnet route.
 - Configuration of up to 50 nodepools, one nodepool per subnet, each with at least one placement group.
+
+
+Here is a table with more example calculations:
+| Network         | Node Subnet Size | Node Subnets      | Service IPs         | Pod Subnets         |
+| --------------- | ---------------- | ----------------- | ------------------- | ------------------- |
+| **10.0.0.0/16** | /25 (128 IPs)    | 10.0.64.0/19 (64) | 10.0.96.0/19 (8192) | 10.0.128.0/17 (128) |
+| **10.0.0.0/17** | /26 (64 IPs)     | 10.0.32.0/20 (64) | 10.0.48.0/20 (4096) | 10.0.64.0/18 (64)   |
+| **10.0.0.0/18** | /27 (32 IPs)     | 10.0.16.0/21 (64) | 10.0.24.0/21 (2048) | 10.0.32.0/19 (32)   |
+| **10.0.0.0/19** | /28 (16 IPs)     | 10.0.8.0/22  (64) | 10.0.12.0/22 (1024) | 10.0.16.0/20 (16)   |
+| **10.0.0.0/20** | /29 (8 IPs)      | 10.0.4.0/23  (64) | 10.0.6.0/23 (512)   | 10.0.8.0/21 (8)     |
+| **10.0.0.0/21** | /30 (4 IPs)      | 10.0.2.0/24  (64) | 10.0.3.0/24 (256)   | 10.0.4.0/22 (4)     |
 </details>
 
 <details>
