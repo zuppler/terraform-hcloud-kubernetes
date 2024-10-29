@@ -24,13 +24,22 @@ locals {
   node_ipv4_cidr_skip_first_subnet = cidrhost(local.network_ipv4_cidr, 0) == cidrhost(local.node_ipv4_cidr, 0)
   network_ipv4_gateway             = cidrhost(local.network_ipv4_cidr, 1)
 
+  # Subnet mask sizes
+  network_pod_ipv4_subnet_mask_size = 24
+  network_node_ipv4_subnet_mask_size = coalesce(
+    var.network_node_ipv4_subnet_mask_size,
+    32 - (local.network_pod_ipv4_subnet_mask_size - split("/", local.pod_ipv4_cidr)[1])
+  )
+
   # Lists for control plane nodes
   control_plane_public_ipv4_list        = [for server in hcloud_server.control_plane : server.ipv4_address]
   control_plane_public_ipv6_list        = [for server in hcloud_server.control_plane : server.ipv6_address]
   control_plane_public_ipv6_subnet_list = [for server in hcloud_server.control_plane : server.ipv6_network]
-  control_plane_public_vip_ipv4         = local.control_plane_public_vip_ipv4_enabled ? data.hcloud_floating_ip.control_plane_ipv4[0].ip_address : null
   control_plane_private_ipv4_list       = [for server in hcloud_server.control_plane : tolist(server.network)[0].ip]
-  control_plane_private_vip_ipv4        = cidrhost(hcloud_network_subnet.control_plane.ip_range, -2)
+
+  # Control plane VIPs
+  control_plane_public_vip_ipv4  = local.control_plane_public_vip_ipv4_enabled ? data.hcloud_floating_ip.control_plane_ipv4[0].ip_address : null
+  control_plane_private_vip_ipv4 = cidrhost(hcloud_network_subnet.control_plane.ip_range, -2)
 
   # Lists for worker nodes
   worker_public_ipv4_list        = [for server in hcloud_server.worker : server.ipv4_address]
@@ -70,7 +79,7 @@ resource "hcloud_network_subnet" "control_plane" {
 
   ip_range = cidrsubnet(
     local.node_ipv4_cidr,
-    var.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1],
+    local.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1],
     0 + (local.node_ipv4_cidr_skip_first_subnet ? 1 : 0)
   )
 }
@@ -82,7 +91,7 @@ resource "hcloud_network_subnet" "load_balancer" {
 
   ip_range = cidrsubnet(
     local.node_ipv4_cidr,
-    var.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1],
+    local.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1],
     1 + (local.node_ipv4_cidr_skip_first_subnet ? 1 : 0)
   )
 }
@@ -96,7 +105,7 @@ resource "hcloud_network_subnet" "worker" {
 
   ip_range = cidrsubnet(
     local.node_ipv4_cidr,
-    var.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1],
+    local.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1],
     index(local.worker_nodepools, each.value) + 2 + (local.node_ipv4_cidr_skip_first_subnet ? 1 : 0)
   )
 }
@@ -108,8 +117,8 @@ resource "hcloud_network_subnet" "autoscaler" {
 
   ip_range = cidrsubnet(
     local.node_ipv4_cidr,
-    var.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1],
-    pow(2, var.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1]) - 1
+    local.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1],
+    pow(2, local.network_node_ipv4_subnet_mask_size - split("/", local.node_ipv4_cidr)[1]) - 1
   )
 
   depends_on = [

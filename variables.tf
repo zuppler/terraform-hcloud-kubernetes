@@ -77,13 +77,8 @@ variable "network_node_ipv4_cidr" {
 
 variable "network_node_ipv4_subnet_mask_size" {
   type        = number
-  default     = 25
-  description = "Specifies the subnet mask size used for node pools within the cluster. This setting determines the network segmentation precision, with a smaller mask size allowing more IP addresses per subnet."
-
-  validation {
-    condition     = var.network_node_ipv4_subnet_mask_size >= 16 && var.network_node_ipv4_subnet_mask_size <= 30 && var.network_node_ipv4_subnet_mask_size == floor(var.network_node_ipv4_subnet_mask_size)
-    error_message = "The subnet mask size must be an integer between 16 and 30 to ensure proper network segmentation and address allocation."
-  }
+  default     = null # /25 when network_pod_ipv4_cidr is 10.0.128.0/17
+  description = "Specifies the subnet mask size used for node pools within the cluster. This setting determines the network segmentation precision, with a smaller mask size allowing more IP addresses per subnet. If not explicitly provided, an optimal default size is dynamically calculated from the network_pod_ipv4_cidr."
 }
 
 variable "network_service_ipv4_cidr" {

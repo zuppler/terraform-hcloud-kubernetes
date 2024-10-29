@@ -201,7 +201,6 @@ autoscaler_nodepools = [
   }
 ]
 ```
-
 </details>
 
 <details>
@@ -251,6 +250,40 @@ spec:
 Please visit the Cilium [documentation](https://docs.cilium.io/en/stable/network/egress-gateway) for more details.
 </details>
 
+<details>
+<summary>Network Configuration</summary>
+
+By default, this module calculates optimal network CIDRs based on the provided Network CIDR (`network_ipv4_cidr`). The network is segmented as follows:
+
+- **1st Quarter**: Reserved for other uses such as classic VMs.
+- **2nd Quarter**:
+  - **1st Half**: Allocated for Node Subnets (`network_node_ipv4_cidr`)
+  - **2nd Half**: Allocated for Service IPs (`network_service_ipv4_cidr`)
+- **3rd and 4th Quarters**:
+  - **Full Span**: Allocated for Pod Subnets (`network_pod_ipv4_cidr`)
+
+Each Kubernetes node requires a `/24` subnet within `network_pod_ipv4_cidr`. To support this configuration, the optimal node subnet size (`network_node_ipv4_subnet_mask_size`) is calculated using the formula: 32 - (24 - subnet_mask_size(`network_pod_ipv4_cidr`)).
+
+With the default `10.0.0.0/16` Network CIDR (`network_ipv4_cidr`), the following values are calculated:
+- **Node Subnets**: `10.0.64.0/19` (Max. 64 Subnets)
+- **Service IPs**: `10.0.96.0/19` (Max. 8192 Services)
+- **Pod Subnets**: `10.0.128.0/17` (Max. 128 Subnets/Nodes)
+- **Node Subnet Size**: `/25` (Max. 128 IPs/Nodes)
+
+Please consider the following Hetzner Cloud limits:
+- Up to **100 servers** can be attached to a network.
+- Up to **100 routes** can be created per network.
+- Up to **50 subnets** are allowed.
+- A project can have up to **50 placement groups**.
+- Each placement group can contain up to **10 servers**.
+
+A `/16` Network CIDR is sufficient to fully utilize Hetzner Cloud's scaling capabilities. It supports:
+- Up to 100 nodes, each with its own `/24` Pod subnet route.
+- Configuration of up to 50 nodepools, with at least one placement group per nodepool.
+
+
+
+</details>
 
 <!-- Lifecycle -->
 ## :recycle: Lifecycle
