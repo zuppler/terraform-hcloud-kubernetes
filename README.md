@@ -253,7 +253,7 @@ Please visit the Cilium [documentation](https://docs.cilium.io/en/stable/network
 <details>
 <summary>Network Configuration</summary>
 
-By default, this module calculates optimal network CIDRs based on the provided Network CIDR (`network_ipv4_cidr`). The network is segmented as follows:
+By default, this module calculates optimal subnets based on the provided network CIDR (`network_ipv4_cidr`). The network is segmented as follows:
 
 - **1st Quarter**: Reserved for other uses such as classic VMs.
 - **2nd Quarter**:
@@ -264,7 +264,7 @@ By default, this module calculates optimal network CIDRs based on the provided N
 
 Each Kubernetes node requires a `/24` subnet within `network_pod_ipv4_cidr`. To support this configuration, the optimal node subnet size (`network_node_ipv4_subnet_mask_size`) is calculated using the formula: 32 - (24 - subnet_mask_size(`network_pod_ipv4_cidr`)).
 
-With the default `10.0.0.0/16` Network CIDR (`network_ipv4_cidr`), the following values are calculated:
+With the default `10.0.0.0/16` network CIDR (`network_ipv4_cidr`), the following values are calculated:
 - **Node Subnets**: `10.0.64.0/19` (Max. 64 Subnets)
 - **Service IPs**: `10.0.96.0/19` (Max. 8192 Services)
 - **Pod Subnets**: `10.0.128.0/17` (Max. 128 Subnets/Nodes)
