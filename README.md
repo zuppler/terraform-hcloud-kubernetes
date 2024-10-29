@@ -283,6 +283,61 @@ A `/16` Network CIDR is sufficient to fully utilize Hetzner Cloud's scaling capa
 - Configuration of up to 50 nodepools, one nodepool per subnet, each with at least one placement group.
 </details>
 
+<details>
+<summary>Talos Backup</summary>
+
+This module natively supports Hcloud Object Storage. Below is an example of how to configure backups with MinIO Client (`mc`) and Hcloud Object Storage. While it's possible to create the bucket through the Hcloud Console, this method does not allow for the configuration of automatic retention policies.
+
+Create an alias for the endpoint using the following command:
+```sh
+mc alias set <alias> \
+  https://<location>.your-objectstorage.com \
+  <access-key> <secret-key> \
+  --api "s3v4" \
+  --path "off"
+```
+
+Create a bucket with automatic retention policies to protect your backups:
+```sh
+mc mb --with-lock --region <location> <alias>/<bucket>
+mc retention set GOVERNANCE 30d --default <alias>/<bucket>
+```
+
+Configure your `kubernetes.tf` file:
+```hcl
+talos_backup_s3_hcloud_url = "https://<bucket>.<location>.your-objectstorage.com"
+talos_backup_s3_access_key = "<access-key>"
+talos_backup_s3_secret_key = "<secret-key>"
+
+# Optional: AGE X25519 Public Key for encryption
+talos_backup_age_x25519_public_key = "<age-public-key>"
+
+# Optional: Change schedule (cron syntax)
+talos_backup_schedule = "0 * * * *"
+```
+
+For users of other object storage providers, configure `kubernetes.tf` as follows:
+```hcl
+talos_backup_s3_region   = "<region>"
+talos_backup_s3_endpoint = "<endpoint>"
+talos_backup_s3_bucket   = "<bucket>"
+talos_backup_s3_prefix   = "<prefix>"
+
+# Use path-style URLs (set true if required by your provider)
+talos_backup_s3_path_style = true
+
+# Access credentials
+talos_backup_s3_access_key = "<access-key>"
+talos_backup_s3_secret_key = "<secret-key>"
+
+# Optional: AGE X25519 Public Key for encryption
+talos_backup_age_x25519_public_key = "<age-public-key>"
+
+# Optional: Change schedule (cron syntax)
+talos_backup_schedule = "0 * * * *"
+```
+</details>
+
 <!-- Lifecycle -->
 ## :recycle: Lifecycle
 The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolabs/talos) does not support declarative upgrades of Talos or Kubernetes versions. This module compensates for these limitations using `talosctl` to implement the required functionalities. Any minor or major upgrades to Talos and Kubernetes will result in a major version change of this module. Please be aware that downgrades are typically neither supported nor tested.
