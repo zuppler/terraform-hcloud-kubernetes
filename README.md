@@ -251,7 +251,7 @@ Please visit the Cilium [documentation](https://docs.cilium.io/en/stable/network
 </details>
 
 <details>
-<summary>Network Configuration</summary>
+<summary>Network Segmentation</summary>
 
 By default, this module calculates optimal subnets based on the provided network CIDR (`network_ipv4_cidr`). The network is segmented automatically as follows:
 
@@ -267,10 +267,10 @@ Each Kubernetes node requires a `/24` subnet within `network_pod_ipv4_cidr`. To 
 
 With the default `10.0.0.0/16` network CIDR (`network_ipv4_cidr`), the following values are calculated:
 - **Node Subnet Size**: `/25` (Max. 128 Nodes per Subnet)
-- **Node Subnets**: `10.0.64.0/19` (Max. 64 Subnets, each with /25)
+- **Node Subnets**: `10.0.64.0/19` (Max. 64 Subnets, each with `/25`)
 - **Service IPs**: `10.0.96.0/19` (Max. 8192 Services)
 - **Pod Subnet Size**: `/24` (Max. 256 Pods per Node)
-- **Pod Subnets**: `10.0.128.0/17` (Max. 128 Nodes, each with /24)
+- **Pod Subnets**: `10.0.128.0/17` (Max. 128 Nodes, each with `/24`)
 
 Please consider the following Hetzner Cloud limits:
 - Up to **100 servers** can be attached to a network.
