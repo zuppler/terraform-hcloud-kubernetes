@@ -286,7 +286,7 @@ A `/16` Network CIDR is sufficient to fully utilize Hetzner Cloud's scaling capa
 <details>
 <summary>Talos Backup</summary>
 
-This module natively supports Hcloud Object Storage. Below is an example of how to configure backups with MinIO Client (`mc`) and Hcloud Object Storage. While it's possible to create the bucket through the Hcloud Console, this method does not allow for the configuration of automatic retention policies.
+This module natively supports Hcloud Object Storage. Below is an example of how to configure backups with MinIO Client (`mc`) and Hcloud Object Storage. While it's possible to create the bucket through the Hcloud [Console](https://console.hetzner.cloud), this method does not allow for the configuration of automatic retention policies.
 
 Create an alias for the endpoint using the following command:
 ```sh
