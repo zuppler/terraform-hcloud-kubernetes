@@ -284,7 +284,7 @@ A `/16` Network CIDR is sufficient to fully utilize Hetzner Cloud's scaling capa
 
 
 Here is a table with more example calculations:
-| Network         | Node Subnet Size | Node Subnets      | Service IPs         | Pod Subnets         |
+| Network CIDR    | Node Subnet Size | Node Subnets      | Service IPs         | Pod Subnets         |
 | --------------- | ---------------- | ----------------- | ------------------- | ------------------- |
 | **10.0.0.0/16** | /25 (128 IPs)    | 10.0.64.0/19 (64) | 10.0.96.0/19 (8192) | 10.0.128.0/17 (128) |
 | **10.0.0.0/17** | /26 (64 IPs)     | 10.0.32.0/20 (64) | 10.0.48.0/20 (4096) | 10.0.64.0/18 (64)   |
