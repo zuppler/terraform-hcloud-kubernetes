@@ -275,7 +275,7 @@ With the default `10.0.0.0/16` network CIDR (`network_ipv4_cidr`), the following
 Please consider the following Hetzner Cloud limits:
 - Up to **100 servers** can be attached to a network.
 - Up to **100 routes** can be created per network.
-- Up to **50 subnets** are allowed.
+- Up to **50 subnets** can be created per network.
 - A project can have up to **50 placement groups**.
 - Each placement group can contain up to **10 servers**.
 
