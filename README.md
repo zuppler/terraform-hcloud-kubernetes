@@ -111,7 +111,7 @@ Talos Linux is a secure, minimal, and immutable OS for Kubernetes, removing SSH 
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) to control Kubernetes (optional)
 
 > [!IMPORTANT]
-> Keep the CLI tools up to date. Ensure that `talosctl` matches your Talos version for [compatibility](#white_check_mark-version-compatibility-matrix), especially before a Talos upgrade.
+> Keep the CLI tools up to date. Ensure that `talosctl` matches your Talos version for compatibility, especially before a Talos upgrade.
 
 <!-- Installation -->
 ### :dart: Installation
