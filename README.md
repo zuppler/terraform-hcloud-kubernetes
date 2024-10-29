@@ -173,7 +173,7 @@ kubectl get pods -A
 ```
 
 For more detailed information and examples, please visit:
-- [Talos CLI Documentation](https://www.talos.dev/v1.8/reference/cli/)
+- [Talos CLI Documentation](https://www.talos.dev/latest/reference/cli/)
 - [Kubernetes CLI Documentation](https://kubernetes.io/docs/reference/kubectl/introduction/)
 
 <!-- Advanced Configuration -->
@@ -336,6 +336,8 @@ talos_backup_age_x25519_public_key = "<age-public-key>"
 # Optional: Change schedule (cron syntax)
 talos_backup_schedule = "0 * * * *"
 ```
+
+To recover from a snapshot, please refer to the Talos Disaster Recovery section in the [Documentation](https://www.talos.dev/latest/advanced/disaster-recovery/#recovery).
 </details>
 
 <!-- Lifecycle -->
