@@ -208,7 +208,6 @@ variable "control_plane_nodepools" {
     taints      = optional(list(string), [])
     count       = optional(number, 1)
   }))
-  default     = []
   description = "Configures the number and attributes of Control Plane nodes."
 
   validation {
