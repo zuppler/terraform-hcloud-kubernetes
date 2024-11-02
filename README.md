@@ -181,7 +181,7 @@ For more detailed information and examples, please visit:
 
 <!-- Cluster Access -->
 <details>
-<summary>Cluster Access</summary>
+<summary><h3>Cluster Access</h3></summary>
 
 #### Public Cluster Access
 By default, the cluster is accessible over the public internet. The firewall is automatically configured to use the IPv4 address and /64 IPv6 CIDR of the machine running this module. To disable this automatic configuration, set the following variables to `false`:
@@ -262,7 +262,7 @@ This setup ensures secure and flexible access to the Kubernetes API, accommodati
 
 <!-- Cluster Autoscaler -->
 <details>
-<summary>Cluster Autoscaler</summary>
+<summary><h3>Cluster Autoscaler</h3></summary>
 The Cluster Autoscaler dynamically adjusts the number of nodes in a Kubernetes cluster based on the demand, ensuring that there are enough nodes to run all pods and no unneeded nodes when the workload decreases.
 
 Example `kubernetes.tf` snippet:
@@ -284,7 +284,7 @@ autoscaler_nodepools = [
 
 <!-- Egress Gateway -->
 <details>
-<summary>Egress Gateway</summary>
+<summary><h3>Egress Gateway</h3></summary>
 
 Cilium offers an Egress Gateway to ensure network compatibility with legacy systems and firewalls requiring fixed IPs. The use of Cilium Egress Gateway does not provide high availability and increases latency due to extra network hops and tunneling. Consider this configuration only as a last resort.
 
@@ -333,7 +333,7 @@ Please visit the Cilium [documentation](https://docs.cilium.io/en/stable/network
 
 <!-- Network Segmentation -->
 <details>
-<summary>Network Segmentation</summary>
+<summary><h3>Network Segmentation</h3></summary>
 
 By default, this module calculates optimal subnets based on the provided network CIDR (`network_ipv4_cidr`). The network is segmented automatically as follows:
 
@@ -378,7 +378,7 @@ Here is a table with more example calculations:
 
 <!-- Talos Backup -->
 <details>
-<summary>Talos Backup</summary>
+<summary><h3>Talos Backup</h3></summary>
 
 This module natively supports Hcloud Object Storage. Below is an example of how to configure backups with [MinIO Client](https://github.com/minio/mc?tab=readme-ov-file#homebrew) (`mc`) and Hcloud Object Storage. While it's possible to create the bucket through the [Hcloud Console](https://console.hetzner.cloud), this method does not allow for the configuration of automatic retention policies.
 
