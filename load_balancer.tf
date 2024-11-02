@@ -12,6 +12,11 @@ locals {
   kube_api_load_balancer_name         = "${var.cluster_name}-kube-api"
   kube_api_load_balancer_location     = local.control_plane_nodepools[0].location
 
+  kube_api_load_balancer_public_network_enabled = coalesce(
+    var.kube_api_load_balancer_public_network_enabled,
+    var.cluster_access == "public"
+  )
+
   ingress_load_balancer_private_ipv4 = cidrhost(hcloud_network_subnet.load_balancer.ip_range, -4)
   ingress_load_balancer_public_ipv4  = var.ingress_nginx_enabled ? hcloud_load_balancer.ingress[0].ipv4 : null
   ingress_load_balancer_public_ipv6  = var.ingress_nginx_enabled ? hcloud_load_balancer.ingress[0].ipv6 : null
@@ -43,7 +48,7 @@ resource "hcloud_load_balancer_network" "kube_api" {
   count = var.kube_api_load_balancer_enabled ? 1 : 0
 
   load_balancer_id        = hcloud_load_balancer.kube_api[0].id
-  enable_public_interface = var.kube_api_load_balancer_public_network_enabled
+  enable_public_interface = local.kube_api_load_balancer_public_network_enabled
   subnet_id               = hcloud_network_subnet.load_balancer.id
   ip                      = local.kube_api_load_balancer_private_ipv4
 }

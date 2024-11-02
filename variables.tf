@@ -573,7 +573,7 @@ variable "kube_api_load_balancer_enabled" {
 
 variable "kube_api_load_balancer_public_network_enabled" {
   type        = bool
-  default     = false
+  default     = null
   description = "Enables the public interface for the Kubernetes API load balancer. When enabled, the API is accessible publicly without a firewall."
 }
 

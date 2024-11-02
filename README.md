@@ -179,22 +179,101 @@ For more detailed information and examples, please visit:
 <!-- Advanced Configuration -->
 ## :hammer_and_pick: Advanced Configuration
 
+<!-- Cluster Access -->
+<details>
+<summary>Cluster Access</summary>
+
+#### Public Cluster Access
+By default, the cluster is accessible over the public internet. The firewall is automatically configured to use the IPv4 address and /64 IPv6 CIDR of the machine running this module. To disable this automatic configuration, set the following variables to `false`:
+
+```hcl
+firewall_use_current_ipv4 = false
+firewall_use_current_ipv6 = false
+```
+
+To manually specify source networks for the Talos API and Kube API, configure the `firewall_talos_api_source` and `firewall_kube_api_source` variables as follows:
+```hcl
+firewall_talos_api_source = [
+  "1.2.3.0/24",
+  "1:2:3::/64"
+]
+firewall_kube_api_source = [
+  "1.2.3.0/24",
+  "1:2:3::/64"
+]
+```
+This allows explicit control over which networks can access your APIs, overriding the default behavior when set.
+
+#### Internal Cluster Access
+If your internal network is routed and accessible, you can directly access the cluster using internal IPs by setting:
+```hcl
+cluster_access = "private"
+```
+
+For integrating Talos nodes with an internal network, configure a default route (`0.0.0.0/0`) in the Hetzner Network to point to your router or gateway. Additionally, add specific routes on the Talos nodes to encompass your entire network CIDR:
+```hcl
+talos_extra_routes = ["10.0.0.0/8"]
+
+# Optionally, disable NAT for your globally routed CIDR
+network_native_routing_cidr = "10.0.0.0/8"
+
+# Optionally, use an existing Network
+hcloud_network_id = 123456789
+```
+This setup ensures that the Talos nodes can route traffic appropriately across your internal network.
+
+
+#### Access to Kubernetes API
+
+Optionally, a hostname can be configured to direct access to the Kubernetes API through a node IP, load balancer, or Virtual IP (VIP):
+```hcl
+kube_api_hostname = "kube-api.example.com"
+```
+
+##### Access from Public Internet
+For accessing the Kubernetes API from the public internet, choose one of the following options based on your needs:
+1. **Use a Load Balancer (Recommended):**<br>
+    Deploy a load balancer to manage API traffic, enhancing availability and load distribution.
+    ```hcl
+    kube_api_load_balancer_enabled = true
+    ```
+2. **Use a Virtual IP (Floating IP):**<br>
+    A Floating IP is configured to automatically move between control plane nodes in case of an outage, ensuring continuous access to the Kubernetes API.
+    ```hcl
+    control_plane_public_vip_ipv4_enabled = true
+
+    # Optionally, specify an existing Floating IP
+    control_plane_public_vip_ipv4_id = 123456789
+    ```
+
+##### Access from Internal Network
+When accessing the Kubernetes API via an internal network, an internal Virtual IP (Alias IP) is utilized by default to route API requests within the network. This feature can be disabled with the following configuration:
+```hcl
+control_plane_private_vip_ipv4_enabled = false
+```
+
+To enhance internal availability, a load balancer can be used:
+```hcl
+kube_api_load_balancer_enabled = true
+```
+
+This setup ensures secure and flexible access to the Kubernetes API, accommodating different networking environments.
+</details>
+
+<!-- Cluster Autoscaler -->
 <details>
 <summary>Cluster Autoscaler</summary>
 The Cluster Autoscaler dynamically adjusts the number of nodes in a Kubernetes cluster based on the demand, ensuring that there are enough nodes to run all pods and no unneeded nodes when the workload decreases.
 
 Example `kubernetes.tf` snippet:
 ```hcl
-# Optionally enforce always having the minimum number of nodes
-autoscaler_enforce_node_group_min_size = true
-
 # Configure autoscaler nodepools
 autoscaler_nodepools = [
   {
     name     = "autoscaler"
     type     = "cax11"
     location = "fsn1"
-    min      = 2
+    min      = 0
     max      = 6
     labels   = { "autoscaler-node" = "true" }
     taints   = [ "autoscaler-node=true:NoExecute" ]
@@ -203,8 +282,10 @@ autoscaler_nodepools = [
 ```
 </details>
 
+<!-- Egress Gateway -->
 <details>
 <summary>Egress Gateway</summary>
+
 Cilium offers an Egress Gateway to ensure network compatibility with legacy systems and firewalls requiring fixed IPs. The use of Cilium Egress Gateway does not provide high availability and increases latency due to extra network hops and tunneling. Consider this configuration only as a last resort.
 
 Example `kubernetes.tf` snippet:
@@ -250,6 +331,7 @@ spec:
 Please visit the Cilium [documentation](https://docs.cilium.io/en/stable/network/egress-gateway) for more details.
 </details>
 
+<!-- Network Segmentation -->
 <details>
 <summary>Network Segmentation</summary>
 
@@ -294,6 +376,7 @@ Here is a table with more example calculations:
 | **10.0.0.0/21** | /30 (4 IPs)      | 10.0.2.0/24  (64) | 10.0.3.0/24 (256)   | 10.0.4.0/22 (4)     |
 </details>
 
+<!-- Talos Backup -->
 <details>
 <summary>Talos Backup</summary>
 

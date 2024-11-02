@@ -29,7 +29,7 @@ locals {
     var.kube_api_hostname,
     var.cluster_access == "private" ? local.kube_api_private_ipv4 : null,
     (
-      var.kube_api_load_balancer_enabled && var.kube_api_load_balancer_public_network_enabled ?
+      var.kube_api_load_balancer_enabled && local.kube_api_load_balancer_public_network_enabled ?
       coalesce(local.kube_api_load_balancer_public_ipv4, local.kube_api_load_balancer_public_ipv6) : null
     ),
     var.control_plane_public_vip_ipv4_enabled ? local.control_plane_public_vip_ipv4 : null,
