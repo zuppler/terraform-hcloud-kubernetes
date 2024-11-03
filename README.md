@@ -187,6 +187,7 @@ Apply this change before proceeding. Once the delete protection is disabled, you
 terraform state rm 'module.kubernetes.talos_machine_configuration_apply.worker'
 terraform state rm 'module.kubernetes.talos_machine_configuration_apply.control_plane'
 terraform state rm 'module.kubernetes.talos_machine_secrets.this'
+terraform destroy
 ```
 
 <!-- Advanced Configuration -->
