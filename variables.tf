@@ -370,6 +370,17 @@ variable "talos_kernel_modules" {
   description = "Defines a list of kernel modules to be loaded during system boot, along with optional parameters for each module. This allows for customized kernel behavior in the Talos environment."
 }
 
+variable "talos_machine_configuration_apply_mode" {
+  type        = string
+  default     = "auto"
+  description = "Determines how changes to Talos machine configurations are applied. 'auto' (default) applies changes immediately and reboots if necessary. 'reboot' applies changes and then reboots the node. 'no_reboot' applies changes immediately without a reboot, failing if a reboot is required. 'staged' stages changes to apply on the next reboot without initiating a reboot."
+
+  validation {
+    condition     = contains(["auto", "reboot", "no_reboot", "staged"], var.talos_machine_configuration_apply_mode)
+    error_message = "The talos_machine_configuration_apply_mode must be 'auto', 'reboot', 'no_reboot', or 'staged'."
+  }
+}
+
 variable "talos_sysctls_extra_args" {
   type        = map(string)
   default     = {}

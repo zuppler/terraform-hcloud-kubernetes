@@ -174,6 +174,7 @@ resource "talos_machine_configuration_apply" "control_plane" {
   machine_configuration_input = data.talos_machine_configuration.control_plane[each.value.labels.nodepool].machine_configuration
   endpoint                    = var.cluster_access == "private" ? tolist(each.value.network)[0].ip : coalesce(each.value.ipv4_address, each.value.ipv6_address)
   node                        = tolist(each.value.network)[0].ip
+  apply_mode                  = var.talos_machine_configuration_apply_mode
 
   on_destroy = {
     graceful = var.cluster_graceful_destroy
@@ -194,6 +195,7 @@ resource "talos_machine_configuration_apply" "worker" {
   machine_configuration_input = data.talos_machine_configuration.worker[each.value.labels.nodepool].machine_configuration
   endpoint                    = var.cluster_access == "private" ? tolist(each.value.network)[0].ip : coalesce(each.value.ipv4_address, each.value.ipv6_address)
   node                        = tolist(each.value.network)[0].ip
+  apply_mode                  = var.talos_machine_configuration_apply_mode
 
   on_destroy = {
     graceful = var.cluster_graceful_destroy
