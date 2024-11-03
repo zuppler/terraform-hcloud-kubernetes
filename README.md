@@ -183,7 +183,7 @@ cluster_delete_protection = false
 ```
 
 Apply this change before proceeding. Once the delete protection is disabled, you can teardown the cluster using the following Terraform commands:
-```hcl
+```sh
 terraform state rm 'module.kubernetes.talos_machine_configuration_apply.worker'
 terraform state rm 'module.kubernetes.talos_machine_configuration_apply.control_plane'
 terraform state rm 'module.kubernetes.talos_machine_secrets.this'
