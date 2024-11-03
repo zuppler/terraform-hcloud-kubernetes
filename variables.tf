@@ -387,10 +387,16 @@ variable "talos_sysctls_extra_args" {
   description = "Specifies a map of sysctl key-value pairs for configuring additional kernel parameters. These settings allow for detailed customization of the operating system's behavior at runtime."
 }
 
-variable "talos_system_disk_encryption_enabled" {
+variable "talos_state_partition_encryption_enabled" {
   type        = bool
   default     = true
-  description = "Enables encryption for STATE (contains sensitive node data like secrets and certs) and EPHEMERAL (may contain sensitive workload data) partitions. Attention: Changing this value for an existing cluster requires manual actions according to Talos documentation. If you ignore this, it may break your cluster!"
+  description = "Enables or disables encryption for the state (`/system/state`) partition. Attention: Changing this value for an existing cluster requires manual actions as per Talos documentation (https://www.talos.dev/latest/talos-guides/configuration/disk-encryption). Ignoring this may break your cluster."
+}
+
+variable "talos_ephemeral_partition_encryption_enabled" {
+  type        = bool
+  default     = true
+  description = "Enables or disables encryption for the ephemeral (`/var`) partition. Attention: Changing this value for an existing cluster requires manual actions as per Talos documentation (https://www.talos.dev/latest/talos-guides/configuration/disk-encryption). Ignoring this may break your cluster."
 }
 
 variable "talos_ipv6_enabled" {

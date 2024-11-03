@@ -53,25 +53,30 @@ locals {
     var.talos_extra_host_entries
   )
 
-  # Disk Encryption
-  systemDiskEncryption = var.talos_system_disk_encryption_enabled ? {
-    state = {
-      provider = "luks2"
-      options  = ["no_read_workqueue", "no_write_workqueue"]
-      keys = [{
-        nodeID = {}
-        slot   = 0
-      }]
-    }
-    ephemeral = {
-      provider = "luks2"
-      options  = ["no_read_workqueue", "no_write_workqueue"]
-      keys = [{
-        nodeID = {}
-        slot   = 0
-      }]
-    }
-  } : {}
+  # Disk Encryption Configuration
+  systemDiskEncryption = merge(
+    var.talos_state_partition_encryption_enabled ? {
+      state = {
+        provider = "luks2"
+        options  = ["no_read_workqueue", "no_write_workqueue"]
+        keys = [{
+          nodeID = {}
+          slot   = 0
+        }]
+      }
+    } : {},
+    var.talos_ephemeral_partition_encryption_enabled ? {
+      ephemeral = {
+        provider = "luks2"
+        options  = ["no_read_workqueue", "no_write_workqueue"]
+        keys = [{
+          nodeID = {}
+          slot   = 0
+        }]
+      }
+    } : {}
+  )
+
 
   # Control Plane Config
   control_plane_nodepool_config = {
