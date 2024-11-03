@@ -57,14 +57,14 @@ This project is committed to production-grade configuration and lifecycle manage
 ### :sparkles: Features
 
 This setup includes several features for a seamless, best-practice Kubernetes deployment on Hetzner Cloud:
-- **Fully Declarative & Immutable**: Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
-- **Cross-Architecture**: Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
-- **High Availability**: Configured for production-grade high availability, ensuring consistent and reliable system performance.
-- **Autoscaling**: Includes Cluster Autoscaler to dynamically adjust node counts based on workload demands, optimizing resource allocation.
-- **Plug-and-Play Kubernetes**: Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
-- **Dual-Stack Ingress**: Employs Hetzner Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
-- **Enhanced Security**: Built with security as a priority, incorporating firewalls and encryption by default to protect your infrastructure.
-- **Automated Backups**: Leverages Talos Backup with support for S3-compatible storage solutions like Hetzner's Object Storage.
+- **Fully Declarative & Immutable:** Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
+- **Cross-Architecture:** Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
+- **High Availability:** Configured for production-grade high availability, ensuring consistent and reliable system performance.
+- **Autoscaling:** Includes Cluster Autoscaler to dynamically adjust node counts based on workload demands, optimizing resource allocation.
+- **Plug-and-Play Kubernetes:** Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
+- **Dual-Stack Ingress:** Employs Hetzner Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
+- **Enhanced Security:** Built with security as a priority, incorporating firewalls and encryption by default to protect your infrastructure.
+- **Automated Backups:** Leverages Talos Backup with support for S3-compatible storage solutions like Hetzner's Object Storage.
 
 <!-- Components -->
 ### :package: Components
@@ -194,11 +194,11 @@ firewall_use_current_ipv6 = false
 To manually specify source networks for the Talos API and Kube API, configure the `firewall_talos_api_source` and `firewall_kube_api_source` variables as follows:
 ```hcl
 firewall_talos_api_source = [
-  "1.2.3.0/24",
+  "1.2.3.0/32",
   "1:2:3::/64"
 ]
 firewall_kube_api_source = [
-  "1.2.3.0/24",
+  "1.2.3.0/32",
   "1:2:3::/64"
 ]
 ```
