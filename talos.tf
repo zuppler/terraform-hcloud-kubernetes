@@ -85,7 +85,7 @@ resource "terraform_data" "upgrade_control_plane" {
         ${var.cluster_healthcheck_enabled} && talosctl --talosconfig "$talosconfig_tmp" health --server -n '${local.talos_primary_node_private_ipv4}'
         set -- ${join(" ", local.control_plane_private_ipv4_list)}
         for host in "$@"; do
-          talosctl --talosconfig "$talosconfig_tmp" upgrade -n "$host" --image '${local.talos_installer_image_url}'
+          talosctl --talosconfig "$talosconfig_tmp" upgrade -n "$host" --preserve --image '${local.talos_installer_image_url}'
           ${var.cluster_healthcheck_enabled} && talosctl --talosconfig "$talosconfig_tmp" health --server -n "$host"
         done
       fi
@@ -121,7 +121,7 @@ resource "terraform_data" "upgrade_worker" {
         ${var.cluster_healthcheck_enabled} && talosctl --talosconfig "$talosconfig_tmp" health --server -n '${local.talos_primary_node_private_ipv4}'
         set -- ${join(" ", local.worker_private_ipv4_list)}
         for host in "$@"; do
-          talosctl --talosconfig "$talosconfig_tmp" upgrade -n "$host" --image '${local.talos_installer_image_url}'
+          talosctl --talosconfig "$talosconfig_tmp" upgrade -n "$host" --preserve --image '${local.talos_installer_image_url}'
           ${var.cluster_healthcheck_enabled} && talosctl --talosconfig "$talosconfig_tmp" health --server -n '${local.talos_primary_node_private_ipv4}'
         done
       fi

@@ -176,6 +176,19 @@ For more detailed information and examples, please visit:
 - [Talos CLI Documentation](https://www.talos.dev/latest/reference/cli/)
 - [Kubernetes CLI Documentation](https://kubernetes.io/docs/reference/kubectl/introduction/)
 
+### :boom: Teardown
+To destroy the cluster, first disable the delete protection by setting:
+```hcl
+cluster_delete_protection = false
+```
+
+Apply this change before proceeding. Once the delete protection is disabled, you can teardown the cluster using the following Terraform commands:
+```hcl
+terraform state rm 'module.kubernetes.talos_machine_configuration_apply.worker'
+terraform state rm 'module.kubernetes.talos_machine_configuration_apply.control_plane'
+terraform state rm 'module.kubernetes.talos_machine_secrets.this'
+```
+
 <!-- Advanced Configuration -->
 ## :hammer_and_pick: Advanced Configuration
 
