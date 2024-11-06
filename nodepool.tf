@@ -40,8 +40,8 @@ locals {
     }
   ]
 
-  autoscaler_nodepools = [
-    for np in var.autoscaler_nodepools : {
+  cluster_autoscaler_nodepools = [
+    for np in var.cluster_autoscaler_nodepools : {
       name        = np.name,
       location    = np.location,
       server_type = np.type,
@@ -59,8 +59,8 @@ locals {
     }
   ]
 
-  control_plane_sum  = length(local.control_plane_nodepools) > 0 ? sum(local.control_plane_nodepools[*].count) : 0
-  worker_sum         = length(local.worker_nodepools) > 0 ? sum(local.worker_nodepools[*].count) : 0
-  autoscaler_min_sum = length(local.autoscaler_nodepools) > 0 ? sum(local.autoscaler_nodepools[*].min) : 0
-  autoscaler_max_sum = length(local.autoscaler_nodepools) > 0 ? sum(local.autoscaler_nodepools[*].max) : 0
+  control_plane_sum          = length(local.control_plane_nodepools) > 0 ? sum(local.control_plane_nodepools[*].count) : 0
+  worker_sum                 = length(local.worker_nodepools) > 0 ? sum(local.worker_nodepools[*].count) : 0
+  cluster_autoscaler_min_sum = length(local.cluster_autoscaler_nodepools) > 0 ? sum(local.cluster_autoscaler_nodepools[*].min) : 0
+  cluster_autoscaler_max_sum = length(local.cluster_autoscaler_nodepools) > 0 ? sum(local.cluster_autoscaler_nodepools[*].max) : 0
 }

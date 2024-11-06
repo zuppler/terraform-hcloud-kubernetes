@@ -9,15 +9,15 @@ data "helm_template" "metrics_server" {
 
   set {
     name  = "podDisruptionBudget.enabled"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1
   }
   set {
     name  = "podDisruptionBudget.minAvailable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1 ? 1 : 0
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 1 : 0
   }
   set {
     name  = "replicas"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1 ? 2 : 1
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 2 : 1
   }
 
   set {
@@ -30,7 +30,7 @@ data "helm_template" "metrics_server" {
   }
   set {
     name  = "topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
   }
   set {
     name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/instance"

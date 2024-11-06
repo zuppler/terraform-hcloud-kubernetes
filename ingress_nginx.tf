@@ -23,7 +23,7 @@ data "helm_template" "ingress_nginx" {
   }
   set {
     name  = "controller.replicaCount"
-    value = coalesce(var.ingress_nginx_replicas, (local.worker_sum + local.autoscaler_max_sum) < 4 ? 2 : 3)
+    value = coalesce(var.ingress_nginx_replicas, (local.worker_sum + local.cluster_autoscaler_max_sum) < 4 ? 2 : 3)
   }
   set {
     name  = "controller.admissionWebhooks.certManager.enabled"
@@ -56,7 +56,7 @@ data "helm_template" "ingress_nginx" {
   }
   set {
     name  = "controller.topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > coalesce(var.ingress_nginx_replicas, (local.worker_sum + local.autoscaler_max_sum)) ? "DoNotSchedule" : "ScheduleAnyway"
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > coalesce(var.ingress_nginx_replicas, (local.worker_sum + local.cluster_autoscaler_max_sum)) ? "DoNotSchedule" : "ScheduleAnyway"
   }
   set {
     name  = "controller.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"

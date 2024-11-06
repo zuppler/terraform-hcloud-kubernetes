@@ -278,19 +278,25 @@ variable "worker_nodepools" {
 
 
 # Autoscaler
-variable "autoscaler_version" {
+variable "cluster_autoscaler_version" {
   type        = string
-  default     = "9.43.1"
+  default     = "9.43.2"
   description = "Specifies the version of Cluster Autoscaler to deploy."
 }
 
-variable "autoscaler_enforce_node_group_min_size" {
+variable "cluster_autoscaler_enforce_node_group_min_size" {
   type        = bool
   default     = false
   description = "Specifies whether the Cluster Autoscaler should scale up node groups to the configured minimum size."
 }
 
-variable "autoscaler_nodepools" {
+variable "cluster_autoscaler_extra_values" {
+  description = "Additional values for the Cluster Autoscaler. See: https://github.com/kubernetes/autoscaler/blob/master/charts/cluster-autoscaler/values.yaml"
+  type        = map(any)
+  default     = {}
+}
+
+variable "cluster_autoscaler_nodepools" {
   type = list(object({
     name        = string
     location    = string
@@ -305,13 +311,13 @@ variable "autoscaler_nodepools" {
   description = "Defines configuration settings for Autoscaler node pools within the cluster."
 
   validation {
-    condition     = length(var.autoscaler_nodepools) == length(distinct([for np in var.autoscaler_nodepools : np.name]))
+    condition     = length(var.cluster_autoscaler_nodepools) == length(distinct([for np in var.cluster_autoscaler_nodepools : np.name]))
     error_message = "Autoscaler nodepool names must be unique to avoid configuration conflicts."
   }
 
   validation {
     condition = alltrue([
-      for np in var.autoscaler_nodepools : np.max >= coalesce(np.min, 0)
+      for np in var.cluster_autoscaler_nodepools : np.max >= coalesce(np.min, 0)
     ])
     error_message = "Max size of a nodepool must be greater than or equal to its Min size."
   }
@@ -320,14 +326,14 @@ variable "autoscaler_nodepools" {
     condition = sum(concat(
       [for control_nodepool in var.control_plane_nodepools : coalesce(control_nodepool.count, 1)],
       [for worker_nodepool in var.worker_nodepools : coalesce(worker_nodepool.count, 1)],
-      [for autoscaler_nodepools in var.autoscaler_nodepools : autoscaler_nodepools.max]
+      [for cluster_autoscaler_nodepools in var.cluster_autoscaler_nodepools : cluster_autoscaler_nodepools.max]
     )) <= 100
     error_message = "The total count of nodes must not exceed 100."
   }
 
   validation {
     condition = alltrue([
-      for np in var.autoscaler_nodepools : contains([
+      for np in var.cluster_autoscaler_nodepools : contains([
         "fsn1", "nbg1", "hel1", "ash", "hil", "sin"
       ], np.location)
     ])

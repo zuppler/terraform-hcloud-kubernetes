@@ -1,5 +1,5 @@
 locals {
-  allow_scheduling_on_control_plane = ((local.worker_sum + local.autoscaler_max_sum) == 0)
+  allow_scheduling_on_control_plane = ((local.worker_sum + local.cluster_autoscaler_max_sum) == 0)
 
   # Kubernetes Manifests for Talos
   talos_inline_manifests = concat(
@@ -13,7 +13,7 @@ locals {
     var.metrics_server_enabled ? [local.metrics_server_manifest] : [],
     var.cert_manager_enabled ? [local.cert_manager_manifest] : [],
     var.ingress_nginx_enabled ? [local.ingress_nginx_manifest] : [],
-    length(local.autoscaler_nodepools) > 0 ? [local.cluster_autoscaler_manifest] : []
+    length(local.cluster_autoscaler_nodepools) > 0 ? [local.cluster_autoscaler_manifest] : []
   )
   talos_manifests = [
     "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager-daemonset.yml",
@@ -337,8 +337,8 @@ locals {
   }
 
   # Autoscaler Config
-  autoscaler_nodepool_config = {
-    for nodepool in local.autoscaler_nodepools : nodepool.name => {
+  cluster_autoscaler_nodepool_config = {
+    for nodepool in local.cluster_autoscaler_nodepools : nodepool.name => {
       machine = {
         install = {
           image           = local.talos_installer_image_url
@@ -464,8 +464,8 @@ data "talos_machine_configuration" "worker" {
   examples           = false
 }
 
-data "talos_machine_configuration" "autoscaler" {
-  for_each = { for nodepool in local.autoscaler_nodepools : nodepool.name => nodepool }
+data "talos_machine_configuration" "cluster_autoscaler" {
+  for_each = { for nodepool in local.cluster_autoscaler_nodepools : nodepool.name => nodepool }
 
   talos_version      = var.talos_version
   cluster_name       = var.cluster_name
@@ -473,7 +473,7 @@ data "talos_machine_configuration" "autoscaler" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [yamlencode(local.autoscaler_nodepool_config[each.key])]
+  config_patches     = [yamlencode(local.cluster_autoscaler_nodepool_config[each.key])]
   docs               = false
   examples           = false
 }

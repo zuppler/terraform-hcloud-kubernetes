@@ -281,8 +281,8 @@ The Cluster Autoscaler dynamically adjusts the number of nodes in a Kubernetes c
 
 Example `kubernetes.tf` snippet:
 ```hcl
-# Configure autoscaler nodepools
-autoscaler_nodepools = [
+# Configuration for cluster autoscaler node pools
+cluster_autoscaler_nodepools = [
   {
     name     = "autoscaler"
     type     = "cax11"
@@ -293,6 +293,17 @@ autoscaler_nodepools = [
     taints   = [ "autoscaler-node=true:NoExecute" ]
   }
 ]
+```
+
+Optionally, pass additional values to the cluster autoscaler configuration:
+```hcl
+cluster_autoscaler_extra_values = {
+  extraArgs = {
+    scale-down-delay-after-add    = "45m"
+    scale-down-delay-after-delete = "4m"
+    scale-down-unneeded-time      = "5m"
+  }
+}
 ```
 </details>
 

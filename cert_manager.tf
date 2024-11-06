@@ -28,40 +28,40 @@ data "helm_template" "cert_manager" {
 
   set {
     name  = "replicaCount"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1 ? 2 : 1
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 2 : 1
   }
   set {
     name  = "webhook.replicaCount"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1 ? 2 : 1
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 2 : 1
   }
   set {
     name  = "cainjector.replicaCount"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1 ? 2 : 1
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 2 : 1
   }
 
   set {
     name  = "podDisruptionBudget.enabled"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1
   }
   set {
     name  = "podDisruptionBudget.minAvailable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1 ? 1 : 0
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 1 : 0
   }
   set {
     name  = "webhook.podDisruptionBudget.enabled"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1
   }
   set {
     name  = "webhook.podDisruptionBudget.minAvailable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1 ? 1 : 0
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 1 : 0
   }
   set {
     name  = "cainjector.podDisruptionBudget.enabled"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1
   }
   set {
     name  = "cainjector.podDisruptionBudget.minAvailable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 1 ? 1 : 0
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 1 : 0
   }
 
   set {
@@ -74,7 +74,7 @@ data "helm_template" "cert_manager" {
   }
   set {
     name  = "topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
   }
   set {
     name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/component"
@@ -99,7 +99,7 @@ data "helm_template" "cert_manager" {
   }
   set {
     name  = "webhook.topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
   }
   set {
     name  = "webhook.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/component"
@@ -124,7 +124,7 @@ data "helm_template" "cert_manager" {
   }
   set {
     name  = "cainjector.topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
+    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
   }
   set {
     name  = "cainjector.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/component"

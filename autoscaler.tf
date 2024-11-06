@@ -1,12 +1,12 @@
 locals {
-  autoscaler_cluster_config = {
+  cluster_autoscaler_cluster_config = {
     "imagesForArch" = {
       "arm64" = local.image_label_selector,
       "amd64" = local.image_label_selector
     },
     "nodeConfigs" = {
-      for nodepool in local.autoscaler_nodepools : "${var.cluster_name}-${nodepool.name}" => {
-        "cloudInit" = data.talos_machine_configuration.autoscaler[nodepool.name].machine_configuration,
+      for nodepool in local.cluster_autoscaler_nodepools : "${var.cluster_name}-${nodepool.name}" => {
+        "cloudInit" = data.talos_machine_configuration.cluster_autoscaler[nodepool.name].machine_configuration,
         "labels"    = nodepool.labels
         "taints"    = nodepool.taints
       }
@@ -20,7 +20,7 @@ data "helm_template" "cluster_autoscaler" {
 
   repository   = "https://kubernetes.github.io/autoscaler"
   chart        = "cluster-autoscaler"
-  version      = var.autoscaler_version
+  version      = var.cluster_autoscaler_version
   kube_version = var.kubernetes_version
 
   set {
@@ -41,7 +41,7 @@ data "helm_template" "cluster_autoscaler" {
   }
   set {
     name  = "extraEnv.HCLOUD_CLUSTER_CONFIG"
-    value = base64encode(jsonencode(local.autoscaler_cluster_config))
+    value = base64encode(jsonencode(local.cluster_autoscaler_cluster_config))
   }
   set {
     name  = "extraEnv.HCLOUD_SERVER_CREATION_TIMEOUT"
@@ -69,7 +69,7 @@ data "helm_template" "cluster_autoscaler" {
   }
   set {
     name  = "extraArgs.enforce-node-group-min-size"
-    value = var.autoscaler_enforce_node_group_min_size
+    value = var.cluster_autoscaler_enforce_node_group_min_size
   }
 
   set {
@@ -117,7 +117,7 @@ data "helm_template" "cluster_autoscaler" {
   values = [
     yamlencode({
       autoscalingGroups = [
-        for np in local.autoscaler_nodepools : {
+        for np in local.cluster_autoscaler_nodepools : {
           name         = "${var.cluster_name}-${np.name}",
           minSize      = np.min,
           maxSize      = np.max,
@@ -125,7 +125,8 @@ data "helm_template" "cluster_autoscaler" {
           region       = np.location
         }
       ]
-    })
+    }),
+    yamlencode(var.cluster_autoscaler_extra_values)
   ]
 
   depends_on = [

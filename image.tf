@@ -6,10 +6,10 @@ locals {
   talos_arm64_image_url     = data.talos_image_factory_urls.arm64.urls.disk_image
 
   amd64_image_required = anytrue([
-    for np in concat(local.control_plane_nodepools, local.worker_nodepools, local.autoscaler_nodepools) : substr(np.server_type, 0, 3) != "cax"
+    for np in concat(local.control_plane_nodepools, local.worker_nodepools, local.cluster_autoscaler_nodepools) : substr(np.server_type, 0, 3) != "cax"
   ])
   arm64_image_required = anytrue([
-    for np in concat(local.control_plane_nodepools, local.worker_nodepools, local.autoscaler_nodepools) : substr(np.server_type, 0, 3) == "cax"
+    for np in concat(local.control_plane_nodepools, local.worker_nodepools, local.cluster_autoscaler_nodepools) : substr(np.server_type, 0, 3) == "cax"
   ])
 
   image_label_selector = join(",",
