@@ -24,6 +24,10 @@ data "helm_template" "cluster_autoscaler" {
   kube_version = var.kubernetes_version
 
   set {
+    name  = "image.tag"
+    value = "v1.31.1"
+  }
+  set {
     name  = "cloudProvider"
     value = "hetzner"
   }
