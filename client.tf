@@ -47,6 +47,7 @@ resource "terraform_data" "create_talosconfig" {
 
   provisioner "local-exec" {
     when    = create
+    quiet   = true
     command = "printf '%s' \"$TALOSCONFIG_CONTENT\" > \"$CLUSTER_TALOSCONFIG_PATH\""
     environment = {
       TALOSCONFIG_CONTENT      = local.talosconfig
@@ -56,6 +57,7 @@ resource "terraform_data" "create_talosconfig" {
 
   provisioner "local-exec" {
     when       = destroy
+    quiet      = true
     on_failure = continue
     command    = "if [ -f \"$CLUSTER_TALOSCONFIG_PATH\" ]; then cp -f \"$CLUSTER_TALOSCONFIG_PATH\" \"$CLUSTER_TALOSCONFIG_PATH.bak\"; fi"
     environment = {
@@ -80,6 +82,7 @@ resource "terraform_data" "create_kubeconfig" {
 
   provisioner "local-exec" {
     when    = create
+    quiet   = true
     command = "printf '%s' \"$KUBECONFIG_CONTENT\" > \"$CLUSTER_KUBECONFIG_PATH\""
     environment = {
       KUBECONFIG_CONTENT      = local.kubeconfig
@@ -89,6 +92,7 @@ resource "terraform_data" "create_kubeconfig" {
 
   provisioner "local-exec" {
     when       = destroy
+    quiet      = true
     on_failure = continue
     command    = "if [ -f \"$CLUSTER_KUBECONFIG_PATH\" ]; then cp -f \"$CLUSTER_KUBECONFIG_PATH\" \"$CLUSTER_KUBECONFIG_PATH.bak\"; fi"
     environment = {

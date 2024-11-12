@@ -20,6 +20,18 @@ locals {
       "talos_schematic_id=${substr(local.talos_schematic_id, 0, 32)}"
     ]
   )
+
+  talos_image_extentions_longhorn = [
+    "siderolabs/iscsi-tools",
+    "siderolabs/util-linux-tools"
+  ]
+
+  talos_image_extensions = distinct(
+    concat(
+      var.talos_image_extensions,
+      var.longhorn_enabled ? local.talos_image_extentions_longhorn : []
+    )
+  )
 }
 
 data "talos_image_factory_extensions_versions" "this" {
@@ -27,7 +39,7 @@ data "talos_image_factory_extensions_versions" "this" {
 
   talos_version = var.talos_version
   filters = {
-    names = var.talos_image_extensions
+    names = local.talos_image_extensions
   }
 }
 
@@ -40,7 +52,7 @@ resource "talos_image_factory_schematic" "this" {
         extraKernelArgs = var.talos_extra_kernel_args
         systemExtensions = {
           officialExtensions = (
-            length(var.talos_image_extensions) > 0 ?
+            length(local.talos_image_extensions) > 0 ?
             data.talos_image_factory_extensions_versions.this[0].extensions_info.*.name :
             []
           )

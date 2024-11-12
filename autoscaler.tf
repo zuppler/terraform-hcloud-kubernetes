@@ -1,14 +1,16 @@
 locals {
+  cluster_autoscaler_enabled = length(local.cluster_autoscaler_nodepools) > 0
+
   cluster_autoscaler_cluster_config = {
-    "imagesForArch" = {
-      "arm64" = local.image_label_selector,
-      "amd64" = local.image_label_selector
+    imagesForArch = {
+      arm64 = local.image_label_selector,
+      amd64 = local.image_label_selector
     },
-    "nodeConfigs" = {
+    nodeConfigs = {
       for nodepool in local.cluster_autoscaler_nodepools : "${var.cluster_name}-${nodepool.name}" => {
-        "cloudInit" = data.talos_machine_configuration.cluster_autoscaler[nodepool.name].machine_configuration,
-        "labels"    = nodepool.labels
-        "taints"    = nodepool.taints
+        cloudInit = data.talos_machine_configuration.cluster_autoscaler[nodepool.name].machine_configuration,
+        labels    = nodepool.labels
+        taints    = nodepool.taints
       }
     }
   }

@@ -171,7 +171,7 @@ resource "talos_machine_configuration_apply" "control_plane" {
   for_each = { for control_plane in hcloud_server.control_plane : control_plane.name => control_plane }
 
   client_configuration        = talos_machine_secrets.this.client_configuration
-  machine_configuration_input = data.talos_machine_configuration.control_plane[each.value.labels.nodepool].machine_configuration
+  machine_configuration_input = data.talos_machine_configuration.control_plane[each.key].machine_configuration
   endpoint                    = var.cluster_access == "private" ? tolist(each.value.network)[0].ip : coalesce(each.value.ipv4_address, each.value.ipv6_address)
   node                        = tolist(each.value.network)[0].ip
   apply_mode                  = var.talos_machine_configuration_apply_mode
@@ -192,7 +192,7 @@ resource "talos_machine_configuration_apply" "worker" {
   for_each = { for worker in hcloud_server.worker : worker.name => worker }
 
   client_configuration        = talos_machine_secrets.this.client_configuration
-  machine_configuration_input = data.talos_machine_configuration.worker[each.value.labels.nodepool].machine_configuration
+  machine_configuration_input = data.talos_machine_configuration.worker[each.key].machine_configuration
   endpoint                    = var.cluster_access == "private" ? tolist(each.value.network)[0].ip : coalesce(each.value.ipv4_address, each.value.ipv6_address)
   node                        = tolist(each.value.network)[0].ip
   apply_mode                  = var.talos_machine_configuration_apply_mode

@@ -361,6 +361,26 @@ variable "talos_image_extensions" {
   description = "Specifies Talos image extensions for additional functionality on top of the default Talos Linux capabilities. See: https://github.com/siderolabs/extensions"
 }
 
+variable "talos_kubelet_extra_mounts" {
+  type = list(object({
+    source      = string
+    destination = optional(string)
+    type        = optional(string, "bind")
+    options     = optional(list(string), ["bind", "rshared", "rw"])
+  }))
+  default     = []
+  description = "Defines extra kubelet mounts for Talos with configurable 'source', 'destination' (defaults to 'source' if unset), 'type' (defaults to 'bind'), and 'options' (defaults to ['bind', 'rshared', 'rw'])"
+
+  validation {
+    condition = (
+      length(var.talos_kubelet_extra_mounts) ==
+      length(toset([for mount in var.talos_kubelet_extra_mounts : coalesce(mount.destination, mount.source)])) &&
+      (!var.longhorn_enabled || !contains([for mount in var.talos_kubelet_extra_mounts : coalesce(mount.destination, mount.source)], "/var/lib/longhorn"))
+    )
+    error_message = "Each destination in talos_kubelet_extra_mounts must be unique and cannot include the Longhorn default data path if Longhorn is enabled."
+  }
+}
+
 variable "talos_extra_kernel_args" {
   type        = list(string)
   default     = []
@@ -656,6 +676,38 @@ variable "hcloud_csi_enabled" {
   type        = bool
   default     = true
   description = "Enables the Hetzner Container Storage Interface (CSI)."
+}
+
+
+# Longhorn
+variable "longhorn_helm_repository" {
+  type        = string
+  default     = "https://charts.longhorn.io"
+  description = "URL of the Helm repository where the Longhorn chart is located."
+}
+
+variable "longhorn_helm_chart" {
+  type        = string
+  default     = "longhorn"
+  description = "Name of the Helm chart used for deploying Longhorn."
+}
+
+variable "longhorn_helm_version" {
+  type        = string
+  default     = "v1.7.2"
+  description = "Version of the Longhorn Helm chart to deploy."
+}
+
+variable "longhorn_helm_values" {
+  type        = map(any)
+  default     = {}
+  description = "Custom Helm values for the Longhorn chart deployment. These values will merge with and will override the default values provided by the Longhorn Helm chart."
+}
+
+variable "longhorn_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable or disable Longhorn integration"
 }
 
 

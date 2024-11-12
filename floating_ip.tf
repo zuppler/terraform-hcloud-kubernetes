@@ -1,4 +1,3 @@
-
 locals {
   control_plane_public_vip_ipv4_enabled = (
     local.network_public_ipv4_enabled && (

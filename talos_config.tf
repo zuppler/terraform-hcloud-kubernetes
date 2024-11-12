@@ -13,7 +13,8 @@ locals {
     var.metrics_server_enabled ? [local.metrics_server_manifest] : [],
     var.cert_manager_enabled ? [local.cert_manager_manifest] : [],
     var.ingress_nginx_enabled ? [local.ingress_nginx_manifest] : [],
-    length(local.cluster_autoscaler_nodepools) > 0 ? [local.cluster_autoscaler_manifest] : []
+    local.cluster_autoscaler_enabled ? [local.cluster_autoscaler_manifest] : [],
+    local.longhorn_manifest != null ? [local.longhorn_manifest] : []
   )
   talos_manifests = [
     "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager-daemonset.yml",
@@ -77,10 +78,29 @@ locals {
     } : {}
   )
 
+  # Kubelet extra mounts
+  talos_kubelet_extra_mounts = concat(
+    var.longhorn_enabled ? [
+      {
+        source      = "/var/lib/longhorn"
+        destination = "/var/lib/longhorn"
+        type        = "bind"
+        options     = ["bind", "rshared", "rw"]
+      }
+    ] : [],
+    [
+      for mount in var.talos_kubelet_extra_mounts : {
+        source      = mount.source
+        destination = coalesce(mount.destination, mount.source)
+        type        = mount.type
+        options     = mount.options
+      }
+    ]
+  )
 
   # Control Plane Config
-  control_plane_nodepool_config = {
-    for nodepool in local.control_plane_nodepools : nodepool.name => {
+  control_plane_talos_config_patch = {
+    for node in hcloud_server.control_plane : node.name => {
       machine = {
         install = {
           image           = local.talos_installer_image_url
@@ -89,11 +109,11 @@ locals {
         nodeLabels = merge(
           #local.allow_scheduling_on_control_plane ? { "node.kubernetes.io/exclude-from-external-load-balancers" = { "$patch" = "delete" } } : {},
           local.allow_scheduling_on_control_plane ? {} : { "node.kubernetes.io/exclude-from-external-load-balancers" = "" },
-          nodepool.labels
+          local.control_plane_nodepools_map[node.labels.nodepool].labels
         )
-        nodeAnnotations = nodepool.annotations
+        nodeAnnotations = local.control_plane_nodepools_map[node.labels.nodepool].annotations
         nodeTaints = {
-          for taint in nodepool.taints : taint.key => "${taint.value}:${taint.effect}"
+          for taint in local.control_plane_nodepools_map[node.labels.nodepool].taints : taint.key => "${taint.value}:${taint.effect}"
         }
         certSANs = local.certificate_san
         network = {
@@ -138,6 +158,7 @@ locals {
           extraConfig = {
             shutdownGracePeriod             = "90s"
             shutdownGracePeriodCriticalPods = "15s"
+            registerWithTaints              = local.control_plane_nodepools_map[node.labels.nodepool].taints
             systemReserved = {
               cpu               = "250m"
               memory            = "300Mi"
@@ -149,6 +170,7 @@ locals {
               ephemeral-storage = "1Gi"
             }
           }
+          extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
             validSubnets = [local.node_ipv4_cidr]
           }
@@ -238,15 +260,15 @@ locals {
   }
 
   # Worker Config
-  worker_nodepool_config = {
-    for nodepool in local.worker_nodepools : nodepool.name => {
+  worker_talos_config_patch = {
+    for node in hcloud_server.worker : node.name => {
       machine = {
         install = {
           image           = local.talos_installer_image_url
           extraKernelArgs = var.talos_extra_kernel_args
         }
-        nodeLabels      = nodepool.labels
-        nodeAnnotations = nodepool.annotations
+        nodeLabels      = local.worker_nodepools_map[node.labels.nodepool].labels
+        nodeAnnotations = local.worker_nodepools_map[node.labels.nodepool].annotations
         certSANs        = local.certificate_san
         network = {
           interfaces = [
@@ -278,7 +300,7 @@ locals {
           extraConfig = {
             shutdownGracePeriod             = "90s"
             shutdownGracePeriodCriticalPods = "15s"
-            registerWithTaints              = nodepool.taints
+            registerWithTaints              = local.worker_nodepools_map[node.labels.nodepool].taints
             systemReserved = {
               cpu               = "100m"
               memory            = "300Mi"
@@ -290,6 +312,7 @@ locals {
               ephemeral-storage = "1Gi"
             }
           }
+          extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
             validSubnets = [local.node_ipv4_cidr]
           }
@@ -337,7 +360,7 @@ locals {
   }
 
   # Autoscaler Config
-  cluster_autoscaler_nodepool_config = {
+  autoscaler_nodepool_talos_config_patch = {
     for nodepool in local.cluster_autoscaler_nodepools : nodepool.name => {
       machine = {
         install = {
@@ -389,6 +412,7 @@ locals {
               ephemeral-storage = "1Gi"
             }
           }
+          extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
             validSubnets = [local.node_ipv4_cidr]
           }
@@ -437,7 +461,7 @@ locals {
 }
 
 data "talos_machine_configuration" "control_plane" {
-  for_each = { for nodepool in local.control_plane_nodepools : nodepool.name => nodepool }
+  for_each = { for node in hcloud_server.control_plane : node.name => node }
 
   talos_version      = var.talos_version
   cluster_name       = var.cluster_name
@@ -445,13 +469,13 @@ data "talos_machine_configuration" "control_plane" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [yamlencode(local.control_plane_nodepool_config[each.key])]
+  config_patches     = [yamlencode(local.control_plane_talos_config_patch[each.key])]
   docs               = false
   examples           = false
 }
 
 data "talos_machine_configuration" "worker" {
-  for_each = { for nodepool in local.worker_nodepools : nodepool.name => nodepool }
+  for_each = { for node in hcloud_server.worker : node.name => node }
 
   talos_version      = var.talos_version
   cluster_name       = var.cluster_name
@@ -459,7 +483,7 @@ data "talos_machine_configuration" "worker" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [yamlencode(local.worker_nodepool_config[each.key])]
+  config_patches     = [yamlencode(local.worker_talos_config_patch[each.key])]
   docs               = false
   examples           = false
 }
@@ -473,7 +497,7 @@ data "talos_machine_configuration" "cluster_autoscaler" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [yamlencode(local.cluster_autoscaler_nodepool_config[each.key])]
+  config_patches     = [yamlencode(local.autoscaler_nodepool_talos_config_patch[each.key])]
   docs               = false
   examples           = false
 }

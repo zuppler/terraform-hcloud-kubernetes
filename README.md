@@ -60,6 +60,7 @@ This setup includes several features for a seamless, best-practice Kubernetes de
 - **Fully Declarative & Immutable:** Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
 - **Cross-Architecture:** Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
 - **High Availability:** Configured for production-grade high availability, ensuring consistent and reliable system performance.
+- **Distributed Storage:** Implements Longhorn for cloud-native block storage with snapshotting and automatic replica rebuilding.
 - **Autoscaling:** Includes Cluster Autoscaler to dynamically adjust node counts based on workload demands, optimizing resource allocation.
 - **Plug-and-Play Kubernetes:** Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
 - **Dual-Stack Ingress:** Employs Hetzner Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
@@ -78,6 +79,8 @@ This project includes commonly used and essential Kubernetes software, optimized
   Manages the integration of Kubernetes clusters with Hetzner Cloud services, ensuring the update of node data, private network traffic control, and load balancer setup.
 - **[Hcloud Container Storage Interface (CSI)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**<br>
   Manages persistent storage in Kubernetes clusters using Hetzner Cloud Volumes, ensuring seamless storage integration and management.
+- **[Longhorn](https://longhorn.io)**<br>
+  Delivers distributed block storage for Kubernetes, facilitating high availability and easy management of persistent volumes with features like snapshotting and automatic replica rebuilding.
 - **[Cilium Container Network Interface (CNI)](https://cilium.io)**<br>
   A high performance CNI plugin that enhances and secures network connectivity and observability for container workloads through the use of eBPF technology in Linux kernels.
 - **[Ingress NGINX Controller](https://kubernetes.github.io/ingress-nginx/)**<br>
@@ -392,7 +395,7 @@ A `/16` Network CIDR is sufficient to fully utilize Hetzner Cloud's scaling capa
 
 Here is a table with more example calculations:
 | Network CIDR    | Node Subnet Size | Node Subnets      | Service IPs         | Pod Subnets         |
-| --------------- | ---------------- | ----------------- | ------------------- | ------------------- |
+|-----------------|------------------|-------------------|---------------------|---------------------|
 | **10.0.0.0/16** | /25 (128 IPs)    | 10.0.64.0/19 (64) | 10.0.96.0/19 (8192) | 10.0.128.0/17 (128) |
 | **10.0.0.0/17** | /26 (64 IPs)     | 10.0.32.0/20 (64) | 10.0.48.0/20 (4096) | 10.0.64.0/18 (64)   |
 | **10.0.0.0/18** | /27 (32 IPs)     | 10.0.16.0/21 (64) | 10.0.24.0/21 (2048) | 10.0.32.0/19 (32)   |
@@ -467,11 +470,11 @@ The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolab
 > Before upgrading to the next major version of this module, ensure you are on the latest release of the current major version. Do not skip any major release upgrades.
 
 ### :white_check_mark: Version Compatibility Matrix
-| Hcloud Kubernetes |  K8s   | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Cilium | Ingress NGINX | Cert Manager | Auto-scaler |
-| :---------------: | :----: | :---: | :-------: | :--------: | :--------: | :----: | :-----------: | :----------: | :---------: |
-|      (**2**)      | (1.32) | (1.9) |     ?     |     ?      |     ?      |   ?    |       ?       |      ?       |      ?      |
-|      (**1**)      |  1.31  |  1.8  |    1.8    |   (1.21)   |   (2.10)   | (1.17) |    (4.12)     |     1.15     |    9.38     |
-|       **0**       |  1.30  |  1.7  |    1.6    |    1.20    |    2.9     |  1.16  |    4.10.1     |     1.14     |    9.37     |
+| Hcloud Kubernetes |   K8s  | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Longhorn | Cilium | Ingress NGINX | Cert Manager | Auto-scaler |
+|:-----------------:|:------:|:-----:|:---------:|:----------:|:----------:|:--------:|:------:|:-------------:|:------------:|:-----------:|
+|      (**2**)      | (1.32) | (1.9) |     ?     |      ?     |      ?     |     ?    |    ?   |       ?       |       ?      |      ?      |
+|      (**1**)      |  1.31  |  1.8  |    1.8    |   (1.21)   |   (2.10)   |     ?    | (1.17) |     (4.12)    |     1.15     |     9.38    |
+|       **0**       |  1.30  |  1.7  |    1.6    |    1.20    |     2.9    |   1.7.1  |  1.16  |     4.10.1    |     1.14     |     9.37    |
 
 In this module, upgrades are conducted with care and conservatism. You will consistently receive the most tested and compatible releases of all components, avoiding the latest untested or incompatible releases that could disrupt your cluster.
 
@@ -482,6 +485,7 @@ In this module, upgrades are conducted with care and conservatism. You will cons
 - Talos/K8s: https://github.com/siderolabs/talos/blob/release-1.6/pkg/machinery/constants/constants.go
 - HCCM: https://github.com/hetznercloud/hcloud-cloud-controller-manager/tree/main?tab=readme-ov-file#versioning-policy
 - HCSI: https://github.com/hetznercloud/csi-driver/blob/main/docs/kubernetes/README.md#versioning-policy
+- Longhorn: https://longhorn.io/docs/1.7.2/best-practices/#kubernetes-version
 - Cilium: https://github.com/cilium/cilium/blob/v1.15/Documentation/network/kubernetes/requirements.rst#kubernetes-version
 - Ingress Nginx: https://github.com/kubernetes/ingress-nginx?tab=readme-ov-file#supported-versions-table 
 - Cert Manager: https://cert-manager.io/docs/releases/
