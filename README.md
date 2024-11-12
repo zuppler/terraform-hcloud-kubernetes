@@ -71,7 +71,10 @@ This setup includes several features for a seamless, best-practice Kubernetes de
 ### :package: Components
 This project includes commonly used and essential Kubernetes software, optimized for seamless integration with Hetzner Cloud.
 
-- **[Talos Cloud Controller Manager (CCM)](https://github.com/siderolabs/talos-cloud-controller-manager)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=talos.dev&sz=16">
+    <b><a href="https://github.com/siderolabs/talos-cloud-controller-manager">Talos Cloud Controller Manager (CCM)</a></b>
+  </summary>
   Manages node resources by updating with cloud metadata, handling lifecycle deletions, and automatically approving node CSRs.
 - **[Talos Backup](https://github.com/siderolabs/talos-backup)**<br>
   Automates etcd snapshots and S3 storage for backup in Talos Linux-based Kubernetes clusters.
