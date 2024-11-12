@@ -72,27 +72,54 @@ This setup includes several features for a seamless, best-practice Kubernetes de
 This project includes commonly used and essential Kubernetes software, optimized for seamless integration with Hetzner Cloud.
 
 - <summary>
-    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=talos.dev&sz=16">
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=talos.dev&sz=32" width="16" height="16">
     <b><a href="https://github.com/siderolabs/talos-cloud-controller-manager">Talos Cloud Controller Manager (CCM)</a></b>
   </summary>
   Manages node resources by updating with cloud metadata, handling lifecycle deletions, and automatically approving node CSRs.
-- **[Talos Backup](https://github.com/siderolabs/talos-backup)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=talos.dev&sz=32" width="16" height="16">
+    <b><a href="https://github.com/siderolabs/talos-backup">Talos Backup</a></b>
+  </summary>
   Automates etcd snapshots and S3 storage for backup in Talos Linux-based Kubernetes clusters.
-- **[Hcloud Cloud Controller Manager (CCM)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=hetzner.com&sz=32" width="16" height="16">
+    <b><a href="https://github.com/hetznercloud/hcloud-cloud-controller-manager">Hcloud Cloud Controller Manager (CCM)</a></b>
+  </summary>
   Manages the integration of Kubernetes clusters with Hetzner Cloud services, ensuring the update of node data, private network traffic control, and load balancer setup.
-- **[Hcloud Container Storage Interface (CSI)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=hetzner.com&sz=32" width="16" height="16">
+    <b><a href="https://github.com/hetznercloud/csi-driver">Hcloud Container Storage Interface (CSI)</a></b>
+  </summary>
   Manages persistent storage in Kubernetes clusters using Hetzner Cloud Volumes, ensuring seamless storage integration and management.
-- **[Longhorn](https://longhorn.io)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=longhorn.io&sz=32" width="16" height="16">
+    <b><a href="https://longhorn.io">Longhorn</a></b>
+  </summary>
   Delivers distributed block storage for Kubernetes, facilitating high availability and easy management of persistent volumes with features like snapshotting and automatic replica rebuilding.
-- **[Cilium Container Network Interface (CNI)](https://cilium.io)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=cilium.io&sz=32" width="16" height="16">
+    <b><a href="https://cilium.io">Cilium Container Network Interface (CNI)</a></b>
+  </summary>
   A high performance CNI plugin that enhances and secures network connectivity and observability for container workloads through the use of eBPF technology in Linux kernels.
-- **[Ingress NGINX Controller](https://kubernetes.github.io/ingress-nginx/)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=nginx.org&sz=32" width="16" height="16">
+    <b><a href="https://kubernetes.github.io/ingress-nginx/">Ingress NGINX Controller</a></b>
+  </summary>
   Provides a robust web routing and load balancing solution for Kubernetes, utilizing NGINX as a reverse proxy to manage traffic and enhance network performance.
-- **[Cert Manager](https://cert-manager.io)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=cert-manager.io&sz=32" width="16" height="16">
+    <b><a href="https://cert-manager.io">Cert Manager</a></b>
+  </summary>
   Automates the management of certificates in Kubernetes, handling the issuance and renewal of certificates from various sources like Let's Encrypt, and ensures certificates are valid and updated.
-- **[Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=kubernetes.io&sz=32" width="16" height="16">
+    <b><a href="https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler">Cluster Autoscaler</a></b>
+  </summary>
   Dynamically adjusts Kubernetes cluster size based on resource demands and node utilization, scaling nodes in or out to optimize cost and performance.
-- **[Metrics Server](https://kubernetes-sigs.github.io/metrics-server/)**<br>
+- <summary>
+    <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=kubernetes.io&sz=32" width="16" height="16">
+    <b><a href="https://kubernetes-sigs.github.io/metrics-server/">Metrics Server</a></b>
+  </summary>
   Collects and provides container resource metrics for Kubernetes, enabling features like autoscaling by interacting with Horizontal and Vertical Pod Autoscalers.
 
 <!-- Security -->
