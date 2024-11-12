@@ -425,7 +425,7 @@ A `/16` Network CIDR is sufficient to fully utilize Hetzner Cloud's scaling capa
 
 Here is a table with more example calculations:
 | Network CIDR    | Node Subnet Size | Node Subnets      | Service IPs         | Pod Subnets         |
-|-----------------|------------------|-------------------|---------------------|---------------------|
+| --------------- | ---------------- | ----------------- | ------------------- | ------------------- |
 | **10.0.0.0/16** | /25 (128 IPs)    | 10.0.64.0/19 (64) | 10.0.96.0/19 (8192) | 10.0.128.0/17 (128) |
 | **10.0.0.0/17** | /26 (64 IPs)     | 10.0.32.0/20 (64) | 10.0.48.0/20 (4096) | 10.0.64.0/18 (64)   |
 | **10.0.0.0/18** | /27 (32 IPs)     | 10.0.16.0/21 (64) | 10.0.24.0/21 (2048) | 10.0.32.0/19 (32)   |
@@ -500,11 +500,11 @@ The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolab
 > Before upgrading to the next major version of this module, ensure you are on the latest release of the current major version. Do not skip any major release upgrades.
 
 ### :white_check_mark: Version Compatibility Matrix
-| Hcloud Kubernetes |   K8s  | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Longhorn | Cilium | Ingress NGINX | Cert Manager | Auto-scaler |
-|:-----------------:|:------:|:-----:|:---------:|:----------:|:----------:|:--------:|:------:|:-------------:|:------------:|:-----------:|
-|      (**2**)      | (1.32) | (1.9) |     ?     |      ?     |      ?     |     ?    |    ?   |       ?       |       ?      |      ?      |
-|      (**1**)      |  1.31  |  1.8  |    1.8    |   (1.21)   |   (2.10)   |     ?    | (1.17) |     (4.12)    |     1.15     |     9.38    |
-|       **0**       |  1.30  |  1.7  |    1.6    |    1.20    |     2.9    |   1.7.1  |  1.16  |     4.10.1    |     1.14     |     9.37    |
+| Hcloud K8s |  K8s   | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Long-horn | Cilium | Ingress NGINX | Cert Mgr. | Auto-scaler |
+| :--------: | :----: | :---: | :-------: | :--------: | :--------: | :-------: | :----: | :-----------: | :-------: | :---------: |
+|  (**2**)   | (1.32) | (1.9) |     ?     |     ?      |     ?      |     ?     |   ?    |       ?       |     ?     |      ?      |
+|  (**1**)   |  1.31  |  1.8  |    1.8    |   (1.21)   |   (2.10)   |     ?     | (1.17) |    (4.12)     |   1.15    |    9.38     |
+|   **0**    |  1.30  |  1.7  |    1.6    |    1.20    |    2.9     |   1.7.1   |  1.16  |    4.10.1     |   1.14    |    9.37     |
 
 In this module, upgrades are conducted with care and conservatism. You will consistently receive the most tested and compatible releases of all components, avoiding the latest untested or incompatible releases that could disrupt your cluster.
 
