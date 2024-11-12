@@ -332,6 +332,7 @@ Optionally, pass additional values to the cluster autoscaler configuration:
 ```hcl
 cluster_autoscaler_helm_values = {
   extraArgs = {
+    enforce-node-group-min-size   = true
     scale-down-delay-after-add    = "45m"
     scale-down-delay-after-delete = "4m"
     scale-down-unneeded-time      = "5m"
