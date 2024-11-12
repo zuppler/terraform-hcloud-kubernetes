@@ -66,6 +66,8 @@ locals {
 
 # Hcloud CSI
 data "helm_template" "hcloud_csi" {
+  count = var.hcloud_csi_enabled ? 1 : 0
+
   name      = "hcloud-csi"
   namespace = "kube-system"
 
@@ -126,8 +128,8 @@ data "helm_template" "hcloud_csi" {
 }
 
 locals {
-  hcloud_csi_manifest = {
+  hcloud_csi_manifest = var.hcloud_csi_enabled ? {
     name     = "hcloud-csi"
-    contents = data.helm_template.hcloud_csi.manifest
-  }
+    contents = data.helm_template.hcloud_csi[0].manifest
+  } : null
 }

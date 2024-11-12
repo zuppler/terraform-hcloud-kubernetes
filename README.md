@@ -330,7 +330,7 @@ cluster_autoscaler_nodepools = [
 
 Optionally, pass additional values to the cluster autoscaler configuration:
 ```hcl
-cluster_autoscaler_extra_values = {
+cluster_autoscaler_helm_values = {
   extraArgs = {
     scale-down-delay-after-add    = "45m"
     scale-down-delay-after-delete = "4m"

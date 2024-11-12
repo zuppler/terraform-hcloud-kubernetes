@@ -9,12 +9,12 @@ locals {
       local.hcloud_ccm_manifest,
       local.cilium_manifest
     ],
-    var.hcloud_csi_enabled ? [local.hcloud_csi_manifest] : [],
-    var.metrics_server_enabled ? [local.metrics_server_manifest] : [],
-    var.cert_manager_enabled ? [local.cert_manager_manifest] : [],
-    var.ingress_nginx_enabled ? [local.ingress_nginx_manifest] : [],
-    local.cluster_autoscaler_enabled ? [local.cluster_autoscaler_manifest] : [],
-    local.longhorn_manifest != null ? [local.longhorn_manifest] : []
+    local.hcloud_csi_manifest != null ? [local.hcloud_csi_manifest] : [],
+    local.longhorn_manifest != null ? [local.longhorn_manifest] : [],
+    local.metrics_server_manifest != null ? [local.metrics_server_manifest] : [],
+    local.cert_manager_manifest != null ? [local.cert_manager_manifest] : [],
+    local.ingress_nginx_manifest != null ? [local.ingress_nginx_manifest] : [],
+    local.cluster_autoscaler_manifest != null ? [local.cluster_autoscaler_manifest] : []
   )
   talos_manifests = [
     "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager-daemonset.yml",

@@ -1,14 +1,16 @@
 locals {
-  ingress_nginx_namespace = {
+  ingress_nginx_namespace = var.ingress_nginx_enabled ? {
     apiVersion = "v1"
     kind       = "Namespace"
     metadata = {
-      name = data.helm_template.ingress_nginx.namespace
+      name = data.helm_template.ingress_nginx[0].namespace
     }
-  }
+  } : null
 }
 
 data "helm_template" "ingress_nginx" {
+  count = var.ingress_nginx_enabled ? 1 : 0
+
   name      = "ingress-nginx"
   namespace = "ingress-nginx"
 
@@ -130,14 +132,14 @@ data "helm_template" "ingress_nginx" {
 }
 
 locals {
-  ingress_nginx_manifest = {
+  ingress_nginx_manifest = var.ingress_nginx_enabled ? {
     name     = "ingress-nginx"
     contents = <<-EOF
       ${yamlencode(local.ingress_nginx_namespace)}
       ---
-      ${data.helm_template.ingress_nginx.manifest}
+      ${data.helm_template.ingress_nginx[0].manifest}
     EOF
-  }
+  } : null
 
   depends_on = [hcloud_load_balancer_network.ingress]
 }

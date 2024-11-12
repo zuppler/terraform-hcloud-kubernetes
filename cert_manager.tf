@@ -1,14 +1,16 @@
 locals {
-  cert_manager_namespace = {
+  cert_manager_namespace = var.cert_manager_enabled ? {
     apiVersion = "v1"
     kind       = "Namespace"
     metadata = {
-      name = data.helm_template.cert_manager.namespace
+      name = data.helm_template.cert_manager[0].namespace
     }
-  }
+  } : null
 }
 
 data "helm_template" "cert_manager" {
+  count = var.cert_manager_enabled ? 1 : 0
+
   name      = "cert-manager"
   namespace = "cert-manager"
 
@@ -145,12 +147,12 @@ data "helm_template" "cert_manager" {
 }
 
 locals {
-  cert_manager_manifest = {
+  cert_manager_manifest = var.cert_manager_enabled ? {
     name     = "cert-manager"
     contents = <<-EOF
       ${yamlencode(local.cert_manager_namespace)}
       ---
-      ${data.helm_template.cert_manager.manifest}
+      ${data.helm_template.cert_manager[0].manifest}
     EOF
-  }
+  } : null
 }

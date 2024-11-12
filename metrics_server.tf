@@ -1,4 +1,6 @@
 data "helm_template" "metrics_server" {
+  count = var.metrics_server_enabled ? 1 : 0
+
   name      = "metrics-server"
   namespace = "kube-system"
 
@@ -47,8 +49,8 @@ data "helm_template" "metrics_server" {
 }
 
 locals {
-  metrics_server_manifest = {
+  metrics_server_manifest = var.metrics_server_enabled ? {
     name     = "metrics-server"
-    contents = data.helm_template.metrics_server.manifest
-  }
+    contents = data.helm_template.metrics_server[0].manifest
+  } : null
 }

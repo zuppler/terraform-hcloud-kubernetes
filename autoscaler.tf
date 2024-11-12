@@ -1,7 +1,7 @@
 locals {
   cluster_autoscaler_enabled = length(local.cluster_autoscaler_nodepools) > 0
 
-  cluster_autoscaler_cluster_config = {
+  cluster_autoscaler_cluster_config = local.cluster_autoscaler_enabled ? {
     imagesForArch = {
       arm64 = local.image_label_selector,
       amd64 = local.image_label_selector
@@ -13,10 +13,12 @@ locals {
         taints    = nodepool.taints
       }
     }
-  }
+  } : null
 }
 
 data "helm_template" "cluster_autoscaler" {
+  count = local.cluster_autoscaler_enabled ? 1 : 0
+
   name      = "cluster-autoscaler"
   namespace = "kube-system"
 
@@ -68,10 +70,6 @@ data "helm_template" "cluster_autoscaler" {
   set {
     name  = "extraEnv.HCLOUD_NETWORK"
     value = hcloud_network_subnet.autoscaler.network_id
-  }
-  set {
-    name  = "extraArgs.enforce-node-group-min-size"
-    value = var.cluster_autoscaler_enforce_node_group_min_size
   }
 
   set {
@@ -138,8 +136,8 @@ data "helm_template" "cluster_autoscaler" {
 }
 
 locals {
-  cluster_autoscaler_manifest = {
+  cluster_autoscaler_manifest = local.cluster_autoscaler_enabled ? {
     name     = "cluster-autoscaler"
-    contents = data.helm_template.cluster_autoscaler.manifest
-  }
+    contents = data.helm_template.cluster_autoscaler[0].manifest
+  } : null
 }
