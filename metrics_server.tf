@@ -2,9 +2,9 @@ data "helm_template" "metrics_server" {
   name      = "metrics-server"
   namespace = "kube-system"
 
-  repository   = "https://kubernetes-sigs.github.io/metrics-server"
-  chart        = "metrics-server"
-  version      = var.metrics_server_version
+  repository   = var.metrics_server_helm_repository
+  chart        = var.metrics_server_helm_chart
+  version      = var.metrics_server_helm_version
   kube_version = var.kubernetes_version
 
   set {
@@ -40,6 +40,10 @@ data "helm_template" "metrics_server" {
     name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
     value = "metrics-server"
   }
+
+  values = [
+    yamlencode(var.metrics_server_helm_values)
+  ]
 }
 
 locals {

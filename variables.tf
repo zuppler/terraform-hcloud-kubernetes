@@ -778,10 +778,28 @@ variable "cilium_hubble_ui_enabled" {
 
 
 # Metrics Server
-variable "metrics_server_version" {
+variable "metrics_server_helm_repository" {
+  type        = string
+  default     = "https://kubernetes-sigs.github.io/metrics-server"
+  description = "URL of the Helm repository where the Longhorn chart is located."
+}
+
+variable "metrics_server_helm_chart" {
+  type        = string
+  default     = "metrics-server"
+  description = "Name of the Helm chart used for deploying Metrics Server."
+}
+
+variable "metrics_server_helm_version" {
   type        = string
   default     = "v3.12.1"
-  description = "Specifies the Helm chart version of the Kubernetes Metrics Server to deploy."
+  description = "Version of the Metrics Server Helm chart to deploy."
+}
+
+variable "metrics_server_helm_values" {
+  type        = map(any)
+  default     = {}
+  description = "Custom Helm values for the Metrics Server chart deployment. These values will merge with and will override the default values provided by the Metrics Server Helm chart."
 }
 
 variable "metrics_server_enabled" {
