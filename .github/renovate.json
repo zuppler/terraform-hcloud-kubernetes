@@ -2,5 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "customManagers": [
+    {
+      "description": "Update Helm Charts used in Terraform",
+      "customType": "regex",
+      "fileMatch": [
+        "^variables.tf$"
+      ],
+      "matchStrings": [
+        "variable\\s+\"[^\"]*helm_repository\"\\s*{[^}]*default\\s*=\\s*\"(?<registryUrl>[^\"]+)\"[^}]*?}\\s*variable\\s+\"[^\"]*helm_chart\"\\s*{[^}]*default\\s*=\\s*\"(?<depName>[^\"]+)\"[^}]*?}\\s*variable\\s+\"[^\"]*helm_version\"\\s*{[^}]*default\\s*=\\s*\"(?<currentValue>[^\"]+)\"[^}]*?}"
+      ],
+      "datasourceTemplate": "helm"
+    }
   ]
 }
