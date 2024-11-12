@@ -20,9 +20,9 @@ data "helm_template" "cluster_autoscaler" {
   name      = "cluster-autoscaler"
   namespace = "kube-system"
 
-  repository   = "https://kubernetes.github.io/autoscaler"
-  chart        = "cluster-autoscaler"
-  version      = var.cluster_autoscaler_version
+  repository   = var.cluster_autoscaler_helm_repository
+  chart        = var.cluster_autoscaler_helm_chart
+  version      = var.cluster_autoscaler_helm_version
   kube_version = var.kubernetes_version
 
   set {
@@ -128,7 +128,7 @@ data "helm_template" "cluster_autoscaler" {
         }
       ]
     }),
-    yamlencode(var.cluster_autoscaler_extra_values)
+    yamlencode(var.cluster_autoscaler_helm_values)
   ]
 
   depends_on = [

@@ -277,23 +277,35 @@ variable "worker_nodepools" {
 }
 
 
-# Autoscaler
-variable "cluster_autoscaler_version" {
+# Cluster Autoscaler
+variable "cluster_autoscaler_helm_repository" {
   type        = string
-  default     = "9.43.2"
-  description = "Specifies the version of Cluster Autoscaler to deploy."
+  default     = "https://kubernetes.github.io/autoscaler"
+  description = "URL of the Helm repository where the Cluster Autoscaler chart is located."
+}
+
+variable "cluster_autoscaler_helm_chart" {
+  type        = string
+  default     = "cluster-autoscaler"
+  description = "Name of the Helm chart used for deploying Cluster Autoscaler."
+}
+
+variable "cluster_autoscaler_helm_version" {
+  type        = string
+  default     = "v9.43.2"
+  description = "Version of the Cluster Autoscaler Helm chart to deploy."
+}
+
+variable "cluster_autoscaler_helm_values" {
+  type        = map(any)
+  default     = {}
+  description = "Custom Helm values for the Cluster Autoscaler chart deployment. These values will merge with and will override the default values provided by the Cluster Autoscaler Helm chart."
 }
 
 variable "cluster_autoscaler_enforce_node_group_min_size" {
   type        = bool
   default     = false
   description = "Specifies whether the Cluster Autoscaler should scale up node groups to the configured minimum size."
-}
-
-variable "cluster_autoscaler_extra_values" {
-  description = "Additional values for the Cluster Autoscaler. See: https://github.com/kubernetes/autoscaler/blob/master/charts/cluster-autoscaler/values.yaml"
-  type        = map(any)
-  default     = {}
 }
 
 variable "cluster_autoscaler_nodepools" {
