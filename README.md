@@ -328,7 +328,7 @@ cluster_autoscaler_nodepools = [
 ]
 ```
 
-Optionally, pass additional values to the cluster autoscaler configuration:
+Optionally, pass additional [Helm values](https://github.com/kubernetes/autoscaler/blob/master/charts/cluster-autoscaler/values.yaml) to the cluster autoscaler configuration:
 ```hcl
 cluster_autoscaler_helm_values = {
   extraArgs = {
