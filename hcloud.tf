@@ -23,9 +23,9 @@ data "helm_template" "hcloud_ccm" {
   name      = "hcloud-cloud-controller-manager"
   namespace = "kube-system"
 
-  repository   = "https://charts.hetzner.cloud"
-  chart        = "hcloud-cloud-controller-manager"
-  version      = var.hcloud_ccm_version
+  repository   = var.hcloud_ccm_helm_repository
+  chart        = var.hcloud_ccm_helm_chart
+  version      = var.hcloud_ccm_helm_version
   kube_version = var.kubernetes_version
 
   set {
@@ -52,7 +52,8 @@ data "helm_template" "hcloud_ccm" {
         HCLOUD_LOAD_BALANCERS_DISABLE_PRIVATE_INGRESS = { value = "true" }
         HCLOUD_LOAD_BALANCERS_LOCATION                = { value = local.hcloud_load_balancer_location }
       }
-    })
+    }),
+    yamlencode(var.hcloud_ccm_helm_values)
   ]
 }
 
@@ -68,9 +69,9 @@ data "helm_template" "hcloud_csi" {
   name      = "hcloud-csi"
   namespace = "kube-system"
 
-  repository   = "https://charts.hetzner.cloud"
-  chart        = "hcloud-csi"
-  version      = var.hcloud_csi_version
+  repository   = var.hcloud_csi_helm_repository
+  chart        = var.hcloud_csi_helm_chart
+  version      = var.hcloud_csi_helm_version
   kube_version = var.kubernetes_version
 
   set {
@@ -118,6 +119,10 @@ data "helm_template" "hcloud_csi" {
     name  = "controller.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
     value = "hcloud-csi"
   }
+
+  values = [
+    yamlencode(var.hcloud_csi_helm_values)
+  ]
 }
 
 locals {

@@ -646,13 +646,8 @@ variable "talos_ccm_version" {
   description = "Specifies the version of the Talos Cloud Controller Manager (CCM) to use. This version controls cloud-specific integration features in the Talos operating system."
 }
 
-# Hetzner Cloud
-variable "hcloud_ccm_version" {
-  type        = string
-  default     = "v1.20.0"
-  description = "Specifies the version of the Hetzner Cloud Controller Manager (CCM) to deploy. This controls the integration features specific to Hetzner Cloud, facilitating the management of cloud resources."
-}
 
+# Hetzner Cloud
 variable "hcloud_token" {
   type        = string
   description = "The Hetzner Cloud API token used for authentication with Hetzner Cloud services. This token should be treated as sensitive information."
@@ -678,10 +673,56 @@ variable "hcloud_load_balancer_location" {
   }
 }
 
-variable "hcloud_csi_version" {
+
+# Hetzner Cloud Controller Manager (CCM)
+variable "hcloud_ccm_helm_repository" {
   type        = string
-  default     = "v2.9.0"
-  description = "Specifies the version of the Hetzner Container Storage Interface (CSI) to deploy, enabling dynamic volume provisioning and management on Hetzner Cloud."
+  default     = "https://charts.hetzner.cloud"
+  description = "URL of the Helm repository where the Hcloud CCM chart is located."
+}
+
+variable "hcloud_ccm_helm_chart" {
+  type        = string
+  default     = "hcloud-cloud-controller-manager"
+  description = "Name of the Helm chart used for deploying Hcloud CCM."
+}
+
+variable "hcloud_ccm_helm_version" {
+  type        = string
+  default     = "1.20.0"
+  description = "Version of the Hcloud CCM Helm chart to deploy."
+}
+
+variable "hcloud_ccm_helm_values" {
+  type        = map(any)
+  default     = {}
+  description = "Custom Helm values for the Hcloud CCM chart deployment. These values will merge with and will override the default values provided by the Hcloud CCM Helm chart."
+}
+
+
+# Hetzner Cloud Container Storage Interface (CSI)
+variable "hcloud_csi_helm_repository" {
+  type        = string
+  default     = "https://charts.hetzner.cloud"
+  description = "URL of the Helm repository where the Hcloud CSI chart is located."
+}
+
+variable "hcloud_csi_helm_chart" {
+  type        = string
+  default     = "hcloud-csi"
+  description = "Name of the Helm chart used for deploying Hcloud CSI."
+}
+
+variable "hcloud_csi_helm_version" {
+  type        = string
+  default     = "2.9.0"
+  description = "Version of the Hcloud CSI Helm chart to deploy."
+}
+
+variable "hcloud_csi_helm_values" {
+  type        = map(any)
+  default     = {}
+  description = "Custom Helm values for the Hcloud CSI chart deployment. These values will merge with and will override the default values provided by the Hcloud CSI Helm chart."
 }
 
 variable "hcloud_csi_enabled" {
