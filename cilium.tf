@@ -2,9 +2,9 @@ data "helm_template" "cilium" {
   name      = "cilium"
   namespace = "kube-system"
 
-  repository   = "https://helm.cilium.io"
-  chart        = "cilium"
-  version      = var.cilium_version
+  repository   = var.cilium_helm_repository
+  chart        = var.cilium_helm_chart
+  version      = var.cilium_helm_version
   kube_version = var.kubernetes_version
 
   set {
@@ -118,6 +118,10 @@ data "helm_template" "cilium" {
     name  = "operator.prometheus.serviceMonitor.enabled"
     value = var.cilium_service_monitor_enabled ? true : false
   }
+
+  values = [
+    yamlencode(var.cilium_helm_values)
+  ]
 }
 
 locals {

@@ -765,10 +765,28 @@ variable "longhorn_enabled" {
 
 
 # Cilium
-variable "cilium_version" {
+variable "cilium_helm_repository" {
   type        = string
-  default     = "v1.16.3"
-  description = "Specifies the version of Cilium to deploy in the Kubernetes cluster."
+  default     = "https://helm.cilium.io"
+  description = "URL of the Helm repository where the Cilium chart is located."
+}
+
+variable "cilium_helm_chart" {
+  type        = string
+  default     = "cilium"
+  description = "Name of the Helm chart used for deploying Cilium."
+}
+
+variable "cilium_helm_version" {
+  type        = string
+  default     = "1.16.3"
+  description = "Version of the Cilium Helm chart to deploy."
+}
+
+variable "cilium_helm_values" {
+  type        = map(any)
+  default     = {}
+  description = "Custom Helm values for the Cilium chart deployment. These values will merge with and will override the default values provided by the Cilium Helm chart."
 }
 
 variable "cilium_encryption_enabled" {
@@ -851,10 +869,28 @@ variable "metrics_server_enabled" {
 
 
 # Cert Manager
-variable "cert_manager_version" {
+variable "cert_manager_helm_repository" {
   type        = string
-  default     = "v1.15.2"
-  description = "Specifies the version of cert-manager to deploy."
+  default     = "https://charts.jetstack.io"
+  description = "URL of the Helm repository where the Cert Manager chart is located."
+}
+
+variable "cert_manager_helm_chart" {
+  type        = string
+  default     = "cert-manager"
+  description = "Name of the Helm chart used for deploying Cert Manager."
+}
+
+variable "cert_manager_helm_version" {
+  type        = string
+  default     = "1.15.2"
+  description = "Version of the Cert Manager Helm chart to deploy."
+}
+
+variable "cert_manager_helm_values" {
+  type        = map(any)
+  default     = {}
+  description = "Custom Helm values for the Cert Manager chart deployment. These values will merge with and will override the default values provided by the Cert Manager Helm chart."
 }
 
 variable "cert_manager_enabled" {
@@ -865,16 +901,34 @@ variable "cert_manager_enabled" {
 
 
 # Ingress
-variable "ingress_nginx_version" {
+variable "ingress_nginx_helm_repository" {
   type        = string
-  default     = "v4.11.1"
-  description = "Specifies the Helm chart version of the Ingress-NGINX Controller to deploy."
+  default     = "https://kubernetes.github.io/ingress-nginx"
+  description = "URL of the Helm repository where the Ingress NGINX Controller chart is located."
+}
+
+variable "ingress_nginx_helm_chart" {
+  type        = string
+  default     = "ingress-nginx"
+  description = "Name of the Helm chart used for deploying Ingress NGINX Controller."
+}
+
+variable "ingress_nginx_helm_version" {
+  type        = string
+  default     = "4.11.1"
+  description = "Version of the Ingress NGINX Controller Helm chart to deploy."
+}
+
+variable "ingress_nginx_helm_values" {
+  type        = map(any)
+  default     = {}
+  description = "Custom Helm values for the Ingress NGINX Controller chart deployment. These values will merge with and will override the default values provided by the Ingress NGINX Controller Helm chart."
 }
 
 variable "ingress_nginx_enabled" {
   type        = bool
   default     = false
-  description = "Enables the deployment of the NGINX Ingress controller. Requires cert_manager_enabled to be true."
+  description = "Enables the deployment of the Ingress NGINX Controller. Requires cert_manager_enabled to be true."
 
   validation {
     condition     = var.ingress_nginx_enabled ? var.cert_manager_enabled : true

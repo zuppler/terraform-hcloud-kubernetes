@@ -12,9 +12,9 @@ data "helm_template" "cert_manager" {
   name      = "cert-manager"
   namespace = "cert-manager"
 
-  repository   = "https://charts.jetstack.io"
-  chart        = "cert-manager"
-  version      = var.cert_manager_version
+  repository   = var.cert_manager_helm_repository
+  chart        = var.cert_manager_helm_chart
+  version      = var.cert_manager_helm_version
   kube_version = var.kubernetes_version
 
   set {
@@ -138,6 +138,10 @@ data "helm_template" "cert_manager" {
     name  = "cainjector.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
     value = "cainjector"
   }
+
+  values = [
+    yamlencode(var.cert_manager_helm_values)
+  ]
 }
 
 locals {

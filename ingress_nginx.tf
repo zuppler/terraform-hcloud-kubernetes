@@ -12,9 +12,9 @@ data "helm_template" "ingress_nginx" {
   name      = "ingress-nginx"
   namespace = "ingress-nginx"
 
-  repository   = "https://kubernetes.github.io/ingress-nginx"
-  chart        = "ingress-nginx"
-  version      = var.ingress_nginx_version
+  repository   = var.ingress_nginx_helm_repository
+  chart        = var.ingress_nginx_helm_chart
+  version      = var.ingress_nginx_helm_version
   kube_version = var.kubernetes_version
 
   set {
@@ -123,6 +123,10 @@ data "helm_template" "ingress_nginx" {
     name  = "controller.service.annotations.load-balancer\\.hetzner\\.cloud/uses-proxyprotocol"
     value = true
   }
+
+  values = [
+    yamlencode(var.ingress_nginx_helm_values)
+  ]
 }
 
 locals {
