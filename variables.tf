@@ -206,6 +206,12 @@ variable "control_plane_private_vip_ipv4_enabled" {
   description = "If true, an alias IP will be created and assigned to the Control Plane nodes."
 }
 
+variable "kube_api_admission_control" {
+  type        = list(any)
+  default     = []
+  description = "List of admission control settings for the Kube API. If set, this overrides the default admission control."
+}
+
 variable "control_plane_nodepools" {
   type = list(object({
     name        = string

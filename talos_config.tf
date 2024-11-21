@@ -219,6 +219,7 @@ locals {
           disabled = true
         }
         apiServer = {
+          admissionControl = var.kube_api_admission_control
           certSANs = local.certificate_san,
           extraArgs = merge(
             { "enable-aggregator-routing" = true },
@@ -469,7 +470,9 @@ data "talos_machine_configuration" "control_plane" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [yamlencode(local.control_plane_talos_config_patch[each.key])]
+  config_patches     = [
+    yamlencode(local.control_plane_talos_config_patch[each.key])
+  ]
   docs               = false
   examples           = false
 }
