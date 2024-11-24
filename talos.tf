@@ -271,8 +271,8 @@ resource "hcloud_uploaded_certificate" "state" {
   certificate = tls_self_signed_cert.state.cert_pem
 
   labels = {
-    "cluster" = var.cluster_name
-    "state"   = "initialized"
+    cluster = var.cluster_name
+    state   = "initialized"
   }
 
   depends_on = [terraform_data.synchronize_manifests]

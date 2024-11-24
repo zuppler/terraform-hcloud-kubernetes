@@ -6,6 +6,11 @@ locals {
       name = data.helm_template.ingress_nginx[0].namespace
     }
   } : null
+
+  ingress_nginx_replicas = coalesce(
+    var.ingress_nginx_replicas,
+    local.worker_sum < 4 ? 2 : 3
+  )
 }
 
 data "helm_template" "ingress_nginx" {
@@ -19,14 +24,6 @@ data "helm_template" "ingress_nginx" {
   version      = var.ingress_nginx_helm_version
   kube_version = var.kubernetes_version
 
-  set {
-    name  = "controller.kind"
-    value = var.ingress_nginx_kind
-  }
-  set {
-    name  = "controller.replicaCount"
-    value = coalesce(var.ingress_nginx_replicas, (local.worker_sum + local.cluster_autoscaler_max_sum) < 4 ? 2 : 3)
-  }
   set {
     name  = "controller.admissionWebhooks.certManager.enabled"
     value = true
@@ -42,35 +39,6 @@ data "helm_template" "ingress_nginx" {
   set {
     name  = "controller.config.use-proxy-protocol"
     value = true
-  }
-  set {
-    name  = "controller.watchIngressWithoutClass"
-    value = true
-  }
-
-  set {
-    name  = "controller.topologySpreadConstraints[0].topologyKey"
-    value = "kubernetes.io/hostname"
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].maxSkew"
-    value = 1
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > coalesce(var.ingress_nginx_replicas, (local.worker_sum + local.cluster_autoscaler_max_sum)) ? "DoNotSchedule" : "ScheduleAnyway"
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
-    value = "ingress-nginx"
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/instance"
-    value = "ingress-nginx"
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/component"
-    value = "controller"
   }
 
   set {
@@ -127,6 +95,31 @@ data "helm_template" "ingress_nginx" {
   }
 
   values = [
+    yamlencode({
+      controller = {
+        kind         = var.ingress_nginx_kind
+        replicaCount = local.ingress_nginx_replicas
+        topologySpreadConstraints = [
+          {
+            topologyKey = "kubernetes.io/hostname"
+            maxSkew     = 1
+            whenUnsatisfiable = (
+              local.worker_sum > local.ingress_nginx_replicas ?
+              "DoNotSchedule" :
+              "ScheduleAnyway"
+            )
+            labelSelector = {
+              matchLabels = {
+                "app.kubernetes.io/instance"  = "ingress-nginx"
+                "app.kubernetes.io/name"      = "ingress-nginx"
+                "app.kubernetes.io/component" = "controller"
+              }
+            }
+          }
+        ]
+        watchIngressWithoutClass = true
+      }
+    }),
     yamlencode(var.ingress_nginx_helm_values)
   ]
 }

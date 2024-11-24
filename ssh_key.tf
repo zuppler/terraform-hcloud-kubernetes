@@ -7,6 +7,6 @@ resource "hcloud_ssh_key" "this" {
   public_key = tls_private_key.ssh_key.public_key_openssh
 
   labels = {
-    "cluster" = var.cluster_name
+    cluster = var.cluster_name
   }
 }

@@ -72,50 +72,34 @@ data "helm_template" "cluster_autoscaler" {
     value = hcloud_network_subnet.autoscaler.network_id
   }
 
-  set {
-    name  = "nodeSelector.node-role\\.kubernetes\\.io/control-plane"
-    value = ""
-  }
-  set {
-    name  = "tolerations[0].key"
-    value = "node-role.kubernetes.io/control-plane"
-  }
-  set {
-    name  = "tolerations[0].effect"
-    value = "NoSchedule"
-  }
-  set {
-    name  = "tolerations[0].operator"
-    value = "Exists"
-  }
-  set {
-    name  = "replicaCount"
-    value = local.control_plane_sum > 1 ? 2 : 1
-  }
-
-  set {
-    name  = "topologySpreadConstraints[0].topologyKey"
-    value = "kubernetes.io/hostname"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].maxSkew"
-    value = 1
-  }
-  set {
-    name  = "topologySpreadConstraints[0].whenUnsatisfiable"
-    value = local.control_plane_sum > 2 ? "DoNotSchedule" : "ScheduleAnyway"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/instance"
-    value = "cluster-autoscaler"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
-    value = "hetzner-cluster-autoscaler"
-  }
-
   values = [
     yamlencode({
+      replicaCount = local.control_plane_sum > 1 ? 2 : 1
+      podDisruptionBudget = {
+        maxUnavailable = null
+        minAvailable   = local.control_plane_sum > 1 ? 1 : 0
+      }
+      topologySpreadConstraints = [
+        {
+          topologyKey       = "kubernetes.io/hostname"
+          maxSkew           = 1
+          whenUnsatisfiable = local.control_plane_sum > 2 ? "DoNotSchedule" : "ScheduleAnyway"
+          labelSelector = {
+            matchLabels = {
+              "app.kubernetes.io/instance" = "cluster-autoscaler"
+              "app.kubernetes.io/name"     = "hetzner-cluster-autoscaler"
+            }
+          }
+        }
+      ],
+      nodeSelector = { "node-role.kubernetes.io/control-plane" : "" }
+      tolerations = [
+        {
+          key      = "node-role.kubernetes.io/control-plane"
+          effect   = "NoSchedule"
+          operator = "Exists"
+        }
+      ]
       autoscalingGroups = [
         for np in local.cluster_autoscaler_nodepools : {
           name         = "${var.cluster_name}-${np.name}",

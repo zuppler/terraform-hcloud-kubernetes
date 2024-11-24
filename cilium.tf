@@ -52,14 +52,7 @@ data "helm_template" "cilium" {
     name  = "installNoConntrackIptablesRules"
     value = true
   }
-  set {
-    name  = "encryption.enabled"
-    value = var.cilium_encryption_enabled
-  }
-  set {
-    name  = "encryption.type"
-    value = "wireguard"
-  }
+
   set {
     name  = "egressGateway.enabled"
     value = var.cilium_egress_gateway_enabled
@@ -93,33 +86,30 @@ data "helm_template" "cilium" {
     name  = "hubble.peerService.clusterDomain"
     value = var.cluster_domain
   }
-  set {
-    name  = "hubble.enabled"
-    value = var.cilium_hubble_enabled ? true : false
-  }
-  set {
-    name  = "hubble.relay.enabled"
-    value = var.cilium_hubble_relay_enabled ? true : false
-  }
-  set {
-    name  = "hubble.ui.enabled"
-    value = var.cilium_hubble_ui_enabled ? true : false
-  }
-
-  set {
-    name  = "prometheus.serviceMonitor.enabled"
-    value = var.cilium_service_monitor_enabled ? true : false
-  }
-  set {
-    name  = "prometheus.serviceMonitor.trustCRDsExist"
-    value = var.cilium_service_monitor_enabled ? true : false
-  }
-  set {
-    name  = "operator.prometheus.serviceMonitor.enabled"
-    value = var.cilium_service_monitor_enabled ? true : false
-  }
 
   values = [
+    yamlencode({
+      encryption = {
+        enabled = var.cilium_encryption_enabled
+        type    = "wireguard"
+      }
+      hubble = {
+        enabled = var.cilium_hubble_enabled ? true : false
+        relay   = { enabled = var.cilium_hubble_relay_enabled ? true : false }
+        ui      = { enabled = var.cilium_hubble_ui_enabled ? true : false }
+      }
+      operator = {
+        serviceMonitor = {
+          enabled = var.cilium_service_monitor_enabled ? true : false
+        }
+      }
+      prometheus = {
+        serviceMonitor = {
+          enabled        = var.cilium_service_monitor_enabled ? true : false
+          trustCRDsExist = var.cilium_service_monitor_enabled ? true : false
+        }
+      }
+    }),
     yamlencode(var.cilium_helm_values)
   ]
 }

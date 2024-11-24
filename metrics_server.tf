@@ -1,3 +1,20 @@
+locals {
+  metrics_server_schedule_on_control_plane = coalesce(
+    var.metrics_server_schedule_on_control_plane,
+    local.worker_sum == 0,
+    false
+  )
+  metrics_server_node_sum = (
+    local.metrics_server_schedule_on_control_plane ?
+    local.control_plane_sum :
+    local.worker_sum > 0 ? local.worker_sum : local.cluster_autoscaler_max_sum
+  )
+  metrics_server_replicas = coalesce(
+    var.metrics_server_replicas,
+    local.metrics_server_node_sum > 1 ? 2 : 1
+  )
+}
+
 data "helm_template" "metrics_server" {
   count = var.metrics_server_enabled ? 1 : 0
 
@@ -9,41 +26,41 @@ data "helm_template" "metrics_server" {
   version      = var.metrics_server_helm_version
   kube_version = var.kubernetes_version
 
-  set {
-    name  = "podDisruptionBudget.enabled"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1
-  }
-  set {
-    name  = "podDisruptionBudget.minAvailable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 1 : 0
-  }
-  set {
-    name  = "replicas"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 2 : 1
-  }
-
-  set {
-    name  = "topologySpreadConstraints[0].topologyKey"
-    value = "kubernetes.io/hostname"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].maxSkew"
-    value = 1
-  }
-  set {
-    name  = "topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/instance"
-    value = "metrics-server"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
-    value = "metrics-server"
-  }
-
   values = [
+    yamlencode({
+      replicas = local.metrics_server_replicas
+      podDisruptionBudget = {
+        enabled      = local.metrics_server_node_sum > 1
+        minAvailable = local.metrics_server_node_sum > 1 ? 1 : 0
+      }
+      topologySpreadConstraints = [
+        {
+          topologyKey = "kubernetes.io/hostname"
+          maxSkew     = 1
+          whenUnsatisfiable = (
+            local.metrics_server_node_sum > local.metrics_server_replicas ?
+            "DoNotSchedule" :
+            "ScheduleAnyway"
+          )
+          labelSelector = {
+            matchLabels = {
+              "app.kubernetes.io/instance" = "metrics-server"
+              "app.kubernetes.io/name"     = "metrics-server"
+            }
+          }
+        }
+      ]
+      nodeSelector = local.metrics_server_schedule_on_control_plane ? {
+        "node-role.kubernetes.io/control-plane" = ""
+      } : {}
+      tolerations = local.metrics_server_schedule_on_control_plane ? [
+        {
+          key      = "node-role.kubernetes.io/control-plane"
+          effect   = "NoSchedule"
+          operator = "Exists"
+        }
+      ] : []
+    }),
     yamlencode(var.metrics_server_helm_values)
   ]
 }

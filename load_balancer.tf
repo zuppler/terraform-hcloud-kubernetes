@@ -39,8 +39,8 @@ resource "hcloud_load_balancer" "kube_api" {
   }
 
   labels = {
-    "cluster" = var.cluster_name
-    "role"    = "kube-api"
+    cluster = var.cluster_name
+    role    = "kube-api"
   }
 }
 
@@ -51,6 +51,8 @@ resource "hcloud_load_balancer_network" "kube_api" {
   enable_public_interface = local.kube_api_load_balancer_public_network_enabled
   subnet_id               = hcloud_network_subnet.load_balancer.id
   ip                      = local.kube_api_load_balancer_private_ipv4
+
+  depends_on = [hcloud_network_subnet.load_balancer]
 }
 
 resource "hcloud_load_balancer_target" "kube_api" {
@@ -110,8 +112,8 @@ resource "hcloud_load_balancer" "ingress" {
   }
 
   labels = {
-    "cluster" = var.cluster_name
-    "role"    = "ingress"
+    cluster = var.cluster_name
+    role    = "ingress"
   }
 
   lifecycle {
@@ -128,4 +130,6 @@ resource "hcloud_load_balancer_network" "ingress" {
   enable_public_interface = var.ingress_load_balancer_public_network_enabled
   subnet_id               = hcloud_network_subnet.load_balancer.id
   ip                      = local.ingress_load_balancer_private_ipv4
+
+  depends_on = [hcloud_network_subnet.load_balancer]
 }

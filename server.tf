@@ -31,8 +31,8 @@ resource "hcloud_server" "control_plane" {
   rebuild_protection       = var.cluster_delete_protection
 
   labels = merge({
-    "cluster" = var.cluster_name,
-    "role"    = "control-plane"
+    cluster = var.cluster_name,
+    role    = "control-plane"
   }, each.value.labels)
 
   firewall_ids = [
@@ -94,8 +94,8 @@ resource "hcloud_server" "worker" {
   rebuild_protection       = var.cluster_delete_protection
 
   labels = merge({
-    "cluster" = var.cluster_name,
-    "role"    = "worker"
+    cluster = var.cluster_name,
+    role    = "worker"
   }, each.value.labels)
 
   firewall_ids = [

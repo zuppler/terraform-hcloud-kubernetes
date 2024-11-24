@@ -297,7 +297,7 @@ variable "cluster_autoscaler_helm_version" {
 }
 
 variable "cluster_autoscaler_helm_values" {
-  type        = map(any)
+  type        = any
   default     = {}
   description = "Custom Helm values for the Cluster Autoscaler chart deployment. These values will merge with and will override the default values provided by the Cluster Autoscaler Helm chart."
 }
@@ -600,12 +600,6 @@ variable "kubernetes_version" {
   description = "Specifies the Kubernetes version to deploy."
 }
 
-variable "kubernetes_automatic_upgrade" {
-  type        = bool
-  default     = true
-  description = "Determines whether Kubernetes is automatically upgraded during a terraform apply."
-}
-
 variable "kubernetes_kubelet_extra_args" {
   type        = map(string)
   default     = {}
@@ -694,7 +688,7 @@ variable "hcloud_ccm_helm_version" {
 }
 
 variable "hcloud_ccm_helm_values" {
-  type        = map(any)
+  type        = any
   default     = {}
   description = "Custom Helm values for the Hcloud CCM chart deployment. These values will merge with and will override the default values provided by the Hcloud CCM Helm chart."
 }
@@ -720,7 +714,7 @@ variable "hcloud_csi_helm_version" {
 }
 
 variable "hcloud_csi_helm_values" {
-  type        = map(any)
+  type        = any
   default     = {}
   description = "Custom Helm values for the Hcloud CSI chart deployment. These values will merge with and will override the default values provided by the Hcloud CSI Helm chart."
 }
@@ -752,7 +746,7 @@ variable "longhorn_helm_version" {
 }
 
 variable "longhorn_helm_values" {
-  type        = map(any)
+  type        = any
   default     = {}
   description = "Custom Helm values for the Longhorn chart deployment. These values will merge with and will override the default values provided by the Longhorn Helm chart."
 }
@@ -784,7 +778,7 @@ variable "cilium_helm_version" {
 }
 
 variable "cilium_helm_values" {
-  type        = map(any)
+  type        = any
   default     = {}
   description = "Custom Helm values for the Cilium chart deployment. These values will merge with and will override the default values provided by the Cilium Helm chart."
 }
@@ -856,7 +850,7 @@ variable "metrics_server_helm_version" {
 }
 
 variable "metrics_server_helm_values" {
-  type        = map(any)
+  type        = any
   default     = {}
   description = "Custom Helm values for the Metrics Server chart deployment. These values will merge with and will override the default values provided by the Metrics Server Helm chart."
 }
@@ -865,6 +859,18 @@ variable "metrics_server_enabled" {
   type        = bool
   default     = true
   description = "Enables the the Kubernetes Metrics Server."
+}
+
+variable "metrics_server_schedule_on_control_plane" {
+  type        = bool
+  default     = null
+  description = "Determines whether to schedule the Metrics Server on control plane nodes. Defaults to 'true' if there are no configured worker nodes."
+}
+
+variable "metrics_server_replicas" {
+  type        = number
+  default     = null
+  description = "Specifies the number of replicas for the Metrics Server. Depending on the node pool size, a default of 1 or 2 is used if not explicitly set."
 }
 
 
@@ -888,7 +894,7 @@ variable "cert_manager_helm_version" {
 }
 
 variable "cert_manager_helm_values" {
-  type        = map(any)
+  type        = any
   default     = {}
   description = "Custom Helm values for the Cert Manager chart deployment. These values will merge with and will override the default values provided by the Cert Manager Helm chart."
 }
@@ -920,7 +926,7 @@ variable "ingress_nginx_helm_version" {
 }
 
 variable "ingress_nginx_helm_values" {
-  type        = map(any)
+  type        = any
   default     = {}
   description = "Custom Helm values for the Ingress NGINX Controller chart deployment. These values will merge with and will override the default values provided by the Ingress NGINX Controller Helm chart."
 }
@@ -950,7 +956,7 @@ variable "ingress_nginx_kind" {
 variable "ingress_nginx_replicas" {
   type        = number
   default     = null
-  description = "Specifies the number of replicas for the NGINX Ingress controller. If not set, the default is 2 replicas for clusters with fewer than 3 Worker nodes, and 3 replicas for clusters with 3 or more Worker nodes."
+  description = "Specifies the number of replicas for the NGINX Ingress controller. If not set, the default is 2 replicas for clusters with fewer than 3 Worker nodes, and 3 replicas for clusters with 4 or more Worker nodes."
 
   validation {
     condition     = var.ingress_nginx_kind != "DaemonSet" || var.ingress_nginx_replicas == null

@@ -8,7 +8,7 @@ locals {
       keep_disk   = np.keep_disk,
       labels = merge(
         np.labels,
-        { "nodepool" = np.name }
+        { nodepool = np.name }
       ),
       annotations = np.annotations,
       taints = concat(
@@ -33,7 +33,7 @@ locals {
       keep_disk   = np.keep_disk,
       labels = merge(
         np.labels,
-        { "nodepool" = np.name }
+        { nodepool = np.name }
       ),
       annotations = np.annotations,
       taints = [for taint in np.taints : regex(
@@ -52,7 +52,7 @@ locals {
       server_type = np.type,
       labels = merge(
         np.labels,
-        { "nodepool" = np.name }
+        { nodepool = np.name }
       ),
       annotations = np.annotations,
       taints = [for taint in np.taints : regex(

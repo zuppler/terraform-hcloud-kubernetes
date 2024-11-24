@@ -3,8 +3,8 @@ resource "hcloud_placement_group" "control_plane" {
   type = "spread"
 
   labels = {
-    "cluster" = var.cluster_name,
-    "role"    = "control-plane"
+    cluster = var.cluster_name,
+    role    = "control-plane"
   }
 }
 
@@ -21,8 +21,8 @@ resource "hcloud_placement_group" "worker" {
   type = "spread"
 
   labels = {
-    "cluster"  = var.cluster_name,
-    "nodepool" = each.value.nodepool,
-    "role"     = "worker"
+    cluster  = var.cluster_name,
+    nodepool = each.value.nodepool,
+    role     = "worker"
   }
 }

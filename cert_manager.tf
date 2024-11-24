@@ -6,6 +6,35 @@ locals {
       name = data.helm_template.cert_manager[0].namespace
     }
   } : null
+
+  cert_manager_values = {
+    replicaCount = local.control_plane_sum > 1 ? 2 : 1
+    podDisruptionBudget = {
+      enabled      = local.control_plane_sum > 1
+      minAvailable = local.control_plane_sum > 1 ? 1 : 0
+    }
+    topologySpreadConstraints = [
+      {
+        topologyKey       = "kubernetes.io/hostname"
+        maxSkew           = 1
+        whenUnsatisfiable = local.control_plane_sum > 2 ? "DoNotSchedule" : "ScheduleAnyway"
+        labelSelector = {
+          matchLabels = {
+            "app.kubernetes.io/instance"  = "cert-manager"
+            "app.kubernetes.io/component" = "controller"
+          }
+        }
+      }
+    ],
+    nodeSelector = { "node-role.kubernetes.io/control-plane" : "" }
+    tolerations = [
+      {
+        key      = "node-role.kubernetes.io/control-plane"
+        effect   = "NoSchedule"
+        operator = "Exists"
+      }
+    ]
+  }
 }
 
 data "helm_template" "cert_manager" {
@@ -28,120 +57,50 @@ data "helm_template" "cert_manager" {
     value = false
   }
 
-  set {
-    name  = "replicaCount"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 2 : 1
-  }
-  set {
-    name  = "webhook.replicaCount"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 2 : 1
-  }
-  set {
-    name  = "cainjector.replicaCount"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 2 : 1
-  }
-
-  set {
-    name  = "podDisruptionBudget.enabled"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1
-  }
-  set {
-    name  = "podDisruptionBudget.minAvailable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 1 : 0
-  }
-  set {
-    name  = "webhook.podDisruptionBudget.enabled"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1
-  }
-  set {
-    name  = "webhook.podDisruptionBudget.minAvailable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 1 : 0
-  }
-  set {
-    name  = "cainjector.podDisruptionBudget.enabled"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1
-  }
-  set {
-    name  = "cainjector.podDisruptionBudget.minAvailable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 1 ? 1 : 0
-  }
-
-  set {
-    name  = "topologySpreadConstraints[0].topologyKey"
-    value = "kubernetes.io/hostname"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].maxSkew"
-    value = 1
-  }
-  set {
-    name  = "topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/component"
-    value = "controller"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/instance"
-    value = "cert-manager"
-  }
-  set {
-    name  = "topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
-    value = "cert-manager"
-  }
-
-  set {
-    name  = "webhook.topologySpreadConstraints[0].topologyKey"
-    value = "kubernetes.io/hostname"
-  }
-  set {
-    name  = "webhook.topologySpreadConstraints[0].maxSkew"
-    value = 1
-  }
-  set {
-    name  = "webhook.topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
-  }
-  set {
-    name  = "webhook.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/component"
-    value = "webhook"
-  }
-  set {
-    name  = "webhook.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/instance"
-    value = "cert-manager"
-  }
-  set {
-    name  = "webhook.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
-    value = "webhook"
-  }
-
-  set {
-    name  = "cainjector.topologySpreadConstraints[0].topologyKey"
-    value = "kubernetes.io/hostname"
-  }
-  set {
-    name  = "cainjector.topologySpreadConstraints[0].maxSkew"
-    value = 1
-  }
-  set {
-    name  = "cainjector.topologySpreadConstraints[0].whenUnsatisfiable"
-    value = (local.worker_sum + local.cluster_autoscaler_max_sum) > 2 ? "DoNotSchedule" : "ScheduleAnyway"
-  }
-  set {
-    name  = "cainjector.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/component"
-    value = "cainjector"
-  }
-  set {
-    name  = "cainjector.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/instance"
-    value = "cert-manager"
-  }
-  set {
-    name  = "cainjector.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
-    value = "cainjector"
-  }
-
   values = [
+    yamlencode(
+      merge(
+        local.cert_manager_values,
+        {
+          webhook = merge(
+            local.cert_manager_values,
+            {
+              topologySpreadConstraints = [
+                {
+                  topologyKey       = local.cert_manager_values.topologySpreadConstraints[0].topologyKey
+                  maxSkew           = local.cert_manager_values.topologySpreadConstraints[0].maxSkew
+                  whenUnsatisfiable = local.cert_manager_values.topologySpreadConstraints[0].whenUnsatisfiable
+                  labelSelector = {
+                    matchLabels = {
+                      "app.kubernetes.io/instance"  = "cert-manager"
+                      "app.kubernetes.io/component" = "webhook"
+                    }
+                  }
+                }
+              ]
+            }
+          ),
+          cainjector = merge(
+            local.cert_manager_values,
+            {
+              topologySpreadConstraints = [
+                {
+                  topologyKey       = local.cert_manager_values.topologySpreadConstraints[0].topologyKey
+                  maxSkew           = local.cert_manager_values.topologySpreadConstraints[0].maxSkew
+                  whenUnsatisfiable = local.cert_manager_values.topologySpreadConstraints[0].whenUnsatisfiable
+                  labelSelector = {
+                    matchLabels = {
+                      "app.kubernetes.io/instance"  = "cert-manager"
+                      "app.kubernetes.io/component" = "cainjector"
+                    }
+                  }
+                }
+              ]
+            }
+          )
+        }
+      )
+    ),
     yamlencode(var.cert_manager_helm_values)
   ]
 }

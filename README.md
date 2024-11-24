@@ -190,8 +190,8 @@ terraform apply
 
 Set config file locations:
 ```sh
-export TALOSCONFIG=./talosconfig
-export KUBECONFIG=./kubeconfig
+export TALOSCONFIG=talosconfig
+export KUBECONFIG=kubeconfig
 ```
 
 Display cluster nodes:

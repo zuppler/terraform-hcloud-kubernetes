@@ -17,8 +17,8 @@ resource "hcloud_floating_ip" "control_plane_ipv4" {
   delete_protection = var.cluster_delete_protection
 
   labels = {
-    "cluster" = var.cluster_name,
-    "role"    = "control-plane"
+    cluster = var.cluster_name,
+    role    = "control-plane"
   }
 }
 
