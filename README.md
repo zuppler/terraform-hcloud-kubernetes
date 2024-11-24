@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="https://raw.githubusercontent.com/hcloud-k8s/terraform-hcloud-kubernetes/refs/heads/main/assets/hcloud-k8s.png" alt="logo" width="200" height="auto" />
+  <img src="https://avatars.githubusercontent.com/u/182015181" alt="logo" width="200" height="auto" />
   <h1>Hcloud Kubernetes</h1>
 
   <p>
