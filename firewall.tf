@@ -52,7 +52,7 @@ locals {
   }
 
   firewall_rules_list = values(
-    merge(local.firewall_rules, local.firewall_extra_rules)
+    merge(local.firewall_extra_rules, local.firewall_rules)
   )
 }
 

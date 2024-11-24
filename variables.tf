@@ -117,10 +117,10 @@ variable "firewall_extra_rules" {
   type = list(object({
     description     = string
     direction       = string
-    source_ips      = optional(string)
-    destination_ips = optional(string)
+    source_ips      = optional(list(string), [])
+    destination_ips = optional(list(string), [])
     protocol        = string
-    port            = optional(number)
+    port            = optional(string)
   }))
   default     = []
   description = "Additional firewall rules to apply to the cluster."
@@ -147,11 +147,11 @@ variable "firewall_extra_rules" {
   validation {
     condition = alltrue([
       for rule in var.firewall_extra_rules : (
-        (rule.direction == "in" && rule.source_ips != null && rule.destination_ips == null) ||
-        (rule.direction == "out" && rule.destination_ips != null && rule.source_ips == null)
+        (rule.direction == "in" && rule.source_ips != null && (rule.destination_ips == null || length(rule.destination_ips) == 0)) ||
+        (rule.direction == "out" && rule.destination_ips != null && (rule.source_ips == null || length(rule.source_ips) == 0))
       )
     ])
-    error_message = "For 'in' direction, 'source_ips' must be provided and 'destination_ips' must be null. For 'out' direction, 'destination_ips' must be provided and 'source_ips' must be null."
+    error_message = "For 'in' direction, 'source_ips' must be provided and 'destination_ips' must be null or empty. For 'out' direction, 'destination_ips' must be provided and 'source_ips' must be null or empty."
   }
 
   validation {
@@ -161,6 +161,16 @@ variable "firewall_extra_rules" {
       )
     ])
     error_message = "Port must not be specified when 'protocol' is 'icmp', 'gre', or 'esp'."
+  }
+
+  // Validation to ensure port is specified for protocols that have ports
+  validation {
+    condition = alltrue([
+      for rule in var.firewall_extra_rules : (
+        rule.protocol == "tcp" || rule.protocol == "udp" ? rule.port != null : true
+      )
+    ])
+    error_message = "Port must be specified when 'protocol' is 'tcp' or 'udp'."
   }
 }
 
