@@ -390,6 +390,49 @@ spec:
 Please visit the Cilium [documentation](https://docs.cilium.io/en/stable/network/egress-gateway) for more details.
 </details>
 
+<!-- Firewall Configuration -->
+<details>
+<summary><b>Firewall Configuration</b></summary>
+By default, a firewall is configured that can be extended with custom rules. If no egress rules are configured, outbound traffic remains unrestricted. However, inbound traffic is always restricted to mitigate the risk of exposing Talos nodes to the public internet, which could pose a serious security vulnerability.
+
+Each rule is defined with the following properties:
+- `description`: A brief description of the rule.
+- `direction`: The direction of traffic (`in` for inbound, `out` for outbound).
+- `source_ips`: A list of source IP addresses for outbound rules.
+- `destination_ips`: A list of destination IP addresses for inbound rules.
+- `protocol`: The protocol used (valid options: `tcp`, `udp`, `icmp`, `gre`, `esp`).
+- `port`: The port number (required for `tcp` and `udp` protocols, must not be specified for `icmp`, `gre`, and `esp`).
+
+Example `kubernetes.tf` snippet:
+```hcl
+firewall_extra_rules = [
+  {
+    description = "Custom UDP Rule"
+    direction   = "in"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+    protocol    = "udp"
+    port        = "12345"
+  },
+  {
+    description = "Custom TCP Rule"
+    direction   = "in"
+    source_ips  = ["1.2.3.4", "1:2:3:4::"]
+    protocol    = "tcp"
+    port        = "8080-9000"
+  },
+  {
+    description = "Allow ICMP"
+    direction   = "in"
+    source_ips  = ["0.0.0.0/0", "::/0"]
+    protocol    = "icmp"
+  }
+]
+```
+
+For access to Talos and the Kubernetes API, please refer to the [Cluster Access](#public-cluster-access) configuration section.
+
+</details>
+
 <!-- Network Segmentation -->
 <details>
 <summary><b>Network Segmentation</b></summary>

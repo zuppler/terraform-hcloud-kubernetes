@@ -47,7 +47,7 @@ locals {
     format("%s-%s-%s",
       lookup(rule, "direction", "null"),
       lookup(rule, "protocol", "null"),
-      lookup(rule, "port", "null")
+      coalesce(lookup(rule, "port", "null"), "null")
     ) => rule
   }
 
