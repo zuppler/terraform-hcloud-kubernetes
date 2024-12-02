@@ -155,21 +155,24 @@ locals {
             },
             var.kubernetes_kubelet_extra_args
           )
-          extraConfig = {
-            shutdownGracePeriod             = "90s"
-            shutdownGracePeriodCriticalPods = "15s"
-            registerWithTaints              = local.control_plane_nodepools_map[node.labels.nodepool].taints
-            systemReserved = {
-              cpu               = "250m"
-              memory            = "300Mi"
-              ephemeral-storage = "1Gi"
-            }
-            kubeReserved = {
-              cpu               = "250m"
-              memory            = "1500Mi"
-              ephemeral-storage = "1Gi"
-            }
-          }
+          extraConfig = merge(
+            {
+              shutdownGracePeriod             = "90s"
+              shutdownGracePeriodCriticalPods = "15s"
+              registerWithTaints              = local.control_plane_nodepools_map[node.labels.nodepool].taints
+              systemReserved = {
+                cpu               = "250m"
+                memory            = "300Mi"
+                ephemeral-storage = "1Gi"
+              }
+              kubeReserved = {
+                cpu               = "250m"
+                memory            = "1500Mi"
+                ephemeral-storage = "1Gi"
+              }
+            },
+            var.kubernetes_kubelet_extra_config
+          )
           extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
             validSubnets = [local.node_ipv4_cidr]
@@ -298,21 +301,24 @@ locals {
             },
             var.kubernetes_kubelet_extra_args
           )
-          extraConfig = {
-            shutdownGracePeriod             = "90s"
-            shutdownGracePeriodCriticalPods = "15s"
-            registerWithTaints              = local.worker_nodepools_map[node.labels.nodepool].taints
-            systemReserved = {
-              cpu               = "100m"
-              memory            = "300Mi"
-              ephemeral-storage = "1Gi"
-            }
-            kubeReserved = {
-              cpu               = "100m"
-              memory            = "350Mi"
-              ephemeral-storage = "1Gi"
-            }
-          }
+          extraConfig = merge(
+            {
+              shutdownGracePeriod             = "90s"
+              shutdownGracePeriodCriticalPods = "15s"
+              registerWithTaints              = local.worker_nodepools_map[node.labels.nodepool].taints
+              systemReserved = {
+                cpu               = "100m"
+                memory            = "300Mi"
+                ephemeral-storage = "1Gi"
+              }
+              kubeReserved = {
+                cpu               = "100m"
+                memory            = "350Mi"
+                ephemeral-storage = "1Gi"
+              }
+            },
+            var.kubernetes_kubelet_extra_config
+          )
           extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
             validSubnets = [local.node_ipv4_cidr]
@@ -398,21 +404,24 @@ locals {
             },
             var.kubernetes_kubelet_extra_args
           )
-          extraConfig = {
-            shutdownGracePeriod             = "90s"
-            shutdownGracePeriodCriticalPods = "15s"
-            registerWithTaints              = nodepool.taints
-            systemReserved = {
-              cpu               = "100m"
-              memory            = "300Mi"
-              ephemeral-storage = "1Gi"
-            }
-            kubeReserved = {
-              cpu               = "100m"
-              memory            = "350Mi"
-              ephemeral-storage = "1Gi"
-            }
-          }
+          extraConfig = merge(
+            {
+              shutdownGracePeriod             = "90s"
+              shutdownGracePeriodCriticalPods = "15s"
+              registerWithTaints              = nodepool.taints
+              systemReserved = {
+                cpu               = "100m"
+                memory            = "300Mi"
+                ephemeral-storage = "1Gi"
+              }
+              kubeReserved = {
+                cpu               = "100m"
+                memory            = "350Mi"
+                ephemeral-storage = "1Gi"
+              }
+            },
+            var.kubernetes_kubelet_extra_config
+          )
           extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
             validSubnets = [local.node_ipv4_cidr]
