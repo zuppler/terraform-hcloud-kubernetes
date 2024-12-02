@@ -206,6 +206,12 @@ variable "control_plane_private_vip_ipv4_enabled" {
   description = "If true, an alias IP will be created and assigned to the Control Plane nodes."
 }
 
+variable "kube_api_admission_control" {
+  type        = list(any)
+  default     = []
+  description = "List of admission control settings for the Kube API. If set, this overrides the default admission control."
+}
+
 variable "control_plane_nodepools" {
   type = list(object({
     name        = string
@@ -243,6 +249,12 @@ variable "control_plane_nodepools" {
     ])
     error_message = "Each nodepool location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
   }
+}
+
+variable "control_plane_config_patches" {
+  type        = list(any)
+  default     = []
+  description = "List of configuration patches applied to the Control Plane nodes."
 }
 
 
@@ -284,6 +296,12 @@ variable "worker_nodepools" {
     ])
     error_message = "Each nodepool location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
   }
+}
+
+variable "worker_config_patches" {
+  type        = list(any)
+  default     = []
+  description = "List of configuration patches applied to the Worker nodes."
 }
 
 
@@ -363,6 +381,11 @@ variable "cluster_autoscaler_nodepools" {
   }
 }
 
+variable "cluster_autoscaler_config_patches" {
+  type        = list(any)
+  default     = []
+  description = "List of configuration patches applied to the Cluster Autoscaler nodes."
+}
 
 # Talos
 variable "talos_version" {
