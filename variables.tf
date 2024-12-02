@@ -249,6 +249,13 @@ variable "control_plane_nodepools" {
     ])
     error_message = "Each nodepool location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
   }
+
+  validation {
+    condition = alltrue([
+      for np in var.control_plane_nodepools : length(var.cluster_name) + length(np.name) <= 56
+    ])
+    error_message = "The combined length of the cluster name and any Control Plane nodepool name must not exceed 56 characters."
+  }
 }
 
 variable "control_plane_config_patches" {
