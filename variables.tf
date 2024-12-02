@@ -640,6 +640,12 @@ variable "kubernetes_kubelet_extra_args" {
   description = "Specifies additional command-line arguments to pass to the kubelet service. These arguments can customize or override default kubelet configurations, allowing for tailored cluster behavior."
 }
 
+variable "kubernetes_kubelet_extra_config" {
+  type        = any
+  default     = {}
+  description = "Specifies additional configuration settings for the kubelet service. These settings can customize or override default kubelet configurations, allowing for tailored cluster behavior."
+}
+
 
 # Kubernetes API
 variable "kube_api_hostname" {
