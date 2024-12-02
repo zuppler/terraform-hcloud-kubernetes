@@ -220,7 +220,7 @@ locals {
         }
         apiServer = {
           admissionControl = var.kube_api_admission_control
-          certSANs = local.certificate_san,
+          certSANs         = local.certificate_san,
           extraArgs = merge(
             { "enable-aggregator-routing" = true },
             var.kube_api_extra_args
@@ -470,12 +470,12 @@ data "talos_machine_configuration" "control_plane" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [
+  config_patches = [
     yamlencode(local.control_plane_talos_config_patch[each.key]),
     yamlencode(var.control_plane_config_patches)
   ]
-  docs               = false
-  examples           = false
+  docs     = false
+  examples = false
 }
 
 data "talos_machine_configuration" "worker" {
@@ -487,12 +487,12 @@ data "talos_machine_configuration" "worker" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [
+  config_patches = [
     yamlencode(local.worker_talos_config_patch[each.key]),
     yamlencode(var.worker_config_patches)
   ]
-  docs               = false
-  examples           = false
+  docs     = false
+  examples = false
 }
 
 data "talos_machine_configuration" "cluster_autoscaler" {
@@ -504,10 +504,10 @@ data "talos_machine_configuration" "cluster_autoscaler" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [
+  config_patches = [
     yamlencode(local.autoscaler_nodepool_talos_config_patch[each.key]),
     yamlencode(var.cluster_autoscaler_config_patches)
   ]
-  docs               = false
-  examples           = false
+  docs     = false
+  examples = false
 }

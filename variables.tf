@@ -387,6 +387,7 @@ variable "cluster_autoscaler_config_patches" {
   description = "List of configuration patches applied to the Cluster Autoscaler nodes."
 }
 
+
 # Talos
 variable "talos_version" {
   type        = string
