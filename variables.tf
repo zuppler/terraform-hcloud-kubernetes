@@ -4,8 +4,8 @@ variable "cluster_name" {
   description = "Specifies the name of the cluster. This name is used to identify the cluster within the infrastructure and should be unique across all deployments."
 
   validation {
-    condition     = can(regex("^[a-z0-9](?:[a-z0-9-]{0,14}[a-z0-9])?$", var.cluster_name))
-    error_message = "The cluster name must start and end with a lowercase letter or number, can contain hyphens, and must be no longer than 16 characters."
+    condition     = can(regex("^[a-z0-9](?:[a-z0-9-]{0,30}[a-z0-9])?$", var.cluster_name))
+    error_message = "The cluster name must start and end with a lowercase letter or number, can contain hyphens, and must be no longer than 32 characters."
   }
 }
 
@@ -296,6 +296,13 @@ variable "worker_nodepools" {
     ])
     error_message = "Each nodepool location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
   }
+
+  validation {
+    condition = alltrue([
+      for np in var.worker_nodepools : length(var.cluster_name) + length(np.name) <= 56
+    ])
+    error_message = "The combined length of the cluster name and any Worker nodepool name must not exceed 56 characters."
+  }
 }
 
 variable "worker_config_patches" {
@@ -378,6 +385,13 @@ variable "cluster_autoscaler_nodepools" {
       ], np.location)
     ])
     error_message = "Each nodepool location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
+  }
+
+  validation {
+    condition = alltrue([
+      for np in var.cluster_autoscaler_nodepools : length(var.cluster_name) + length(np.name) <= 56
+    ])
+    error_message = "The combined length of the cluster name and any Cluster Autoscaler nodepool name must not exceed 56 characters."
   }
 }
 
