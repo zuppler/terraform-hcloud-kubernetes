@@ -31,10 +31,10 @@
         "\\.pkr\\.hcl$"
       ],
       "matchStrings": [
-        "\\s*version\\s*=\\s*\"(?<currentValue>[^\"]+)\"\\s*source\\s*=\\s*\"github.com\\/(?<depName>[^\"]+)\""
+        "\\s*version\\s*=\\s*\"(?<currentValue>[^\"]+)\"\\s*source\\s*=\\s*\"github.com/(?<depName>[^\"]+)\""
       ],
       "datasourceTemplate": "github-tags",
-      "depNameTemplate": "{{{replace '^(.+)\\/(.+)$' '$1/packer-plugin-$2' depName}}}"
+      "depNameTemplate": "{{{replace '^(.+)/(.+)$' '$1/packer-plugin-$2' depName}}}"
     }
   ]
 }
