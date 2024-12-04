@@ -175,7 +175,7 @@ module "kubernetes" {
 }
 ```
 > [!NOTE]
-> For a High-Availability (HA) setup, you’ll need at least 3 control plane nodes and 3 worker nodes.
+> Each control plane node requires at least 4GB of memory and each worker node at least 2GB. For High-Availability (HA), at least 3 control plane nodes and 3 worker nodes are required.
 
 Initialize Terraform and deploy the cluster:
 
