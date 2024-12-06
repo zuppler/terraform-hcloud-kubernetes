@@ -435,7 +435,7 @@ For access to Talos and the Kubernetes API, please refer to the [Cluster Access]
 </details>
 
 <!-- Ingress Load Balancer -->
-<details open>
+<details>
 <summary><b>Ingress Load Balancer</b></summary>
 
 The ingress controller uses a default load balancer service to manage external traffic. For geo-redundancy and high availability, `ingress_load_balancer_pools` can be configured as an alternative, replacing the default load balancer with the specified pool of load balancers.
