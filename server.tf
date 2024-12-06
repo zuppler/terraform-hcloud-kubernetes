@@ -2,7 +2,6 @@ resource "hcloud_server" "control_plane" {
   for_each = merge([
     for np_index in range(length(local.control_plane_nodepools)) : {
       for cp_index in range(local.control_plane_nodepools[np_index].count) : "${var.cluster_name}-${local.control_plane_nodepools[np_index].name}-${cp_index + 1}" => {
-        name               = "${var.cluster_name}-${local.control_plane_nodepools[np_index].name}-${cp_index + 1}",
         server_type        = local.control_plane_nodepools[np_index].server_type,
         location           = local.control_plane_nodepools[np_index].location,
         backups            = local.control_plane_nodepools[np_index].backups,
@@ -18,7 +17,7 @@ resource "hcloud_server" "control_plane" {
     }
   ]...)
 
-  name                     = each.value.name
+  name                     = each.key
   image                    = substr(each.value.server_type, 0, 3) == "cax" ? data.hcloud_image.arm64[0].id : data.hcloud_image.amd64[0].id
   server_type              = each.value.server_type
   location                 = each.value.location
@@ -30,10 +29,13 @@ resource "hcloud_server" "control_plane" {
   delete_protection        = var.cluster_delete_protection
   rebuild_protection       = var.cluster_delete_protection
 
-  labels = merge({
-    cluster = var.cluster_name,
-    role    = "control-plane"
-  }, each.value.labels)
+  labels = merge(
+    each.value.labels,
+    {
+      cluster = var.cluster_name,
+      role    = "control-plane"
+    }
+  )
 
   firewall_ids = [
     hcloud_firewall.this.id
@@ -68,7 +70,6 @@ resource "hcloud_server" "worker" {
   for_each = merge([
     for np_index in range(length(local.worker_nodepools)) : {
       for wkr_index in range(local.worker_nodepools[np_index].count) : "${var.cluster_name}-${local.worker_nodepools[np_index].name}-${wkr_index + 1}" => {
-        name               = "${var.cluster_name}-${local.worker_nodepools[np_index].name}-${wkr_index + 1}",
         server_type        = local.worker_nodepools[np_index].server_type,
         location           = local.worker_nodepools[np_index].location,
         backups            = local.worker_nodepools[np_index].backups,
@@ -81,7 +82,7 @@ resource "hcloud_server" "worker" {
     }
   ]...)
 
-  name                     = each.value.name
+  name                     = each.key
   image                    = substr(each.value.server_type, 0, 3) == "cax" ? data.hcloud_image.arm64[0].id : data.hcloud_image.amd64[0].id
   server_type              = each.value.server_type
   location                 = each.value.location
@@ -93,10 +94,13 @@ resource "hcloud_server" "worker" {
   delete_protection        = var.cluster_delete_protection
   rebuild_protection       = var.cluster_delete_protection
 
-  labels = merge({
-    cluster = var.cluster_name,
-    role    = "worker"
-  }, each.value.labels)
+  labels = merge(
+    each.value.labels,
+    {
+      cluster = var.cluster_name,
+      role    = "worker"
+    }
+  )
 
   firewall_ids = [
     hcloud_firewall.this.id

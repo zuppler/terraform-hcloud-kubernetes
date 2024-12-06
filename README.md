@@ -59,11 +59,12 @@ This project is committed to production-grade configuration and lifecycle manage
 This setup includes several features for a seamless, best-practice Kubernetes deployment on Hetzner Cloud:
 - **Fully Declarative & Immutable:** Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
 - **Cross-Architecture:** Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
-- **High Availability:** Configured for production-grade high availability, ensuring consistent and reliable system performance.
+- **High Availability:** Configured for production-grade high availability for all components, ensuring consistent and reliable system performance.
 - **Distributed Storage:** Implements Longhorn for cloud-native block storage with snapshotting and automatic replica rebuilding.
 - **Autoscaling:** Includes Cluster Autoscaler to dynamically adjust node counts based on workload demands, optimizing resource allocation.
 - **Plug-and-Play Kubernetes:** Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
-- **Dual-Stack Ingress:** Employs Hetzner Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
+- **Geo-Redundant Ingress:** Supports high availability and massive scalability through geo-redundant Load Balancer pools.
+- **Dual-Stack Support:** Employs Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
 - **Enhanced Security:** Built with security as a priority, incorporating firewalls and encryption by default to protect your infrastructure.
 - **Automated Backups:** Leverages Talos Backup with support for S3-compatible storage solutions like Hetzner's Object Storage.
 
@@ -430,6 +431,62 @@ firewall_extra_rules = [
 ```
 
 For access to Talos and the Kubernetes API, please refer to the [Cluster Access](#public-cluster-access) configuration section.
+
+</details>
+
+<!-- Ingress Load Balancer -->
+<details open>
+<summary><b>Ingress Load Balancer</b></summary>
+
+The ingress controller uses a default load balancer service to manage external traffic. For geo-redundancy and high availability, `ingress_load_balancer_pools` can be configured as an alternative, replacing the default load balancer with the specified pool of load balancers.
+
+##### Configuring Load Balancer Pools
+To replace the default load balancer, use `ingress_load_balancer_pools` in the Terraform configuration. This setup ensures high availability and geo-redundancy by distributing traffic from various locations across all targets in all regions.
+
+Example `kubernetes.tf` configuration:
+```hcl
+ingress_load_balancer_pools = [
+  {
+    name     = "lb-nbg"
+    location = "nbg1"
+    type     = "lb11"
+  },
+  {
+    name     = "lb-fsn"
+    location = "fsn1"
+    type     = "lb11"
+  }
+]
+```
+
+##### Local Traffic Optimization
+Configuring local traffic handling enhances network efficiency by reducing latency. Processing traffic closer to its source eliminates unnecessary routing delays, ensuring consistent performance for low-latency or region-sensitive applications.
+
+Example `kubernetes.tf` configuration:
+```hcl
+ingress_nginx_kind = "DaemonSet"
+ingress_nginx_service_external_traffic_policy = "Local"
+
+ingress_load_balancer_pools = [
+  {
+    name          = "regional-lb-nbg"
+    location      = "nbg1"
+    local_traffic = true
+  },
+  {
+    name          = "regional-lb-fsn"
+    location      = "fsn1"
+    local_traffic = true
+  }
+]
+```
+
+Key settings in this configuration:
+- `local_traffic`: Limits load balancer targets to nodes in the same geographic location as the load balancer, reducing data travel distances and keeping traffic within the region.
+- `ingress_nginx_service_external_traffic_policy` set to `Local`: Ensures external traffic is handled directly on the local node, avoiding extra network hops.
+- `ingress_nginx_kind` set to `DaemonSet`: Deploys an ingress controller instance on every node, enabling requests to be handled locally for faster response times.
+
+Topology-aware routing in ingress-nginx can optionally be enabled by setting the `ingress_nginx_topology_aware_routing` variable to `true`. This functionality routes traffic to the nearest upstream endpoints, enhancing efficiency for supported services. Note that this feature is only applicable to services that support topology-aware routing. For more information, refer to the [Kubernetes documentation](https://kubernetes.io/docs/concepts/services-networking/topology-aware-routing/).
 
 </details>
 
