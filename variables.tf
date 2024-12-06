@@ -967,7 +967,7 @@ variable "cert_manager_enabled" {
 }
 
 
-# Ingress
+# Ingress NGINX
 variable "ingress_nginx_helm_repository" {
   type        = string
   default     = "https://kubernetes.github.io/ingress-nginx"
@@ -1025,6 +1025,25 @@ variable "ingress_nginx_replicas" {
   }
 }
 
+variable "ingress_nginx_topology_aware_routing" {
+  type        = bool
+  default     = false
+  description = "Enables Topology Aware Routing for ingress-nginx with the service annotation `service.kubernetes.io/topology-mode`, routing traffic closer to its origin."
+}
+
+variable "ingress_nginx_service_external_traffic_policy" {
+  type        = string
+  default     = "Cluster"
+  description = "Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints."
+
+  validation {
+    condition     = contains(["Cluster", "Local"], var.ingress_nginx_service_external_traffic_policy)
+    error_message = "Invalid value for external traffic policy. Allowed values are 'Cluster' or 'Local'."
+  }
+}
+
+
+# Ingress Load Balancer
 variable "ingress_load_balancer_type" {
   type        = string
   default     = "lb11"
@@ -1051,6 +1070,108 @@ variable "ingress_load_balancer_public_network_enabled" {
   type        = bool
   default     = true
   description = "Enables or disables the public interface of the Load Balancer."
+}
+
+variable "ingress_load_balancer_health_check_interval" {
+  type        = number
+  default     = 3
+  description = "The interval (in seconds) between consecutive health checks. Must be between 3 and 60 seconds."
+
+  validation {
+    condition = (
+      var.ingress_load_balancer_health_check_interval >= 3 &&
+      var.ingress_load_balancer_health_check_interval <= 60
+    )
+    error_message = "The health check interval must be between 3 and 60 seconds."
+  }
+}
+
+variable "ingress_load_balancer_health_check_retries" {
+  type        = number
+  default     = 3
+  description = "The number of retries for a failed health check before marking the target as unhealthy. Must be between 0 and 5."
+
+  validation {
+    condition = (
+      var.ingress_load_balancer_health_check_retries >= 0 &&
+      var.ingress_load_balancer_health_check_retries <= 5
+    )
+    error_message = "The health check retries must be between 0 and 5."
+  }
+}
+
+variable "ingress_load_balancer_health_check_timeout" {
+  type        = number
+  default     = 3
+  description = "The timeout (in seconds) for each health check attempt. It cannot exceed the interval and must be a positive value."
+
+  validation {
+    condition = (
+      var.ingress_load_balancer_health_check_timeout > 0 &&
+      var.ingress_load_balancer_health_check_timeout <= var.ingress_load_balancer_health_check_interval
+    )
+    error_message = "The health check timeout must be a positive number and cannot exceed the interval."
+  }
+}
+
+variable "ingress_load_balancer_pools" {
+  type = list(object({
+    name                    = string
+    location                = string
+    type                    = optional(string)
+    labels                  = optional(map(string), {})
+    count                   = optional(number, 1)
+    target_label_selector   = optional(list(string), [])
+    local_traffic           = optional(bool, false)
+    load_balancer_algorithm = optional(string)
+    public_network_enabled  = optional(bool)
+  }))
+  default     = []
+  description = "Defines configuration settings for Ingress Load Balancer pools within the cluster."
+
+  validation {
+    condition = alltrue([
+      for pool in var.ingress_load_balancer_pools : contains([
+        "fsn1", "nbg1", "hel1", "ash", "hil", "sin"
+      ], pool.location)
+    ])
+    error_message = "Each Load Balancer location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
+  }
+
+  validation {
+    condition = alltrue([
+      for pool in var.ingress_load_balancer_pools : (
+        pool.type == null || contains(
+          ["lb11", "lb21", "lb31"],
+          coalesce(pool.type, var.ingress_load_balancer_type)
+        )
+      )
+    ])
+    error_message = "Invalid Load Balancer type specified. Allowed values are 'lb11', 'lb21', or 'lb31'. If not specified, the default ingress_load_balancer_type will be used."
+  }
+
+  validation {
+    condition = alltrue([
+      for pool in var.ingress_load_balancer_pools :
+      pool.load_balancer_algorithm == null || contains(
+        ["round_robin", "least_connections"],
+        coalesce(pool.load_balancer_algorithm, var.ingress_load_balancer_algorithm)
+      )
+    ])
+    error_message = "Invalid Load Balancer algorithm specified. Allowed values are 'round_robin' or 'least_connections'. If not specified, the default ingress_load_balancer_algorithm will be used."
+  }
+
+  validation {
+    condition = alltrue([
+      for pool in var.ingress_load_balancer_pools : length(var.cluster_name) + length(pool.name) <= 56
+    ])
+    error_message = "The combined length of the cluster name and any Load Balancer pool name must not exceed 56 characters."
+  }
+
+  validation {
+    condition     = length(var.ingress_load_balancer_pools) == length(distinct([for pool in var.ingress_load_balancer_pools : pool.name]))
+    error_message = "Duplicate Load Balancer pool names are not allowed. Each pool name must be unique."
+  }
 }
 
 
