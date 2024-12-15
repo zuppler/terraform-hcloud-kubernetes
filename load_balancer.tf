@@ -7,7 +7,6 @@ locals {
   )
 }
 
-
 # Kubernetes API Load Balancer
 locals {
   kube_api_load_balancer_private_ipv4 = cidrhost(hcloud_network_subnet.load_balancer.ip_range, -2)
@@ -100,7 +99,6 @@ resource "hcloud_load_balancer_service" "kube_api" {
   depends_on = [hcloud_load_balancer_target.kube_api]
 }
 
-
 # Ingress Service Load Balancer
 locals {
   ingress_service_load_balancer_private_ipv4 = cidrhost(hcloud_network_subnet.load_balancer.ip_range, -4)
@@ -146,7 +144,6 @@ resource "hcloud_load_balancer_network" "ingress" {
   depends_on = [hcloud_network_subnet.load_balancer]
 }
 
-
 # Ingress Load Balancer Pools
 locals {
   ingress_load_balancer_pools = [
@@ -154,11 +151,21 @@ locals {
       name               = lp.name
       location           = lp.location
       load_balancer_type = coalesce(lp.type, var.ingress_load_balancer_type)
+      count              = lp.count
       labels = merge(
         lp.labels,
         { pool = lp.name }
       )
-      count = lp.count
+      rdns_ipv4 = (
+        lp.rdns_ipv4 != null ? lp.rdns_ipv4 :
+        lp.rdns != null ? lp.rdns :
+        local.ingress_load_balancer_rdns_ipv4
+      )
+      rdns_ipv6 = (
+        lp.rdns_ipv6 != null ? lp.rdns_ipv6 :
+        lp.rdns != null ? lp.rdns :
+        local.ingress_load_balancer_rdns_ipv6
+      )
       target_label_selector = length(lp.target_label_selector) > 0 ? lp.target_label_selector : concat(
         [
           for np in concat(
@@ -179,6 +186,7 @@ locals {
       public_network_enabled  = coalesce(lp.public_network_enabled, var.ingress_load_balancer_public_network_enabled)
     }
   ]
+  ingress_load_balancer_pools_map = { for lp in local.ingress_load_balancer_pools : lp.name => lp }
 }
 
 resource "hcloud_load_balancer" "ingress_pool" {

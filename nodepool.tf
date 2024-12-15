@@ -6,6 +6,16 @@ locals {
       server_type = np.type,
       backups     = np.backups,
       keep_disk   = np.keep_disk,
+      rdns_ipv4 = var.talos_public_ipv4_enabled ? (
+        np.rdns_ipv4 != null ? np.rdns_ipv4 :
+        np.rdns != null ? np.rdns :
+        local.cluster_rdns_ipv4
+      ) : null,
+      rdns_ipv6 = var.talos_public_ipv6_enabled ? (
+        np.rdns_ipv6 != null ? np.rdns_ipv6 :
+        np.rdns != null ? np.rdns :
+        local.cluster_rdns_ipv6
+      ) : null,
       labels = merge(
         np.labels,
         { nodepool = np.name }
@@ -31,6 +41,16 @@ locals {
       server_type = np.type,
       backups     = np.backups,
       keep_disk   = np.keep_disk,
+      rdns_ipv4 = var.talos_public_ipv4_enabled ? (
+        np.rdns_ipv4 != null ? np.rdns_ipv4 :
+        np.rdns != null ? np.rdns :
+        local.cluster_rdns_ipv4
+      ) : null,
+      rdns_ipv6 = var.talos_public_ipv6_enabled ? (
+        np.rdns_ipv6 != null ? np.rdns_ipv6 :
+        np.rdns != null ? np.rdns :
+        local.cluster_rdns_ipv6
+      ) : null,
       labels = merge(
         np.labels,
         { nodepool = np.name }

@@ -20,6 +20,39 @@ variable "cluster_domain" {
   }
 }
 
+variable "cluster_rdns" {
+  type        = string
+  default     = null
+  description = "Specifies the general reverse DNS FQDN for the cluster, used for internal networking and service discovery. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+
+  validation {
+    condition     = var.cluster_rdns == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", var.cluster_rdns))
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters."
+  }
+}
+
+variable "cluster_rdns_ipv4" {
+  type        = string
+  default     = null
+  description = "Defines the IPv4-specific reverse DNS FQDN for the cluster, crucial for network operations and service discovery. Supports dynamic placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+
+  validation {
+    condition     = var.cluster_rdns_ipv4 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", var.cluster_rdns_ipv4))
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters."
+  }
+}
+
+variable "cluster_rdns_ipv6" {
+  type        = string
+  default     = null
+  description = "Defines the IPv6-specific reverse DNS FQDN for the cluster, crucial for network operations and service discovery. Supports dynamic placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+
+  validation {
+    condition     = var.cluster_rdns_ipv6 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", var.cluster_rdns_ipv6))
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters."
+  }
+}
+
 variable "cluster_access" {
   type        = string
   default     = "public"
@@ -223,6 +256,9 @@ variable "control_plane_nodepools" {
     annotations = optional(map(string), {})
     taints      = optional(list(string), [])
     count       = optional(number, 1)
+    rdns        = optional(string)
+    rdns_ipv4   = optional(string)
+    rdns_ipv6   = optional(string)
   }))
   description = "Configures the number and attributes of Control Plane nodes."
 
@@ -256,6 +292,27 @@ variable "control_plane_nodepools" {
     ])
     error_message = "The combined length of the cluster name and any Control Plane nodepool name must not exceed 56 characters."
   }
+
+  validation {
+    condition = alltrue([
+      for np in var.control_plane_nodepools : np.rdns == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", np.rdns))
+    ])
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+  }
+
+  validation {
+    condition = alltrue([
+      for np in var.control_plane_nodepools : np.rdns_ipv4 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", np.rdns_ipv4))
+    ])
+    error_message = "The rdns_ipv4 must be a valid IPv4 reverse DNS domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+  }
+
+  validation {
+    condition = alltrue([
+      for np in var.control_plane_nodepools : np.rdns_ipv6 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", np.rdns_ipv6))
+    ])
+    error_message = "The rdns_ipv6 must be a valid IPv6 reverse DNS domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+  }
 }
 
 variable "control_plane_config_patches" {
@@ -277,6 +334,9 @@ variable "worker_nodepools" {
     annotations     = optional(map(string), {})
     taints          = optional(list(string), [])
     count           = optional(number, 1)
+    rdns            = optional(string)
+    rdns_ipv4       = optional(string)
+    rdns_ipv6       = optional(string)
     placement_group = optional(bool, true)
   }))
   default     = []
@@ -309,6 +369,27 @@ variable "worker_nodepools" {
       for np in var.worker_nodepools : length(var.cluster_name) + length(np.name) <= 56
     ])
     error_message = "The combined length of the cluster name and any Worker nodepool name must not exceed 56 characters."
+  }
+
+  validation {
+    condition = alltrue([
+      for np in var.worker_nodepools : np.rdns == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", np.rdns))
+    ])
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+  }
+
+  validation {
+    condition = alltrue([
+      for np in var.worker_nodepools : np.rdns_ipv4 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", np.rdns_ipv4))
+    ])
+    error_message = "The rdns_ipv4 must be a valid IPv4 reverse DNS domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+  }
+
+  validation {
+    condition = alltrue([
+      for np in var.worker_nodepools : np.rdns_ipv6 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", np.rdns_ipv6))
+    ])
+    error_message = "The rdns_ipv6 must be a valid IPv6 reverse DNS domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
   }
 }
 
@@ -1114,6 +1195,39 @@ variable "ingress_load_balancer_health_check_timeout" {
   }
 }
 
+variable "ingress_load_balancer_rdns" {
+  type        = string
+  default     = null
+  description = "Specifies the general reverse DNS FQDN for the ingress load balancer, used for internal networking and service discovery. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+
+  validation {
+    condition     = var.ingress_load_balancer_rdns == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", var.ingress_load_balancer_rdns))
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters."
+  }
+}
+
+variable "ingress_load_balancer_rdns_ipv4" {
+  type        = string
+  default     = null
+  description = "Defines the IPv4-specific reverse DNS FQDN for the ingress load balancer, crucial for network operations and service discovery. Supports dynamic placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+
+  validation {
+    condition     = var.ingress_load_balancer_rdns_ipv4 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", var.ingress_load_balancer_rdns_ipv4))
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters."
+  }
+}
+
+variable "ingress_load_balancer_rdns_ipv6" {
+  type        = string
+  default     = null
+  description = "Defines the IPv6-specific reverse DNS FQDN for the ingress load balancer, crucial for network operations and service discovery. Supports dynamic placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+
+  validation {
+    condition     = var.ingress_load_balancer_rdns_ipv6 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", var.ingress_load_balancer_rdns_ipv6))
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters."
+  }
+}
+
 variable "ingress_load_balancer_pools" {
   type = list(object({
     name                    = string
@@ -1125,6 +1239,9 @@ variable "ingress_load_balancer_pools" {
     local_traffic           = optional(bool, false)
     load_balancer_algorithm = optional(string)
     public_network_enabled  = optional(bool)
+    rdns                    = optional(string)
+    rdns_ipv4               = optional(string)
+    rdns_ipv6               = optional(string)
   }))
   default     = []
   description = "Defines configuration settings for Ingress Load Balancer pools within the cluster."
@@ -1171,6 +1288,27 @@ variable "ingress_load_balancer_pools" {
   validation {
     condition     = length(var.ingress_load_balancer_pools) == length(distinct([for pool in var.ingress_load_balancer_pools : pool.name]))
     error_message = "Duplicate Load Balancer pool names are not allowed. Each pool name must be unique."
+  }
+
+  validation {
+    condition = alltrue([
+      for pool in var.ingress_load_balancer_pools : pool.rdns == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", pool.rdns))
+    ])
+    error_message = "The reverse DNS domain must be a valid domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+  }
+
+  validation {
+    condition = alltrue([
+      for pool in var.ingress_load_balancer_pools : pool.rdns_ipv4 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", pool.rdns_ipv4))
+    ])
+    error_message = "The rdns_ipv4 must be a valid IPv4 reverse DNS domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
+  }
+
+  validation {
+    condition = alltrue([
+      for pool in var.ingress_load_balancer_pools : pool.rdns_ipv6 == null || can(regex("^(?:(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?\\.)*(?:[a-z0-9{} ](?:[a-z0-9-{} ]{0,61}[a-z0-9{} ])?))$", pool.rdns_ipv6))
+    ])
+    error_message = "The rdns_ipv6 must be a valid IPv6 reverse DNS domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
   }
 }
 
