@@ -1,5 +1,9 @@
 locals {
-  kubeconfig  = replace(talos_cluster_kubeconfig.this.kubeconfig_raw, "/(\\s+server:).*/", "$1 ${local.kube_api_url_external}")
+  kubeconfig = replace(
+    talos_cluster_kubeconfig.this.kubeconfig_raw,
+    "/(\\s+server:).*/",
+    "$1 ${local.kube_api_url_external}"
+  )
   talosconfig = data.talos_client_configuration.this.talos_config
 
   kubeconfig_data = {
@@ -48,7 +52,11 @@ resource "terraform_data" "create_talosconfig" {
   provisioner "local-exec" {
     when    = create
     quiet   = true
-    command = "printf '%s' \"$TALOSCONFIG_CONTENT\" > \"$CLUSTER_TALOSCONFIG_PATH\""
+    command = <<-EOT
+      set -eu
+
+      printf '%s' "$TALOSCONFIG_CONTENT" > "$CLUSTER_TALOSCONFIG_PATH"
+    EOT
     environment = {
       TALOSCONFIG_CONTENT      = local.talosconfig
       CLUSTER_TALOSCONFIG_PATH = var.cluster_talosconfig_path
@@ -59,7 +67,13 @@ resource "terraform_data" "create_talosconfig" {
     when       = destroy
     quiet      = true
     on_failure = continue
-    command    = "if [ -f \"$CLUSTER_TALOSCONFIG_PATH\" ]; then cp -f \"$CLUSTER_TALOSCONFIG_PATH\" \"$CLUSTER_TALOSCONFIG_PATH.bak\"; fi"
+    command    = <<-EOT
+      set -eu
+
+      if [ -f "$CLUSTER_TALOSCONFIG_PATH" ]; then
+        cp -f "$CLUSTER_TALOSCONFIG_PATH" "$CLUSTER_TALOSCONFIG_PATH.bak"
+      fi
+    EOT
     environment = {
       CLUSTER_TALOSCONFIG_PATH = self.input.cluster_talosconfig_path
     }
@@ -83,7 +97,11 @@ resource "terraform_data" "create_kubeconfig" {
   provisioner "local-exec" {
     when    = create
     quiet   = true
-    command = "printf '%s' \"$KUBECONFIG_CONTENT\" > \"$CLUSTER_KUBECONFIG_PATH\""
+    command = <<-EOT
+      set -eu
+
+      printf '%s' "$KUBECONFIG_CONTENT" > "$CLUSTER_KUBECONFIG_PATH"
+    EOT
     environment = {
       KUBECONFIG_CONTENT      = local.kubeconfig
       CLUSTER_KUBECONFIG_PATH = var.cluster_kubeconfig_path
@@ -94,7 +112,13 @@ resource "terraform_data" "create_kubeconfig" {
     when       = destroy
     quiet      = true
     on_failure = continue
-    command    = "if [ -f \"$CLUSTER_KUBECONFIG_PATH\" ]; then cp -f \"$CLUSTER_KUBECONFIG_PATH\" \"$CLUSTER_KUBECONFIG_PATH.bak\"; fi"
+    command    = <<-EOT
+      set -eu
+
+      if [ -f "$CLUSTER_KUBECONFIG_PATH" ]; then
+        cp -f "$CLUSTER_KUBECONFIG_PATH" "$CLUSTER_KUBECONFIG_PATH.bak"
+      fi
+    EOT
     environment = {
       CLUSTER_KUBECONFIG_PATH = self.input.cluster_kubeconfig_path
     }
