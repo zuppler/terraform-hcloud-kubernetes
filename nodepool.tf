@@ -23,7 +23,7 @@ locals {
       annotations = np.annotations,
       taints = concat(
         [for taint in np.taints : regex(
-          "^(?P<key>[^=:]+)=?(?P<value>[^:]*):(?P<effect>.+)$",
+          "^(?P<key>[^=:]+)=?(?P<value>[^=:]*?):(?P<effect>.+)$",
           taint
         )],
         local.allow_scheduling_on_control_plane ? [] : [
@@ -57,7 +57,7 @@ locals {
       ),
       annotations = np.annotations,
       taints = [for taint in np.taints : regex(
-        "^(?P<key>[^=:]+)=?(?P<value>[^:]*):(?P<effect>.+)$",
+        "^(?P<key>[^=:]+)=?(?P<value>[^=:]*?):(?P<effect>.+)$",
         taint
       )],
       count           = np.count,
@@ -76,7 +76,7 @@ locals {
       ),
       annotations = np.annotations,
       taints = [for taint in np.taints : regex(
-        "^(?P<key>[^=:]+)=?(?P<value>[^:]*):(?P<effect>.+)$",
+        "^(?P<key>[^=:]+)=?(?P<value>[^=:]*?):(?P<effect>.+)$",
         taint
       )],
       min = np.min,
