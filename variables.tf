@@ -425,12 +425,6 @@ variable "cluster_autoscaler_helm_values" {
   description = "Custom Helm values for the Cluster Autoscaler chart deployment. These values will merge with and will override the default values provided by the Cluster Autoscaler Helm chart."
 }
 
-variable "cluster_autoscaler_enforce_node_group_min_size" {
-  type        = bool
-  default     = false
-  description = "Specifies whether the Cluster Autoscaler should scale up node groups to the configured minimum size."
-}
-
 variable "cluster_autoscaler_nodepools" {
   type = list(object({
     name        = string
