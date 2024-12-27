@@ -415,7 +415,7 @@ variable "cluster_autoscaler_helm_chart" {
 
 variable "cluster_autoscaler_helm_version" {
   type        = string
-  default     = "v9.43.2"
+  default     = "9.43.3"
   description = "Version of the Cluster Autoscaler Helm chart to deploy."
 }
 
