@@ -168,10 +168,10 @@ module "kubernetes" {
   ingress_nginx_enabled = true
 
   control_plane_nodepools = [
-    { name = "control", type = "cax11", location = "fsn1", count = 3 }
+    { name = "control", type = "cpx21", location = "fsn1", count = 3 }
   ]
   worker_nodepools = [
-    { name = "worker", type = "cax11", location = "fsn1", count = 3 }
+    { name = "worker", type = "cpx11", location = "fsn1", count = 3 }
   ]
 }
 ```
@@ -319,7 +319,7 @@ Example `kubernetes.tf` snippet:
 cluster_autoscaler_nodepools = [
   {
     name     = "autoscaler"
-    type     = "cax11"
+    type     = "cpx11"
     location = "fsn1"
     min      = 0
     max      = 6
@@ -358,7 +358,7 @@ worker_nodepools = [
   # ... (other node pool configurations)
   {
     name     = "egress"
-    type     = "cax11"
+    type     = "cpx11"
     location = "fsn1"
     labels   = { "egress-node" = "true" }
     taints   = [ "egress-node=true:NoSchedule" ]
