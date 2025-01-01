@@ -2,7 +2,7 @@ locals {
   network_public_ipv4_enabled = var.talos_public_ipv4_enabled
   network_public_ipv6_enabled = var.talos_public_ipv6_enabled && var.talos_ipv6_enabled
 
-  hcloud_network_id = coalesce(var.hcloud_network_id, hcloud_network.this[0].id)
+  hcloud_network_id = var.hcloud_network_id != null ? var.hcloud_network_id : hcloud_network.this[0].id
 
   location_to_zone = {
     fsn1 = "eu-central"
@@ -15,7 +15,7 @@ locals {
   network_zone = local.location_to_zone[local.control_plane_nodepools[0].location]
 
   # Network ranges
-  network_ipv4_cidr   = can(data.hcloud_network.this[0]) ? data.hcloud_network.this[0].ip_range : var.network_ipv4_cidr
+  network_ipv4_cidr   = var.hcloud_network_id != null ? data.hcloud_network.this[0].ip_range : var.network_ipv4_cidr
   node_ipv4_cidr      = coalesce(var.network_node_ipv4_cidr, cidrsubnet(var.network_ipv4_cidr, 3, 2))
   service_ipv4_cidr   = coalesce(var.network_service_ipv4_cidr, cidrsubnet(var.network_ipv4_cidr, 3, 3))
   pod_ipv4_cidr       = coalesce(var.network_pod_ipv4_cidr, cidrsubnet(var.network_ipv4_cidr, 1, 1))
