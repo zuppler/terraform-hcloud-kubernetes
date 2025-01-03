@@ -37,11 +37,27 @@ locals {
     )
   )
 
+  # DNS Configuration
   talos_host_dns = {
     enabled              = true
     forwardKubeDNSToHost = false
     resolveMemberNames   = true
   }
+
+  talos_nameservers = [
+    for ns in var.talos_nameservers : ns
+    if var.talos_ipv6_enabled || !strcontains(ns, ":")
+  ]
+
+  # Routes
+  talos_extra_routes = [for cidr in var.talos_extra_routes : {
+    network = cidr
+    gateway = local.network_ipv4_gateway
+    metric  = 512
+  }]
+
+  # Interface Configuration
+  talos_public_interface_enabled = var.talos_public_ipv4_enabled || var.talos_public_ipv6_enabled
 
   # Extra Host Entries
   extra_host_entries = concat(
@@ -117,8 +133,8 @@ locals {
         }
         certSANs = local.certificate_san
         network = {
-          interfaces = [
-            {
+          interfaces = concat(
+            local.talos_public_interface_enabled ? [{
               interface = "eth0"
               dhcp      = true
               dhcpOptions = {
@@ -131,9 +147,9 @@ locals {
                   apiToken = var.hcloud_token
                 }
               } : null
-            },
-            {
-              interface = "eth1"
+            }] : [],
+            [{
+              interface = local.talos_public_interface_enabled ? "eth1" : "eth0"
               dhcp      = true
               routes    = local.talos_extra_routes
               vip = var.control_plane_private_vip_ipv4_enabled ? {
@@ -142,9 +158,9 @@ locals {
                   apiToken = var.hcloud_token
                 }
               } : null
-            }
-          ]
-          nameservers      = var.talos_nameservers
+            }]
+          )
+          nameservers      = local.talos_nameservers
           extraHostEntries = local.extra_host_entries
         }
         kubelet = {
@@ -275,22 +291,23 @@ locals {
         nodeAnnotations = local.worker_nodepools_map[node.labels.nodepool].annotations
         certSANs        = local.certificate_san
         network = {
-          interfaces = [
-            {
+          interfaces = concat(
+            local.talos_public_interface_enabled ? [{
+
               interface = "eth0"
               dhcp      = true
               dhcpOptions = {
                 ipv4 = var.talos_public_ipv4_enabled
                 ipv6 = false
               }
-            },
-            {
-              interface = "eth1"
+            }] : [],
+            [{
+              interface = local.talos_public_interface_enabled ? "eth1" : "eth0"
               dhcp      = true
               routes    = local.talos_extra_routes
-            }
-          ]
-          nameservers      = var.talos_nameservers
+            }]
+          )
+          nameservers      = local.talos_nameservers
           extraHostEntries = local.extra_host_entries
         }
         kubelet = {
@@ -378,22 +395,23 @@ locals {
         nodeAnnotations = nodepool.annotations
         certSANs        = local.certificate_san
         network = {
-          interfaces = [
-            {
+          interfaces = concat(
+            local.talos_public_interface_enabled ? [{
+
               interface = "eth0"
               dhcp      = true
               dhcpOptions = {
                 ipv4 = var.talos_public_ipv4_enabled
                 ipv6 = false
               }
-            },
-            {
-              interface = "eth1"
+            }] : [],
+            [{
+              interface = local.talos_public_interface_enabled ? "eth1" : "eth0"
               dhcp      = true
               routes    = local.talos_extra_routes
-            }
-          ]
-          nameservers      = var.talos_nameservers
+            }]
+          )
+          nameservers      = local.talos_nameservers
           extraHostEntries = local.extra_host_entries
         }
         kubelet = {

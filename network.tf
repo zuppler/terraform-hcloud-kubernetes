@@ -46,12 +46,6 @@ locals {
   worker_public_ipv6_list        = [for server in hcloud_server.worker : server.ipv6_address]
   worker_public_ipv6_subnet_list = [for server in hcloud_server.worker : server.ipv6_network]
   worker_private_ipv4_list       = [for server in hcloud_server.worker : tolist(server.network)[0].ip]
-
-  # Routes
-  talos_extra_routes = [for cidr in var.talos_extra_routes : {
-    network = cidr
-    gateway = local.network_ipv4_gateway
-  }]
 }
 
 data "hcloud_network" "this" {
