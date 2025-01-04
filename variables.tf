@@ -621,18 +621,17 @@ variable "talos_extra_host_entries" {
 }
 
 variable "talos_time_servers" {
-  type        = list(string)
-  default     = ["ntp1.hetzner.de", "ntp2.hetzner.com", "ntp3.hetzner.net"]
+  type = list(string)
+  default = [
+    "ntp1.hetzner.de",
+    "ntp2.hetzner.com",
+    "ntp3.hetzner.net"
+  ]
   description = "Specifies a list of time server addresses used for network time synchronization across the cluster. These servers ensure that all cluster nodes maintain accurate and synchronized time."
 }
 
 variable "talos_registries" {
-  type = object({
-    mirrors = map(object({
-      endpoints    = list(string)
-      overridePath = optional(bool)
-    }))
-  })
+  type        = any
   default     = null
   description = <<-EOF
     Specifies a list of registry mirrors to be used for container image retrieval. This configuration helps in specifying alternate sources or local mirrors for image registries, enhancing reliability and speed of image downloads.
