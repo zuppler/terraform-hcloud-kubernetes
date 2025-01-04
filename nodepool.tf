@@ -88,8 +88,16 @@ locals {
   worker_nodepools_map             = { for np in local.worker_nodepools : np.name => np }
   cluster_autoscaler_nodepools_map = { for np in local.cluster_autoscaler_nodepools : np.name => np }
 
-  control_plane_sum          = length(local.control_plane_nodepools) > 0 ? sum(local.control_plane_nodepools[*].count) : 0
-  worker_sum                 = length(local.worker_nodepools) > 0 ? sum(local.worker_nodepools[*].count) : 0
-  cluster_autoscaler_min_sum = length(local.cluster_autoscaler_nodepools) > 0 ? sum(local.cluster_autoscaler_nodepools[*].min) : 0
-  cluster_autoscaler_max_sum = length(local.cluster_autoscaler_nodepools) > 0 ? sum(local.cluster_autoscaler_nodepools[*].max) : 0
+  control_plane_sum = sum(concat(
+    [for np in local.control_plane_nodepools : np.count if length(np.taints) == 0], [0]
+  ))
+  worker_sum = sum(concat(
+    [for np in local.worker_nodepools : np.count if length(np.taints) == 0], [0]
+  ))
+  cluster_autoscaler_min_sum = sum(concat(
+    [for np in local.cluster_autoscaler_nodepools : np.min if length(np.taints) == 0], [0]
+  ))
+  cluster_autoscaler_max_sum = sum(concat(
+    [for np in local.cluster_autoscaler_nodepools : np.max if length(np.taints) == 0], [0]
+  ))
 }
