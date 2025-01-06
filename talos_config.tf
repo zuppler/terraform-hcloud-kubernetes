@@ -248,7 +248,7 @@ locals {
         controllerManager = {
           extraArgs = {
             "cloud-provider" = "external"
-            "bind-address" = "0.0.0.0"
+            "bind-address"   = "0.0.0.0"
           }
         }
         discovery = {

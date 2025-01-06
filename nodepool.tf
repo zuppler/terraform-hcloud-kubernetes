@@ -89,7 +89,7 @@ locals {
   cluster_autoscaler_nodepools_map = { for np in local.cluster_autoscaler_nodepools : np.name => np }
 
   control_plane_sum = sum(concat(
-    [for np in local.control_plane_nodepools : np.count if length(np.taints) == 0], [0]
+    [for np in local.control_plane_nodepools : np.count], [0]
   ))
   worker_sum = sum(concat(
     [for np in local.worker_nodepools : np.count if length(np.taints) == 0], [0]
