@@ -22,17 +22,27 @@ locals {
   ]
 
   # Talos and Kubernetes Certificates
-  certificate_san = distinct(
-    compact(
-      concat(
-        var.control_plane_public_vip_ipv4_enabled ? [local.control_plane_public_vip_ipv4] : [],
-        [local.control_plane_private_vip_ipv4],
-        [local.kube_api_load_balancer_private_ipv4],
-        local.control_plane_public_ipv4_list,
-        local.control_plane_private_ipv4_list,
-        local.control_plane_public_ipv6_list,
-        [local.kube_api_host],
-        ["127.0.0.1", "::1", "localhost"],
+  certificate_san = sort(
+    distinct(
+      compact(
+        concat(
+          # Virtual IPs
+          var.control_plane_public_vip_ipv4_enabled ? [local.control_plane_public_vip_ipv4] : [],
+          [local.control_plane_private_vip_ipv4],
+          # Load Balancer IPs
+          [
+            local.kube_api_load_balancer_private_ipv4,
+            local.kube_api_load_balancer_public_ipv4,
+            local.kube_api_load_balancer_public_ipv6
+          ],
+          # Control Plane Node IPs
+          local.control_plane_private_ipv4_list,
+          local.control_plane_public_ipv4_list,
+          local.control_plane_public_ipv6_list,
+          # Other Addresses
+          [var.kube_api_hostname],
+          ["127.0.0.1", "::1", "localhost"],
+        )
       )
     )
   )
@@ -248,7 +258,7 @@ locals {
         controllerManager = {
           extraArgs = {
             "cloud-provider" = "external"
-            "bind-address" = "0.0.0.0"
+            "bind-address"   = "0.0.0.0"
           }
         }
         discovery = {
