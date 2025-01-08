@@ -28,25 +28,14 @@ data "helm_template" "hcloud_ccm" {
   version      = var.hcloud_ccm_helm_version
   kube_version = var.kubernetes_version
 
-  set {
-    name  = "kind"
-    value = "DaemonSet"
-  }
-  set {
-    name  = "nodeSelector.node-role\\.kubernetes\\.io/control-plane"
-    value = ""
-  }
-  set {
-    name  = "networking.enabled"
-    value = true
-  }
-  set {
-    name  = "networking.clusterCIDR"
-    value = local.pod_ipv4_cidr
-  }
-
   values = [
     yamlencode({
+      kind         = "DaemonSet"
+      nodeSelector = { "node-role.kubernetes.io/control-plane" : "" }
+      networking = {
+        enabled     = true
+        clusterCIDR = local.pod_ipv4_cidr
+      }
       env = {
         HCLOUD_LOAD_BALANCERS_USE_PRIVATE_IP          = { value = "true" }
         HCLOUD_LOAD_BALANCERS_DISABLE_PRIVATE_INGRESS = { value = "true" }
@@ -76,53 +65,34 @@ data "helm_template" "hcloud_csi" {
   version      = var.hcloud_csi_helm_version
   kube_version = var.kubernetes_version
 
-  set {
-    name  = "controller.nodeSelector.node-role\\.kubernetes\\.io/control-plane"
-    value = ""
-  }
-  set {
-    name  = "controller.tolerations[0].key"
-    value = "node-role.kubernetes.io/control-plane"
-  }
-  set {
-    name  = "controller.tolerations[0].effect"
-    value = "NoSchedule"
-  }
-  set {
-    name  = "controller.tolerations[0].operator"
-    value = "Exists"
-  }
-  set {
-    name  = "controller.replicaCount"
-    value = local.control_plane_sum > 1 ? 2 : 1
-  }
-
-  set {
-    name  = "controller.topologySpreadConstraints[0].topologyKey"
-    value = "kubernetes.io/hostname"
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].maxSkew"
-    value = 1
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].whenUnsatisfiable"
-    value = local.control_plane_sum > 2 ? "DoNotSchedule" : "ScheduleAnyway"
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/component"
-    value = "controller"
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/instance"
-    value = "hcloud-csi"
-  }
-  set {
-    name  = "controller.topologySpreadConstraints[0].labelSelector.matchLabels.app\\.kubernetes\\.io/name"
-    value = "hcloud-csi"
-  }
-
   values = [
+    yamlencode({
+      controller = {
+        replicaCount = local.control_plane_sum > 1 ? 2 : 1
+        topologySpreadConstraints = [
+          {
+            topologyKey       = "kubernetes.io/hostname"
+            maxSkew           = 1
+            whenUnsatisfiable = local.control_plane_sum > 2 ? "DoNotSchedule" : "ScheduleAnyway"
+            labelSelector = {
+              matchLabels = {
+                "app.kubernetes.io/name"      = "hcloud-csi"
+                "app.kubernetes.io/instance"  = "hcloud-csi"
+                "app.kubernetes.io/component" = "controller"
+              }
+            }
+          }
+        ]
+        nodeSelector = { "node-role.kubernetes.io/control-plane" : "" }
+        tolerations = [
+          {
+            key      = "node-role.kubernetes.io/control-plane"
+            effect   = "NoSchedule"
+            operator = "Exists"
+          }
+        ]
+      }
+    }),
     yamlencode(var.hcloud_csi_helm_values)
   ]
 }

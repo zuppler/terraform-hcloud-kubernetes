@@ -85,7 +85,8 @@ data "talos_image_factory_urls" "arm64" {
 }
 
 data "hcloud_image" "amd64" {
-  count             = local.amd64_image_required ? 1 : 0
+  count = local.amd64_image_required ? 1 : 0
+
   with_selector     = local.image_label_selector
   with_architecture = "x86"
   most_recent       = true
@@ -94,7 +95,8 @@ data "hcloud_image" "amd64" {
 }
 
 data "hcloud_image" "arm64" {
-  count             = local.arm64_image_required ? 1 : 0
+  count = local.arm64_image_required ? 1 : 0
+
   with_selector     = local.image_label_selector
   with_architecture = "arm"
   most_recent       = true
@@ -103,12 +105,16 @@ data "hcloud_image" "arm64" {
 }
 
 data "hcloud_images" "amd64" {
+  count = local.amd64_image_required ? 1 : 0
+
   with_selector     = local.image_label_selector
   with_architecture = ["x86"]
   most_recent       = true
 }
 
 data "hcloud_images" "arm64" {
+  count = local.arm64_image_required ? 1 : 0
+
   with_selector     = local.image_label_selector
   with_architecture = ["arm"]
   most_recent       = true
@@ -140,7 +146,7 @@ resource "terraform_data" "amd64_image" {
     working_dir = "${path.module}/packer/"
     command = join(" ",
       [
-        "${length(data.hcloud_images.amd64.images) > 0} ||",
+        "${length(data.hcloud_images.amd64[0].images) > 0} ||",
         "packer build -force",
         "-var 'cluster_name=${var.cluster_name}'",
         "-var 'talos_version=${var.talos_version}'",
@@ -172,7 +178,7 @@ resource "terraform_data" "arm64_image" {
     working_dir = "${path.module}/packer/"
     command = join(" ",
       [
-        "${length(data.hcloud_images.arm64.images) > 0} ||",
+        "${length(data.hcloud_images.arm64[0].images) > 0} ||",
         "packer build -force",
         "-var 'cluster_name=${var.cluster_name}'",
         "-var 'talos_version=${var.talos_version}'",
