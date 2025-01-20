@@ -139,7 +139,7 @@ Talos Linux is a secure, minimal, and immutable OS for Kubernetes, removing SSH 
 <!-- Prerequisites -->
 ### :heavy_check_mark: Prerequisites
 
-- [terraform](https://developer.hashicorp.com/terraform/install) to deploy Kubernetes on Hetzner Cloud
+- [terraform](https://developer.hashicorp.com/terraform/install) or [tofu](https://opentofu.org/docs/intro/install/) to deploy the Cluster
 - [packer](https://developer.hashicorp.com/packer/install) to upload Talos Images to Hetzner Cloud
 - [talosctl](https://www.talos.dev/latest/talos-guides/install/talosctl/) to control the Talos Cluster
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) to control Kubernetes (optional)
@@ -178,13 +178,18 @@ module "kubernetes" {
 > [!NOTE]
 > Each Control Plane node requires at least 4GB of memory and each Worker node at least 2GB. For High-Availability (HA), at least 3 Control Plane nodes and 3 Worker nodes are required.
 
-Initialize Terraform and deploy the cluster:
+Initialize and deploy the cluster:
 
+**Terraform:**
 ```sh
-terraform init --upgrade
+terraform init -upgrade
 terraform apply
 ```
-
+**OpenTofu:**
+```sh
+tofu init -upgrade
+tofu apply
+```
 
 <!-- Cluster Access -->
 ### :key: Cluster Access
@@ -216,12 +221,21 @@ To destroy the cluster, first disable the delete protection by setting:
 cluster_delete_protection = false
 ```
 
-Apply this change before proceeding. Once the delete protection is disabled, you can teardown the cluster using the following Terraform commands:
+Apply this change before proceeding. Once the delete protection is disabled, you can teardown the cluster.
+
+**Terraform:**
 ```sh
 terraform state rm 'module.kubernetes.talos_machine_configuration_apply.worker'
 terraform state rm 'module.kubernetes.talos_machine_configuration_apply.control_plane'
 terraform state rm 'module.kubernetes.talos_machine_secrets.this'
 terraform destroy
+```
+**OpenTofu:**
+```sh
+tofu state rm 'module.kubernetes.talos_machine_configuration_apply.worker'
+tofu state rm 'module.kubernetes.talos_machine_configuration_apply.control_plane'
+tofu state rm 'module.kubernetes.talos_machine_secrets.this'
+tofu destroy
 ```
 
 <!-- Advanced Configuration -->
