@@ -908,7 +908,7 @@ variable "cilium_helm_chart" {
 
 variable "cilium_helm_version" {
   type        = string
-  default     = "1.16.5"
+  default     = "1.16.6"
   description = "Version of the Cilium Helm chart to deploy."
 }
 
