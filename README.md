@@ -617,7 +617,7 @@ The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolab
 ### :white_check_mark: Version Compatibility Matrix
 | Hcloud K8s |  K8s  | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Long-horn | Cilium | Ingress NGINX | Cert Mgr. | Auto-scaler |
 | :--------: | :---: | :---: | :-------: | :--------: | :--------: | :-------: | :----: | :-----------: | :-------: | :---------: |
-|  (**2**)   | 1.32  |  1.9  |    1.9    |     ?      |     ?      |     ?     | (1.17) |     4.12      |     ?     |    9.45     |
+|  (**2**)   | 1.32  |  1.9  |    1.9    |    1.23    |     ?      |     ?     | (1.17) |     4.12      |     ?     |    9.45     |
 |  (**1**)   | 1.31  |  1.8  |    1.8    |    1.21    |    2.10    |   (1.8)   | (1.17) |     4.12      |   1.15    |    9.38     |
 |   **0**    | 1.30  |  1.7  |    1.6    |    1.20    |    2.9     |   1.7.1   |  1.16  |    4.10.1     |   1.14    |    9.37     |
 
