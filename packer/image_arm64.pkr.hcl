@@ -20,7 +20,7 @@ variable "talos_image_url" {
 }
 
 locals {
-  download_image = "wget --timeout=5 --waitretry=5 --tries=5 --retry-connrefused --inet4-only -O /tmp/talos.raw.xz '${var.talos_image_url}'"
+  download_image = "wget --progress=dot:mega --timeout=5 --waitretry=5 --tries=5 --retry-connrefused --inet4-only -O /tmp/talos.raw.xz '${var.talos_image_url}'"
 
   write_image = <<-EOT
     set -ex
