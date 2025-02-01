@@ -10,7 +10,11 @@ locals {
 
   current_ip = concat(
     local.firewall_use_current_ipv4 ? ["${chomp(data.http.current_ipv4[0].response_body)}/32"] : [],
-    local.firewall_use_current_ipv6 ? [cidrsubnet("${chomp(data.http.current_ipv6[0].response_body)}/64", 0, 0)] : [],
+    local.firewall_use_current_ipv6 ? (
+      strcontains(data.http.current_ipv6[0].response_body, ":") ?
+      [cidrsubnet("${chomp(data.http.current_ipv6[0].response_body)}/64", 0, 0)] :
+      []
+    ) : []
   )
 
   firewall_default_rules = concat(
@@ -76,7 +80,7 @@ data "http" "current_ipv4" {
 
 data "http" "current_ipv6" {
   count = local.firewall_use_current_ipv6 ? 1 : 0
-  url   = "https://ipv6.icanhazip.com"
+  url   = "https://${var.firewall_use_current_ipv6 == true ? "ipv6." : ""}icanhazip.com"
 
   retry {
     attempts     = 10
