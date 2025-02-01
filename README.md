@@ -40,9 +40,6 @@
 - [:hammer_and_pick: Advanced Configuration](#hammer_and_pick-advanced-configuration)
 - [:recycle: Lifecycle](#recycle-lifecycle)
 - [:compass: Roadmap](#compass-roadmap)
-- [:wave: Contributing](#wave-contributing)
-- [:balance_scale: License](#balance_scale-license)
-- [:gem: Acknowledgements](#gem-acknowledgements)
 
 <!-- About the Project -->
 ## :star2: About the Project
