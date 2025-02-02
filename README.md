@@ -250,13 +250,9 @@ firewall_use_current_ipv4 = false
 firewall_use_current_ipv6 = false
 ```
 
-To manually specify source networks for the Talos API and Kube API, configure the `firewall_talos_api_source` and `firewall_kube_api_source` variables as follows:
+To manually specify source networks for the Talos API and Kube API, configure the `firewall_api_source` variable as follows:
 ```hcl
-firewall_talos_api_source = [
-  "1.2.3.0/32",
-  "1:2:3::/64"
-]
-firewall_kube_api_source = [
+firewall_api_source = [
   "1.2.3.0/32",
   "1:2:3::/64"
 ]
