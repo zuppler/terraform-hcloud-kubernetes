@@ -1,11 +1,21 @@
 locals {
+  firewall_kube_api_source = (
+    var.firewall_kube_api_source != null ?
+    var.firewall_kube_api_source :
+    var.firewall_api_source
+  )
+  firewall_talos_api_source = (
+    var.firewall_talos_api_source != null ?
+    var.firewall_talos_api_source :
+    var.firewall_api_source
+  )
   firewall_use_current_ipv4 = local.network_public_ipv4_enabled && coalesce(
     var.firewall_use_current_ipv4,
-    var.cluster_access == "public" && var.firewall_kube_api_source == null && var.firewall_talos_api_source == null
+    var.cluster_access == "public" && local.firewall_kube_api_source == null && local.firewall_talos_api_source == null
   )
   firewall_use_current_ipv6 = local.network_public_ipv6_enabled && coalesce(
     var.firewall_use_current_ipv6,
-    var.cluster_access == "public" && var.firewall_kube_api_source == null && var.firewall_talos_api_source == null
+    var.cluster_access == "public" && local.firewall_kube_api_source == null && local.firewall_talos_api_source == null
   )
 
   current_ip = concat(
@@ -18,20 +28,20 @@ locals {
   )
 
   firewall_default_rules = concat(
-    var.firewall_kube_api_source != null || length(local.current_ip) > 0 ? [
+    local.firewall_kube_api_source != null || length(local.current_ip) > 0 ? [
       {
         description = "Allow Incoming Requests to Kube API"
         direction   = "in"
-        source_ips  = coalesce(var.firewall_kube_api_source, local.current_ip)
+        source_ips  = coalesce(local.firewall_kube_api_source, local.current_ip)
         protocol    = "tcp"
         port        = local.kube_api_port
       }
     ] : [],
-    var.firewall_talos_api_source != null || length(local.current_ip) > 0 ? [
+    local.firewall_talos_api_source != null || length(local.current_ip) > 0 ? [
       {
         description = "Allow Incoming Requests to Talos API"
         direction   = "in"
-        source_ips  = coalesce(var.firewall_talos_api_source, local.current_ip)
+        source_ips  = coalesce(local.firewall_talos_api_source, local.current_ip)
         protocol    = "tcp"
         port        = local.talos_api_port
       }
