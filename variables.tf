@@ -207,6 +207,12 @@ variable "firewall_extra_rules" {
   }
 }
 
+variable "firewall_api_source" {
+  type        = list(string)
+  default     = null
+  description = "Source networks that have access to Kube and Talos API. If set, this overrides the firewall_use_current_ipv4 and firewall_use_current_ipv6 settings."
+}
+
 variable "firewall_kube_api_source" {
   type        = list(string)
   default     = null
