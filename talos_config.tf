@@ -133,8 +133,7 @@ locals {
           extraKernelArgs = var.talos_extra_kernel_args
         }
         nodeLabels = merge(
-          #local.allow_scheduling_on_control_plane ? { "node.kubernetes.io/exclude-from-external-load-balancers" = { "$patch" = "delete" } } : {},
-          local.allow_scheduling_on_control_plane ? {} : { "node.kubernetes.io/exclude-from-external-load-balancers" = "" },
+          local.allow_scheduling_on_control_plane ? { "node.kubernetes.io/exclude-from-external-load-balancers" = { "$patch" = "delete" } } : {},
           local.control_plane_nodepools_map[node.labels.nodepool].labels
         )
         nodeAnnotations = local.control_plane_nodepools_map[node.labels.nodepool].annotations
