@@ -193,7 +193,7 @@ locals {
               }
               kubeReserved = {
                 cpu               = "250m"
-                memory            = "1500Mi"
+                memory            = "700Mi"
                 ephemeral-storage = "1Gi"
               }
             },
