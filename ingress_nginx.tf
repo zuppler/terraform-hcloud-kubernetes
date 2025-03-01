@@ -97,15 +97,18 @@ data "helm_template" "ingress_nginx" {
             }
           } : {}
         )
-        config = {
-          proxy-real-ip-cidr = (
-            var.ingress_nginx_service_external_traffic_policy == "Local" ?
-            hcloud_network_subnet.load_balancer.ip_range :
-            local.node_ipv4_cidr
-          )
-          compute-full-forwarded-for = true
-          use-proxy-protocol         = true
-        }
+        config = merge(
+          {
+            proxy-real-ip-cidr = (
+              var.ingress_nginx_service_external_traffic_policy == "Local" ?
+              hcloud_network_subnet.load_balancer.ip_range :
+              local.node_ipv4_cidr
+            )
+            compute-full-forwarded-for = true
+            use-proxy-protocol         = true
+          },
+          var.ingress_nginx_config
+        )
         networkPolicy = {
           enabled = true
         }

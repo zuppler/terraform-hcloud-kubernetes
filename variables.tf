@@ -1122,6 +1122,12 @@ variable "ingress_nginx_service_external_traffic_policy" {
   }
 }
 
+variable "ingress_nginx_config" {
+  type        = any
+  default     = {}
+  description = "Global configuration passed to the ConfigMap consumed by the nginx controller. (Reference: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/)"
+}
+
 
 # Ingress Load Balancer
 variable "ingress_load_balancer_type" {
