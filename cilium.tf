@@ -94,19 +94,25 @@ data "helm_template" "cilium" {
         type    = "wireguard"
       }
       hubble = {
-        enabled = var.cilium_hubble_enabled ? true : false
-        relay   = { enabled = var.cilium_hubble_relay_enabled ? true : false }
-        ui      = { enabled = var.cilium_hubble_ui_enabled ? true : false }
+        enabled = var.cilium_hubble_enabled
+        relay   = { enabled = var.cilium_hubble_relay_enabled }
+        ui      = { enabled = var.cilium_hubble_ui_enabled }
       }
       operator = {
-        serviceMonitor = {
-          enabled = var.cilium_service_monitor_enabled ? true : false
+        prometheus = {
+          enabled = true
+          serviceMonitor = {
+            enabled  = var.cilium_service_monitor_enabled
+            interval = "15s"
+          }
         }
       }
       prometheus = {
+        enabled = true
         serviceMonitor = {
-          enabled        = var.cilium_service_monitor_enabled ? true : false
-          trustCRDsExist = var.cilium_service_monitor_enabled ? true : false
+          enabled        = var.cilium_service_monitor_enabled
+          trustCRDsExist = var.cilium_service_monitor_enabled
+          interval       = "15s"
         }
       }
     }),
