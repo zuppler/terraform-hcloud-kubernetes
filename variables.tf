@@ -789,10 +789,23 @@ variable "hcloud_token" {
   sensitive   = true
 }
 
+variable "hcloud_network" {
+  type = object({
+    id = number
+  })
+  default     = null
+  description = "The Hetzner network resource of an existing network."
+}
+
 variable "hcloud_network_id" {
-  type        = string
+  type        = number
   default     = null
   description = "The Hetzner network ID of an existing network."
+
+  validation {
+    condition     = !(var.hcloud_network_id != null && var.hcloud_network != null)
+    error_message = "Only one of hcloud_network_id or hcloud_network may be provided, not both."
+  }
 }
 
 variable "hcloud_load_balancer_location" {
