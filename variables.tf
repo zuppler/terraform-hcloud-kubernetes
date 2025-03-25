@@ -882,7 +882,7 @@ variable "longhorn_helm_chart" {
 
 variable "longhorn_helm_version" {
   type        = string
-  default     = "1.8.0"
+  default     = "1.8.1"
   description = "Version of the Longhorn Helm chart to deploy."
 }
 
