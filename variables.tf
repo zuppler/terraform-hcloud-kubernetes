@@ -657,6 +657,15 @@ variable "talos_registries" {
   EOF
 }
 
+variable "talos_service_log_destinations" {
+  description = "List of objects defining remote destinations for Talos service logs."
+  type = list(object({
+    endpoint  = string
+    format    = optional(string, "json_lines")
+    extraTags = optional(map(string), {})
+  }))
+  default = []
+}
 
 # Talos Backup
 variable "talos_backup_version" {
