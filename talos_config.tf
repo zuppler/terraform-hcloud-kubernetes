@@ -231,6 +231,9 @@ locals {
         time = {
           servers = var.talos_time_servers
         }
+        logging = {
+          destinations = var.talos_service_log_destinations
+        }
       }
       cluster = {
         allowSchedulingOnControlPlanes = local.allow_scheduling_on_control_plane
@@ -372,6 +375,9 @@ locals {
         time = {
           servers = var.talos_time_servers
         }
+        logging = {
+          destinations = var.talos_service_log_destinations
+        }
       }
       cluster = {
         network = {
@@ -475,6 +481,9 @@ locals {
         }
         time = {
           servers = var.talos_time_servers
+        }
+        logging = {
+          destinations = var.talos_service_log_destinations
         }
       }
       cluster = {
