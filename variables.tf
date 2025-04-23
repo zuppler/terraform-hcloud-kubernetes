@@ -888,6 +888,24 @@ variable "hcloud_csi_enabled" {
   description = "Enables the Hetzner Container Storage Interface (CSI)."
 }
 
+variable "hcloud_csi_storage_class_encryption_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable Hcloud CSI storage class LUKS encryption."
+}
+
+variable "hcloud_csi_storage_class_encryption_key" {
+  type        = string
+  default     = null
+  description = "User defined Hcloud CSI storage class LUKS encryption key."
+  sensitive   = true
+}
+
+variable "hcloud_csi_storage_class_extra_parameters" {
+  type        = map(string)
+  default     = {}
+  description = "Hcloud CSI storage class extra parameters."
+}
 
 # Longhorn
 variable "longhorn_helm_repository" {
