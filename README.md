@@ -362,6 +362,7 @@ The Hetzner Cloud Container Storage Interface (CSI) driver supports additional c
 For full documentation, refer to the [HCloud CSI Driver documentation](https://github.com/hetznercloud/csi-driver/tree/main/docs/kubernetes).
 
 **Example `kubernetes.tf` snippet:**
+
 ```hcl
 # Enable the HCloud CSI driver
 hcloud_csi_enabled = true
@@ -378,6 +379,20 @@ hcloud_csi_storage_class_extra_parameters = {
   "fsFormatOption"            = "-i nrext64=1"
 }
 ```
+
+**:warning: Warning:** Due to the immutable nature of StorageClasses in Kubernetes, the default StorageClass settings cannot be modified after the initial cluster provisioning. Attempting to do so will result in the following error:
+
+```bash
+module.kubernetes.terraform_data.synchronize_manifests (local-exec):  StorageClass.storage.k8s.io "hcloud-volumes" is invalid: parameters: Forbidden: updates to parameters are forbidden.
+```
+
+If you still need to modify the StorageClass, you must delete the existing one manually **before** running `terraform apply` again:
+
+```bash
+kubectl delete storageclass hcloud-volumes 
+storageclass.storage.k8s.io "hcloud-volumes" deleted
+```
+
 </details>
 
 <!-- Egress Gateway -->
