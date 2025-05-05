@@ -657,7 +657,7 @@ variable "talos_registries" {
   EOF
 }
 
-variable "talos_service_log_destinations" {
+variable "talos_logging_destinations" {
   description = "List of objects defining remote destinations for Talos service logs."
   type = list(object({
     endpoint  = string
