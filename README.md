@@ -611,8 +611,7 @@ Talos supports two node discovery mechanisms:
 
 This module uses the discovery service to perform additional health checks during Talos upgrades, Kubernetes upgrades, and Kubernetes manifest synchronization. If no discovery mechanism is enabled, these additional checks will be skipped.
 
-> [!IMPORTANT]
-> Kubernetes-based discovery is **incompatible by default** with Kubernetes **v1.32+** due to the `AuthorizeNodeWithSelectors` feature gate, which restricts access to Node metadata. This can cause broken discovery behavior, such as failing or incomplete results from `talosctl health` or `talosctl get members`.
+> :warning: **Important:** Kubernetes-based discovery is **incompatible by default** with Kubernetes **v1.32+** due to the `AuthorizeNodeWithSelectors` feature gate, which restricts access to Node metadata. This can cause broken discovery behavior, such as failing or incomplete results from `talosctl health` or `talosctl get members`.
 
 ##### Example Configuration
 
