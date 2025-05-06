@@ -44,10 +44,10 @@ locals {
   kube_prism_host = "127.0.0.1"
   kube_prism_port = 7445
 
-  # Cluster Status
+  # Cluster Health
   talos_healthcheck_enabled = var.cluster_healthcheck_enabled && local.talos_discovery_enabled
 
-  # Cluster 
+  # Cluster Status
   cluster_initialized = length(data.hcloud_certificates.state.certificates) > 0
 }
 
