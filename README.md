@@ -606,7 +606,7 @@ To recover from a snapshot, please refer to the Talos Disaster Recovery section 
 
 ### Toggle Component Deployment in Bootstrap Manifests
 
-During the cluster provisioning phase, each component manifest is applied using Talos's bootstrap manifests feature. However, this also means that the manifests are **re-applied** every time `terraform apply` is run, as part of the [automated Kubernetes upgrade process](https://www.talos.dev/v1.8/kubernetes-guides/upgrading-kubernetes/#automated-kubernetes-upgrade) triggered by the module.
+During the cluster provisioning phase, each component manifest is applied using Talos's bootstrap manifests feature. However, this also means that the manifests are **re-applied** every time `terraform apply` is run, as part of the [automated Kubernetes upgrade process](https://www.talos.dev/latest/kubernetes-guides/upgrading-kubernetes/#automated-kubernetes-upgrade) triggered by the module.
 
 This behavior can cause issues if you want to use GitOps tools like **FluxCD** or **ArgoCD** to manage the lifecycle of these components. Since Talos manages the application lifecycle, any changes made by FluxCD or ArgoCD (e.g., annotations or labels) may be overwritten or removed during upgrades, leading to conflicts.
 
@@ -649,7 +649,7 @@ cluster_autoscaler_nodepools = [
 ]
 ```
 
-> **Note:** Disabling a component **does not delete** its deployed resources. This is explicitly stated in the [Talos documentation](https://www.talos.dev/v1.8/kubernetes-guides/upgrading-kubernetes/#automated-kubernetes-upgrade).
+> **Note:** Disabling a component **does not delete** its deployed resources. This is explicitly stated in the [Talos documentation](https://www.talos.dev/latest/kubernetes-guides/upgrading-kubernetes/#automated-kubernetes-upgrade).
 
 After removing the component from the bootstrap manifests, you can either delete the existing resources manually before reapplying, or allow FluxCD/ArgoCD to take over their reconciliation and ongoing management.
 
