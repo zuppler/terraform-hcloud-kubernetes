@@ -489,6 +489,39 @@ variable "cluster_autoscaler_config_patches" {
   description = "List of configuration patches applied to the Cluster Autoscaler nodes."
 }
 
+# Packer
+
+variable "packer_amd64_builder" {
+  type = object({
+    server_type    = optional(string, "cpx11")
+    server_location = optional(string, "fsn1")
+  })
+  default     = {}
+  description = "Configuration for the server used when building the Talos AMD64 image with Packer."
+
+  validation {
+    condition = contains([
+      "fsn1", "nbg1", "hel1", "ash", "hil", "sin"
+    ], var.packer_amd64_builder.server_location)
+    error_message = "The server_location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
+  }
+}
+
+variable "packer_arm64_builder" {
+  type = object({
+    server_type    = optional(string, "cax11")
+    server_location = optional(string, "fsn1")
+  })
+  default     = {}
+  description = "Configuration for the server used when building the Talos ARM64 image with Packer."
+
+  validation {
+    condition = contains([
+      "fsn1", "nbg1", "hel1", "ash", "hil", "sin"
+    ], var.packer_arm64_builder.server_location)
+    error_message = "The server_location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
+  }
+}
 
 # Talos
 variable "talos_version" {
