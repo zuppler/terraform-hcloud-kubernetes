@@ -489,11 +489,11 @@ variable "cluster_autoscaler_config_patches" {
   description = "List of configuration patches applied to the Cluster Autoscaler nodes."
 }
 
-# Packer
 
+# Packer
 variable "packer_amd64_builder" {
   type = object({
-    server_type    = optional(string, "cpx11")
+    server_type     = optional(string, "cpx11")
     server_location = optional(string, "fsn1")
   })
   default     = {}
@@ -509,7 +509,7 @@ variable "packer_amd64_builder" {
 
 variable "packer_arm64_builder" {
   type = object({
-    server_type    = optional(string, "cax11")
+    server_type     = optional(string, "cax11")
     server_location = optional(string, "fsn1")
   })
   default     = {}
@@ -522,6 +522,7 @@ variable "packer_arm64_builder" {
     error_message = "The server_location must be one of: 'fsn1' (Falkenstein), 'nbg1' (Nuremberg), 'hel1' (Helsinki), 'ash' (Ashburn), 'hil' (Hillsboro), 'sin' (Singapore)."
   }
 }
+
 
 # Talos
 variable "talos_version" {
@@ -726,6 +727,7 @@ variable "talos_extra_remote_manifests" {
   description = "List of remote URLs pointing to Kubernetes manifests to be appended to the Talos machine configuration during bootstrap."
   default     = null
 }
+
 
 # Talos Backup
 variable "talos_backup_version" {
