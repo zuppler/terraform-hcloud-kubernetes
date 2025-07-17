@@ -421,7 +421,7 @@ variable "cluster_autoscaler_helm_chart" {
 
 variable "cluster_autoscaler_helm_version" {
   type        = string
-  default     = "9.45.1"
+  default     = "9.46.6"
   description = "Version of the Cluster Autoscaler Helm chart to deploy."
 }
 
@@ -527,7 +527,7 @@ variable "packer_arm64_builder" {
 # Talos
 variable "talos_version" {
   type        = string
-  default     = "v1.8.4"
+  default     = "v1.9.6"
   description = "Specifies the version of Talos to be used in generated machine configurations."
 }
 
@@ -808,7 +808,7 @@ variable "talos_backup_schedule" {
 # Kubernetes
 variable "kubernetes_version" {
   type        = string
-  default     = "v1.31.4"
+  default     = "v1.32.4"
   description = "Specifies the Kubernetes version to deploy."
 }
 
