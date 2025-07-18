@@ -347,6 +347,8 @@ cluster_autoscaler_helm_values = {
   }
 }
 ```
+</details>
+
 
 <!-- Cilium Advanced Configuration -->
 <details>
