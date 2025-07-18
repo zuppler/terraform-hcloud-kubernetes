@@ -386,7 +386,7 @@ cilium_ipsec_key_id       = 1                   # IPSec key ID (Default 1)
 
 #### IPSec Key Rotation
 
-Keys automatically rotate when `cilium_ipsec_key_id` is incremented (1-15 range, resets to 0 after 15).
+Keys automatically rotate when `cilium_ipsec_key_id` is incremented (1-15 range, resets to 1 after 15).
 
 </details>
 
