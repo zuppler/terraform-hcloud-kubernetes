@@ -360,7 +360,7 @@ All pod network traffic is encrypted using WireGuard (Default) or IPSec protocol
 
 :bulb: Although WireGuard is the default option, Hetzner Cloud VMs supports AES-NI instruction set, making IPSec encryption more CPU-efficient compared to WireGuard. Consider enabling IPSec for CPU savings through hardware acceleration.
 
-IPSec mode supports RFC4106 AES-GCM encryption with 96, 128 and 256 bits key sizes.
+IPSec mode supports RFC4106 AES-GCM encryption with 128, 192 and 256 bits key sizes.
 
 
 **:warning: IPSec encryption has the following limitations:**
