@@ -354,11 +354,11 @@ cluster_autoscaler_helm_values = {
 <details>
 <summary><b>Cilium Advanced Configuration</b></summary>
 
-### Cilium Transparent Encryption
+#### Cilium Transparent Encryption
 
 This module enables [Cilium Transparent Encryption](https://cilium.io/use-cases/transparent-encryption/) feature by default.  
 
-All pod network traffic is encrypted using WireGuard (Default) or IPSec protocols, includes automatic key rotation and efficient in-kernel encryption, covering all traffic types.
+All pod network traffic is encrypted using WireGuard (Default) or  protocols, includes automatic key rotation and efficient in-kernel encryption, covering all traffic types.
 
 :bulb: Although WireGuard is the default option, Hetzner Cloud VMs supports AES-NI instruction set, making IPSec encryption more CPU-efficient compared to WireGuard. Consider enabling IPSec for CPU savings through hardware acceleration.
 
@@ -386,7 +386,7 @@ cilium_ipsec_key_size     = 256                 # IPSec AES key size (Default 25
 cilium_ipsec_key_id       = 1                   # IPSec key ID (Default 1)
 ```
 
-#### IPSec Key Rotation
+##### IPSec Key Rotation
 
 Keys automatically rotate when `cilium_ipsec_key_id` is incremented (1-15 range, resets to 1 after 15).
 
