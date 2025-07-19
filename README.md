@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="https://avatars.githubusercontent.com/u/182015181" alt="logo" width="200" height="auto" />
+  <img src="https://avatars.githubusercontent.com/u/182015181" alt="logo" width="250" height="auto" />
   <h1>Hcloud Kubernetes</h1>
 
   <p>
