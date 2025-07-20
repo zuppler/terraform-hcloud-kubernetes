@@ -421,7 +421,7 @@ variable "cluster_autoscaler_helm_chart" {
 
 variable "cluster_autoscaler_helm_version" {
   type        = string
-  default     = "9.45.1"
+  default     = "9.46.6"
   description = "Version of the Cluster Autoscaler Helm chart to deploy."
 }
 
@@ -527,7 +527,7 @@ variable "packer_arm64_builder" {
 # Talos
 variable "talos_version" {
   type        = string
-  default     = "v1.8.4"
+  default     = "v1.9.6"
   description = "Specifies the version of Talos to be used in generated machine configurations."
 }
 
@@ -808,7 +808,7 @@ variable "talos_backup_schedule" {
 # Kubernetes
 variable "kubernetes_version" {
   type        = string
-  default     = "v1.31.4"
+  default     = "v1.32.4"
   description = "Specifies the Kubernetes version to deploy."
 }
 
@@ -1078,6 +1078,45 @@ variable "cilium_encryption_enabled" {
   type        = bool
   default     = true
   description = "Enables transparent network encryption using Cilium within the Kubernetes cluster. When enabled, this feature provides added security for network traffic."
+}
+
+variable "cilium_encryption_type" {
+  type        = string
+  default     = "wireguard"
+  description = "Type of encryption to use for Cilium network encryption. Options: 'wireguard' or 'ipsec'."
+
+  validation {
+    condition     = contains(["wireguard", "ipsec"], var.cilium_encryption_type)
+    error_message = "Encryption type must be either 'wireguard' or 'ipsec'."
+  }
+}
+
+variable "cilium_ipsec_algorithm" {
+  type        = string
+  default     = "rfc4106(gcm(aes))"
+  description = "Cilium IPSec key algorithm."
+}
+
+variable "cilium_ipsec_key_size" {
+  type        = number
+  default     = 256
+  description = "AES key size in bits for IPSec encryption (128, 192, or 256). Only used when cilium_encryption_type is 'ipsec'."
+
+  validation {
+    condition     = contains([128, 192, 256], var.cilium_ipsec_key_size)
+    error_message = "IPSec key size must be 128, 192 or 256 bits."
+  }
+}
+
+variable "cilium_ipsec_key_id" {
+  type        = number
+  default     = 1
+  description = "IPSec key ID (1-15, increment manually for rotation). Only used when cilium_encryption_type is 'ipsec'."
+
+  validation {
+    condition     = var.cilium_ipsec_key_id >= 1 && var.cilium_ipsec_key_id <= 15 && floor(var.cilium_ipsec_key_id) == var.cilium_ipsec_key_id
+    error_message = "The IPSec key_id must be between 1 and 15."
+  }
 }
 
 variable "cilium_egress_gateway_enabled" {
