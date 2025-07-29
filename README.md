@@ -840,8 +840,9 @@ These custom roles can be used independently or combined with OIDC group mapping
 ##### Cluster Roles (`rbac_cluster_roles`)
 
 ```hcl
-rbac_cluster_roles = {
-  "cluster-role-name" = {
+rbac_cluster_roles = [
+  {
+    name  = my-cluster-role                    # ClusterRole name
     rules = [
       {
         api_groups = [""]                      # Core API group (empty string for core resources)
@@ -850,14 +851,15 @@ rbac_cluster_roles = {
       }
     ]
   }
-}
+]
 ```
 
 ##### Namespaced Roles (`rbac_roles`)
 
 ```hcl
-rbac_roles = {
-  "role-name" = {
+rbac_roles = [
+  {
+    name      = "my-role"                      # Role name
     namespace = "target-namespace"             # Namespace where the role will be created
     rules = [
       {
@@ -867,7 +869,7 @@ rbac_roles = {
       }
     ]
   }
-}
+]
 ```
 
 </details>
@@ -893,11 +895,13 @@ oidc_groups_claim   = "groups"                           # OIDC JWT claim to ext
 oidc_groups_prefix  = "oidc:"                            # Prefix added to group names in K8s to avoid conflicts
 
 # Map OIDC groups to Kubernetes roles and cluster roles
-oidc_group_mappings = {                                  # Each key must match a OIDC provider group
-  "cluster-admins-group" = {                                   
+oidc_group_mappings = [                                  # List of OIDC group mappings
+  {
+    group         = "cluster-admins-group"               # OIDC provider group name
     cluster_roles = ["cluster-admin"]                    # Grant cluster-admin access
-  }
-  "developers-group" = {
+  },
+  {
+    group         = "developers-group"                   # OIDC provider group name
     cluster_roles = ["view"]                             # Grant cluster-wide view access
     roles = [                                            # Grant namespace scoped roles
       {
@@ -906,7 +910,7 @@ oidc_group_mappings = {                                  # Each key must match a
       }
     ]
   }
-}
+]
 ```
 
 #### Client Configuration with kubelogin
