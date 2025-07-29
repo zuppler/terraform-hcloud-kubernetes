@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="https://avatars.githubusercontent.com/u/182015181" alt="logo" width="200" height="auto" />
+  <img src="https://avatars.githubusercontent.com/u/182015181" alt="logo" width="225" height="auto" />
   <h1>Hcloud Kubernetes</h1>
 
   <p>
@@ -43,7 +43,7 @@
 
 <!-- About the Project -->
 ## :star2: About the Project
-Hcloud Kubernetes is a Terraform module for deploying a fully declarative, managed Kubernetes cluster on Hetzner Cloud. It utilizes Talos, a secure, immutable, and minimal operating system specifically designed for Kubernetes, featuring a streamlined architecture with just 12 binaries and managed entirely through an API.
+Hcloud Kubernetes is a Terraform module for deploying a fully declarative, managed Kubernetes cluster on Hetzner Cloud. It utilizes Talos, a secure, immutable, and minimal operating system specifically designed for Kubernetes, featuring a streamlined architecture with only a handful of binaries and shared libraries. Just enough to run containerd and a small set of system services.
 
 This project is committed to production-grade configuration and lifecycle management, ensuring all components are set up for high availability. It includes a curated selection of widely used and officially recognized Kubernetes components. If you encounter any issues, suboptimal settings, or missing elements, please file an [issue](https://github.com/hcloud-k8s/terraform-hcloud-kubernetes/issues) to help us improve this project.
 
@@ -126,7 +126,7 @@ Talos Linux is a secure, minimal, and immutable OS for Kubernetes, removing SSH 
 
 **Firewall Protection:** This module uses [Hetzner Cloud Firewalls](https://docs.hetzner.com/cloud/firewalls/) to manage external access to nodes. For internal pod-to-pod communication, support for Kubernetes Network Policies is provided through [Cilium CNI](https://docs.cilium.io/en/stable/network/kubernetes/policy/).
 
-**Encryption in Transit:** In this module, all pod network traffic is encrypted by default using [WireGuard via Cilium CNI](https://cilium.io/use-cases/transparent-encryption/). It includes automatic key rotation and efficient in-kernel encryption, covering all traffic types.
+**Encryption in Transit:** In this module, all pod network traffic is encrypted by default using [WireGuard (Default) or IPSec via Cilium CNI](https://cilium.io/use-cases/transparent-encryption/). It includes automatic key rotation and efficient in-kernel encryption, covering all traffic types.
 
 **Encryption at Rest:** In this module, the [STATE](https://www.talos.dev/latest/learn-more/architecture/#file-system-partitions) and [EPHEMERAL](https://www.talos.dev/latest/learn-more/architecture/#file-system-partitions) partitions are encrypted by default with [Talos Disk Encryption](https://www.talos.dev/latest/talos-guides/configuration/disk-encryption/) using LUKS2. Each node is secured with individual encryption keys derived from its unique `nodeID`.
 
@@ -349,6 +349,49 @@ cluster_autoscaler_helm_values = {
 ```
 </details>
 
+
+<!-- Cilium Advanced Configuration -->
+<details>
+<summary><b>Cilium Advanced Configuration</b></summary>
+
+#### Cilium Transparent Encryption
+
+This module enables [Cilium Transparent Encryption](https://cilium.io/use-cases/transparent-encryption/) feature by default.  
+
+All pod network traffic is encrypted using WireGuard (Default) or  protocols, includes automatic key rotation and efficient in-kernel encryption, covering all traffic types.
+
+:bulb: Although WireGuard is the default option, Hetzner Cloud VMs supports AES-NI instruction set, making IPSec encryption more CPU-efficient compared to WireGuard. Consider enabling IPSec for CPU savings through hardware acceleration.
+
+IPSec mode supports RFC4106 AES-GCM encryption with 128, 192 and 256 bits key sizes.
+
+
+**:warning: IPSec encryption has the following limitations:**
+
+- No transparent encryption when chaining Cilium with other CNI plugins
+- Host Policies not supported with IPSec
+- Incompatible with BPF Host Routing (automatically disabled on switch)
+- IPv6-only clusters not supported
+- Maximum 65,535 nodes per cluster/clustermesh
+- Single CPU core limitation per IPSec tunnel may affect high-throughput scenarios
+
+*Source: [Cilium Documentation](https://docs.cilium.io/en/stable/security/network/encryption-ipsec/#limitations)*
+
+Example `kubernetes.tf` configuration:
+
+```hcl
+cilium_encryption_enabled = true                # Default true
+cilium_encryption_type    = "wireguard"         # wireguard (Default) | ipsec
+cilium_ipsec_algorithm    = "rfc4106(gcm(aes))" # IPSec AES key algorithm (Default rfc4106(gcm(aes)))
+cilium_ipsec_key_size     = 256                 # IPSec AES key size (Default 256)
+cilium_ipsec_key_id       = 1                   # IPSec key ID (Default 1)
+```
+
+##### IPSec Key Rotation
+
+Keys automatically rotate when `cilium_ipsec_key_id` is incremented (1-15 range, resets to 1 after 15).
+
+</details>
+
 <!-- Egress Gateway -->
 <details>
 <summary><b>Egress Gateway</b></summary>
@@ -540,7 +583,84 @@ Here is a table with more example calculations:
 | **10.0.0.0/19** | /28 (16 IPs)     | 10.0.8.0/22  (64) | 10.0.12.0/22 (1024) | 10.0.16.0/20 (16)   |
 | **10.0.0.0/20** | /29 (8 IPs)      | 10.0.4.0/23  (64) | 10.0.6.0/23 (512)   | 10.0.8.0/21 (8)     |
 | **10.0.0.0/21** | /30 (4 IPs)      | 10.0.2.0/24  (64) | 10.0.3.0/24 (256)   | 10.0.4.0/22 (4)     |
+ 
 </details>
+
+
+<!-- Storage Configuration-->
+<details>
+<summary><b>Storage Configuration</b></summary>
+
+#### Hetzner Cloud CSI
+
+The Hetzner Cloud Container Storage Interface (CSI) driver can be flexibly configured through the `hcloud_csi_storage_classes` variable. You can define multiple storage classes for your cluster:
+
+* **name:** The name of the StorageClass (string, required).
+* **encrypted:** Enable LUKS encryption for volumes (bool, required).
+* **defaultStorageClass:** Set this class as the default (optional, bool, defaults to `false`).
+* **reclaimPolicy:** The Kubernetes reclaim policy (`Delete` or `Retain`, optional, defaults to `Delete`).
+* **extraParameters:** Additional parameters for the StorageClass (optional map).
+
+**Example:**
+
+```hcl
+hcloud_csi_storage_classes = [
+  {
+    name                = "hcloud-volumes"
+    encrypted           = false
+    defaultStorageClass = true
+  },
+  {
+    name                = "hcloud-volumes-encrypted-xfs"
+    encrypted           = true
+    reclaimPolicy       = "Retain"
+    extraParameters     = {
+      "csi.storage.k8s.io/fstype" = "xfs"
+      "fsFormatOption"            = "-i nrext64=1"
+    }
+  }
+]
+```
+
+**Other settings:**
+
+* **hcloud\_csi\_encryption\_passphrase:**
+  Optionally provide a custom encryption passphrase for LUKS-encrypted storage classes.
+
+  ```hcl
+  hcloud_csi_encryption_passphrase = "<secret-passphrase>"
+  ```
+
+**Storage Class Immutability:**
+StorageClasses created by the Hcloud CSI driver are immutable. To change parameters after creation, you must either edit the StorageClass directly with `kubectl`, or delete it from both Terraform state and Kubernetes, then let this module recreate it.
+
+For more details, see the [HCloud CSI Driver documentation](https://github.com/hetznercloud/csi-driver/tree/main/docs/kubernetes).
+
+
+#### Longhorn
+
+Longhorn is a lightweight, reliable, and easy-to-use distributed block storage system for Kubernetes.
+It is fully independent from the Hetzner Cloud CSI driver.
+
+You can enable Longhorn and configure it as the default StorageClass for your cluster via module variables:
+
+* **Enable Longhorn:**
+  Set `longhorn_enabled` to `true` to deploy Longhorn in your cluster.
+
+* **Default StorageClass:**
+  Set `longhorn_default_storage_class` to `true` if you want Longhorn to be the default StorageClass.
+
+**Example:**
+
+```hcl
+longhorn_enabled               = true
+longhorn_default_storage_class = true
+```
+
+For more information about Longhorn, see the [Longhorn documentation](https://longhorn.io/docs/).
+
+</details>
+
 
 <!-- Talos Backup -->
 <details>
@@ -895,11 +1015,12 @@ The [Talos Terraform Provider](https://registry.terraform.io/providers/siderolab
 ### :white_check_mark: Version Compatibility Matrix
 | Hcloud K8s |  K8s  | Talos | Talos CCM | Hcloud CCM | Hcloud CSI | Long-horn | Cilium | Ingress NGINX | Cert Mgr. | Auto-scaler |
 | :--------: | :---: | :---: | :-------: | :--------: | :--------: | :-------: | :----: | :-----------: | :-------: | :---------: |
-|  (**2**)   | 1.32  |  1.9  |    1.9    |    1.23    |    2.12    |   1.8.1   |  1.17  |     4.12      |   1.17    |    9.45     |
+|  **(3)**   | 1.33  | 1.10  |   1.10    |    1.26    |    2.14    |   1.8.2   | (1.18) |     4.13      |   1.18    |    9.47     |
+|   **2**    | 1.32  |  1.9  |    1.9    |    1.23    |    2.12    |   1.8.1   |  1.17  |     4.12      |   1.17    |    9.45     |
 |   **1**    | 1.31  |  1.8  |    1.8    |    1.21    |    2.10    |    1.8    |  1.17  |     4.12      |   1.15    |    9.38     |
 |   **0**    | 1.30  |  1.7  |    1.6    |    1.20    |    2.9     |   1.7.1   |  1.16  |    4.10.1     |   1.14    |    9.37     |
 
-In this module, upgrades are conducted with care and conservatism. You will consistently receive the most tested and compatible releases of all components, avoiding the latest untested or incompatible releases that could disrupt your cluster.
+In this module, upgrades are conducted with care. You will consistently receive the most tested and compatible releases of all components, avoiding the latest untested or incompatible releases that could disrupt your cluster.
 
 > [!WARNING]
 > Do not change any software versions in this project on your own. Each component is tailored to ensure compatibility with new Kubernetes releases. This project specifies versions that are supported and have been thoroughly tested to work together.
@@ -918,12 +1039,10 @@ In this module, upgrades are conducted with care and conservatism. You will cons
 
 <!-- Roadmap -->
 ## :compass: Roadmap
-* [ ] **Upgrade to Talos 1.9 and Kubernetes 1.32**<br>
+* [ ] **Upgrade to Talos 1.10 and Kubernetes 1.33**<br>
       Once all components have compatible versions, the upgrade can be performed.
-* [x] **Upgrade to Talos 1.8 and Kubernetes 1.31**<br>
+* [x] **Upgrade to Talos 1.9 and Kubernetes 1.32**<br>
       Once all components have compatible versions, the upgrade can be performed.
-* [ ] **Integrate native IPv6 for pod traffic**<br>
-      Completion requires Hetzner's addition of IPv6 support to cloud networks, expected at the beginning of 2025 as announced at Hetzner Summit 2024.
 
 <!-- Contributing -->
 ## :wave: Contributing
