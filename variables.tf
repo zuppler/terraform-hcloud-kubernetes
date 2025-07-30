@@ -864,6 +864,114 @@ variable "talos_ccm_version" {
   description = "Specifies the version of the Talos Cloud Controller Manager (CCM) to use. This version controls cloud-specific integration features in the Talos operating system."
 }
 
+# Kubernetes OIDC Configuration
+variable "oidc_enabled" {
+  description = "Enable OIDC authentication for Kubernetes API server"
+  type        = bool
+  default     = false
+}
+
+variable "oidc_issuer_url" {
+  description = "URL of the OIDC provider (e.g., https://your-oidc-provider.com). Required when oidc_enabled is true"
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.oidc_enabled == false || (var.oidc_enabled == true && var.oidc_issuer_url != "")
+    error_message = "oidc_issuer_url is required when oidc_enabled is true."
+  }
+}
+
+variable "oidc_client_id" {
+  description = "OIDC client ID that all tokens must be issued for. Required when oidc_enabled is true"
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.oidc_enabled == false || (var.oidc_enabled == true && var.oidc_client_id != "")
+    error_message = "oidc_client_id is required when oidc_enabled is true."
+  }
+}
+
+variable "oidc_username_claim" {
+  description = "JWT claim to use as the username"
+  type        = string
+  default     = "sub"
+}
+
+variable "oidc_groups_claim" {
+  description = "JWT claim to use as the user's groups"
+  type        = string
+  default     = "groups"
+}
+
+variable "oidc_groups_prefix" {
+  description = "Prefix prepended to group claims to prevent clashes with existing names"
+  type        = string
+  default     = "oidc:"
+}
+
+variable "oidc_group_mappings" {
+  description = "List of OIDC groups mapped to Kubernetes roles and cluster roles"
+  type = list(object({
+    group         = string
+    cluster_roles = optional(list(string), [])
+    roles = optional(list(object({
+      name      = string
+      namespace = string
+    })), [])
+  }))
+  default = []
+
+  validation {
+    condition = length(var.oidc_group_mappings) == length(distinct([
+      for mapping in var.oidc_group_mappings : mapping.group
+    ]))
+    error_message = "OIDC group names must be unique. Duplicate group names found."
+  }
+}
+
+# Kubernetes RBAC
+variable "rbac_roles" {
+  description = "List of custom Kubernetes roles to create"
+  type = list(object({
+    name      = string
+    namespace = string
+    rules = list(object({
+      api_groups = list(string)
+      resources  = list(string)
+      verbs      = list(string)
+    }))
+  }))
+  default = []
+
+  validation {
+    condition = length(var.rbac_roles) == length(distinct([
+      for role in var.rbac_roles : role.name
+    ]))
+    error_message = "RBAC role names must be unique. Duplicate role names found."
+  }
+}
+
+variable "rbac_cluster_roles" {
+  description = "List of custom Kubernetes cluster roles to create"
+  type = list(object({
+    name = string
+    rules = list(object({
+      api_groups = list(string)
+      resources  = list(string)
+      verbs      = list(string)
+    }))
+  }))
+  default = []
+
+  validation {
+    condition = length(var.rbac_cluster_roles) == length(distinct([
+      for role in var.rbac_cluster_roles : role.name
+    ]))
+    error_message = "RBAC cluster role names must be unique. Duplicate cluster role names found."
+  }
+}
 
 # Hetzner Cloud
 variable "hcloud_token" {
@@ -1511,7 +1619,6 @@ variable "ingress_load_balancer_pools" {
     error_message = "The rdns_ipv6 must be a valid IPv6 reverse DNS domain: each segment must start and end with a letter or number, can contain hyphens, and each segment must be no longer than 63 characters. Supports dynamic substitution with placeholders: {{ cluster-domain }}, {{ cluster-name }}, {{ hostname }}, {{ id }}, {{ ip-labels }}, {{ ip-type }}, {{ pool }}, {{ role }}."
   }
 }
-
 
 # Miscellaneous
 variable "prometheus_operator_crds_enabled" {
