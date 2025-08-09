@@ -53,22 +53,18 @@ This project is committed to production-grade configuration and lifecycle manage
 <!-- Features -->
 ### :sparkles: Features
 
-This setup includes several features for a seamless, best-practice Kubernetes deployment on Hetzner Cloud:
-- **Fully Declarative & Immutable:** Utilize Talos Linux for a completely declarative and immutable Kubernetes setup on Hetzner Cloud.
-- **Cross-Architecture:** Supports both AMD64 and ARM64 architectures, with integrated image upload to Hetzner Cloud.
-- **High Availability:** Configured for production-grade high availability for all components, ensuring consistent and reliable system performance.
-- **Distributed Storage:** Implements Longhorn for cloud-native block storage with snapshotting and automatic replica rebuilding.
-- **Autoscaling:** Includes Cluster Autoscaler to dynamically adjust node counts based on workload demands, optimizing resource allocation.
-- **Plug-and-Play Kubernetes:** Equipped with an optional Ingress Controller and Cert Manager, facilitating rapid workload deployment.
-- **Geo-Redundant Ingress:** Supports high availability and massive scalability through geo-redundant Load Balancer pools.
-- **Dual-Stack Support:** Employs Load Balancers with Proxy Protocol to efficiently route both IPv4 and IPv6 traffic to the Ingress Controller.
-- **Enhanced Security:** Built with security as a priority, incorporating firewalls and encryption by default to protect your infrastructure.
-- **Automated Backups:** Leverages Talos Backup with support for S3-compatible storage solutions like Hetzner's Object Storage.
+This setup offers a production-ready, best-practice Kubernetes deployment on Hetzner Cloud featuring:
+- **Immutable and Declarative:** Uses Talos Linux for a completely declarative, immutable Kubernetes cluster.
+- **Cross-Architecture:** Supports AMD64 and ARM64 with automated image uploads to Hetzner Cloud.
+- **High Availability:** Production-grade high availability across all components for consistent, reliable performance.
+- **Autoscaling:** Supports automatic scaling of nodes and pods to handle dynamic workload demands.
+- **Plug-and-Play:** Optional Ingress Controller and Cert Manager for rapid workload deployment.
+- **Dual-Stack Support:** Load Balancers with native IPv4 and IPv6 for efficient traffic routing.
+- **Enhanced Security:** Security-focused by design, with perimeter firewalls and encryption in transit and at rest.
 
 <!-- Components -->
 ### :package: Components
-This project bundles essential Kubernetes components, preconfigured for seamless operation on Hetzner Cloud.
-
+This project bundles essential Kubernetes components, preconfigured for seamless operation on Hetzner Cloud:
 - <summary>
     <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=talos.dev&sz=32" width="16" height="16">
     <b><a href="https://github.com/siderolabs/talos-cloud-controller-manager">Talos Cloud Controller Manager (CCM)</a></b>
