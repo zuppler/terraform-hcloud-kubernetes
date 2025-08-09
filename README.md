@@ -93,7 +93,7 @@ This project includes commonly used and essential Kubernetes software, optimized
     <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=longhorn.io&sz=32" width="16" height="16">
     <b><a href="https://longhorn.io">Longhorn</a></b>
   </summary>
-  Delivers distributed block storage for Kubernetes, facilitating high availability and easy management of persistent volumes with features like snapshotting and automatic replica rebuilding.
+  Distributed block storage for Kubernetes, providing high availability, snapshots, and automatic replica rebuilding for easy persistent volume management.
 - <summary>
     <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=cilium.io&sz=32" width="16" height="16">
     <b><a href="https://cilium.io">Cilium Container Network Interface (CNI)</a></b>
