@@ -67,7 +67,7 @@ This setup includes several features for a seamless, best-practice Kubernetes de
 
 <!-- Components -->
 ### :package: Components
-This project includes commonly used and essential Kubernetes software, optimized for seamless integration with Hetzner Cloud.
+This project bundles essential Kubernetes components, preconfigured for seamless operation on Hetzner Cloud.
 
 - <summary>
     <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=talos.dev&sz=32" width="16" height="16">
