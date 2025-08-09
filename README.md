@@ -84,7 +84,7 @@ This project bundles essential Kubernetes components, preconfigured for seamless
     <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=hetzner.com&sz=32" width="16" height="16">
     <b><a href="https://github.com/hetznercloud/csi-driver">Hcloud Container Storage Interface (CSI)</a></b>
   </summary>
-  Manages persistent storage in Kubernetes clusters using Hetzner Cloud Volumes, ensuring seamless storage integration and management.
+  Provides persistent storage for Kubernetes using Hetzner Cloud Volumes, supporting encryption and dynamic provisioning.
 - <summary>
     <img align="center" alt="Easy" src="https://www.google.com/s2/favicons?domain=longhorn.io&sz=32" width="16" height="16">
     <b><a href="https://longhorn.io">Longhorn</a></b>
