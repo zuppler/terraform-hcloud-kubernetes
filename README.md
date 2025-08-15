@@ -60,7 +60,7 @@ This setup offers a production-ready, best-practice Kubernetes deployment on Het
 - **Autoscaling:** Supports automatic scaling of nodes and pods to handle dynamic workload demands.
 - **Plug-and-Play:** Optional Ingress Controller and Cert Manager for rapid workload deployment.
 - **Dual-Stack Support:** Load Balancers with native IPv4 and IPv6 for efficient traffic routing.
-- **Built-in Protection:** Security-focused by design, with a perimeter firewall and encryption in transit and at rest.
+- **Built-in Protection:** Security-first design with perimeter firewall and encryption in transit and at rest.
 
 <!-- Components -->
 ### :package: Components
