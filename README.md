@@ -54,13 +54,13 @@ This project is committed to production-grade configuration and lifecycle manage
 ### :sparkles: Features
 
 This setup offers a production-ready, best-practice Kubernetes deployment on Hetzner Cloud featuring:
-- **Immutable and Declarative:** Uses Talos Linux for a completely declarative, immutable Kubernetes cluster.
+- **Fully Deterministic:** Uses Talos Linux for a completely declarative, immutable Kubernetes cluster.
 - **Cross-Architecture:** Supports AMD64 and ARM64 with automated image uploads to Hetzner Cloud.
 - **High Availability:** Production-grade high availability across all components for consistent, reliable performance.
 - **Autoscaling:** Supports automatic scaling of nodes and pods to handle dynamic workload demands.
 - **Plug-and-Play:** Optional Ingress Controller and Cert Manager for rapid workload deployment.
 - **Dual-Stack Support:** Load Balancers with native IPv4 and IPv6 for efficient traffic routing.
-- **Enhanced Security:** Security-focused by design, with perimeter firewalls and encryption in transit and at rest.
+- **Built-in Protection:** Security-focused by design, with a perimeter firewall and encryption in transit and at rest.
 
 <!-- Components -->
 ### :package: Components
