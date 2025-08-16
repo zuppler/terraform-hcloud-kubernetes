@@ -716,38 +716,37 @@ talos_backup_schedule = "0 * * * *"
 To recover from a snapshot, please refer to the Talos Disaster Recovery section in the [Documentation](https://www.talos.dev/latest/advanced/disaster-recovery/#recovery).
 </details>
 
+
 <!-- Talos Bootstrap Manifests -->
 <details>
 <summary><b>Talos Bootstrap Manifests</b></summary>
 
-### Toggle Component Deployment in Bootstrap Manifests
+### Component Deployment Control
 
-During the cluster provisioning phase, each component manifest is applied using Talos's bootstrap manifests feature. However, this also means that the manifests are **re-applied** every time `terraform apply` is run, as part of the [automated Kubernetes upgrade process](https://www.talos.dev/latest/kubernetes-guides/upgrading-kubernetes/#automated-kubernetes-upgrade) triggered by the module.
-
-This behavior can cause issues if you want to use GitOps tools like **FluxCD** or **ArgoCD** to manage the lifecycle of these components. Since Talos manages the application lifecycle, any changes made by FluxCD or ArgoCD (e.g., annotations or labels) may be overwritten or removed during upgrades, leading to conflicts.
-
-Before delegating lifecycle control to other tools, you must **first remove the corresponding manifests from the Talos machine configuration**. This can be done after the initial cluster provisioning using the following Terraform variables:
+During cluster provisioning, each component manifest is applied using Talos’s bootstrap manifests feature. Components are upgraded as part of the normal lifecycle of this module.
+You can enable or disable component deployment using the variables below:
 
 ```hcl
-# Core Component Configuration
-cilium_enabled                     = true  # Enabled by default
-talos_backup_s3_enabled            = true  # Enabled by default
-talos_ccm_enabled                  = true  # Enabled by default
-talos_coredns_enabled              = true  # Enabled by default
-hcloud_ccm_enabled                 = true  # Enabled by default
-hcloud_csi_enabled                 = true  # Enabled by default
-cert_manager_enabled               = true  # Disabled by default
-ingress_nginx_enabled              = true  # Disabled by default
-longhorn_enabled                   = true  # Disabled by default
-metrics_server_enabled             = true  # Enabled by default
-prometheus_operator_crds_enabled   = true  # Enabled by default
+# Core Components (enabled by default)
+cilium_enabled                     = true
+talos_backup_s3_enabled            = true
+talos_ccm_enabled                  = true
+talos_coredns_enabled              = true
+hcloud_ccm_enabled                 = true
+hcloud_csi_enabled                 = true
+metrics_server_enabled             = true
+prometheus_operator_crds_enabled   = true
 
-# Talos etcd backup is automatically enabled when any of the following S3 settings are defined
+# Additional Components (disabled by default)
+cert_manager_enabled               = true
+ingress_nginx_enabled              = true
+longhorn_enabled                   = true
+
+# Enable etcd backup by defining one of these variables:
 talos_backup_s3_endpoint    = "https://..."
 talos_backup_s3_hcloud_url  = "https://<bucket>.<location>.your-objectstorage.com"
 
-# Cluster Autoscaler Configuration
-# Automatically enabled when one or more node pools are defined
+# Cluster Autoscaler: Enabled when node pools are defined
 cluster_autoscaler_nodepools = [
   {
     name     = "autoscaler"
@@ -765,21 +764,23 @@ cluster_autoscaler_nodepools = [
 ]
 ```
 
-> **Note:** Disabling a component **does not delete** its deployed resources. This is explicitly stated in the [Talos documentation](https://www.talos.dev/latest/kubernetes-guides/upgrading-kubernetes/#automated-kubernetes-upgrade).
+> **Note:** Disabling a component **does not delete** its existing resources.
+> This is documented in the [Talos documentation](https://www.talos.dev/latest/kubernetes-guides/upgrading-kubernetes/#automated-kubernetes-upgrade).
+> You must remove deployed resources manually after disabling a component in the manifests.
 
-After removing the component from the bootstrap manifests, you can either delete the existing resources manually before reapplying, or allow FluxCD/ArgoCD to take over their reconciliation and ongoing management.
+---
 
 ### Adding Additional Manifests
 
-In addition to the default components, you can also include extra bootstrap manifests using the variables below:
+Besides the default components, you can add extra bootstrap manifests as follows:
 
 ```hcl
-# Extra remote manifests (fetched from the internet)
+# Extra remote manifests (URLs fetched at apply time)
 talos_extra_remote_manifests = [
   "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml"
 ]
 
-# Extra inline manifests (defined directly in Terraform)
+# Extra inline manifests (defined directly)
 talos_extra_inline_manifests = [
   {
     name = "test-manifest"
@@ -795,8 +796,9 @@ talos_extra_inline_manifests = [
   }
 ]
 ```
-
+ 
 </details>
+
 
 <!-- Talos Discovery Service -->
 <details>
