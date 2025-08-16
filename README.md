@@ -283,12 +283,14 @@ kube_api_hostname = "kube-api.example.com"
 
 ##### Access from Public Internet
 For accessing the Kubernetes API from the public internet, choose one of the following options based on your needs:
-1. **Use a Load Balancer (Recommended):**<br>
+1. **Use single Control Plane IP (default):**<br>
+    By default the IP address of a single Control Plane node is used to access the Kube API.
+2. **Use a Load Balancer:**<br>
     Deploy a load balancer to manage API traffic, enhancing availability and load distribution.
     ```hcl
     kube_api_load_balancer_enabled = true
     ```
-2. **Use a Virtual IP (Floating IP):**<br>
+3. **Use a Virtual IP (Floating IP):**<br>
     A Floating IP is configured to automatically move between control plane nodes in case of an outage, ensuring continuous access to the Kubernetes API.
     ```hcl
     control_plane_public_vip_ipv4_enabled = true
