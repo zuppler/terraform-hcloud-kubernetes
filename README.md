@@ -1046,9 +1046,9 @@ In this module, upgrades are conducted with care. You will consistently receive 
 
 <!-- Roadmap -->
 ## :compass: Roadmap
-* [ ] **Upgrade to Talos 1.10 and Kubernetes 1.33**<br>
+* [ ] **Upgrade to Talos 1.11 and Kubernetes 1.34**<br>
       Once all components have compatible versions, the upgrade can be performed.
-* [x] **Upgrade to Talos 1.9 and Kubernetes 1.32**<br>
+* [x] **Upgrade to Talos 1.10 and Kubernetes 1.33**<br>
       Once all components have compatible versions, the upgrade can be performed.
 
 <!-- Contributing -->
