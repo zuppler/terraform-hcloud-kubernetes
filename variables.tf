@@ -527,7 +527,7 @@ variable "packer_arm64_builder" {
 # Talos
 variable "talos_version" {
   type        = string
-  default     = "v1.9.6"
+  default     = "v1.10.7"
   description = "Specifies the version of Talos to be used in generated machine configurations."
 }
 
@@ -808,7 +808,7 @@ variable "talos_backup_schedule" {
 # Kubernetes
 variable "kubernetes_version" {
   type        = string
-  default     = "v1.32.4"
+  default     = "v1.33.4"
   description = "Specifies the Kubernetes version to deploy."
 }
 
