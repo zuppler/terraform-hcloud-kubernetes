@@ -1098,7 +1098,8 @@ variable "hcloud_csi_storage_classes" {
     extraParameters     = optional(map(string), {})
   }))
   default = [
-    { name = "hcloud-volumes", encrypted = false, defaultStorageClass = true }
+    { name = "hcloud-volumes-encrypted", encrypted = true, defaultStorageClass = true },
+    { name = "hcloud-volumes", encrypted = false, defaultStorageClass = false }
   ]
 }
 
