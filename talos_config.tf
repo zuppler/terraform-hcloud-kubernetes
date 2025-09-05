@@ -520,12 +520,21 @@ locals {
         extraKernelArgs = var.talos_extra_kernel_args
       }
       network = {
-        interfaces = [
-          {
+        interfaces = concat(
+          local.talos_public_interface_enabled ? [{
             interface = "eth0"
             dhcp      = true
-          }
-        ]
+            dhcpOptions = {
+              ipv4 = var.talos_public_ipv4_enabled
+              ipv6 = false
+            }
+          }] : [],
+          [{
+            interface = local.talos_public_interface_enabled ? "eth1" : "eth0"
+            dhcp      = true
+            routes    = local.talos_extra_routes
+          }]
+        )
         nameservers = local.talos_nameservers
       }
       kernel = {
