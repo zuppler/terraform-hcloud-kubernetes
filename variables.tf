@@ -527,7 +527,7 @@ variable "packer_arm64_builder" {
 # Talos
 variable "talos_version" {
   type        = string
-  default     = "v1.10.7"
+  default     = "v1.11.1"
   description = "Specifies the version of Talos to be used in generated machine configurations."
 }
 
