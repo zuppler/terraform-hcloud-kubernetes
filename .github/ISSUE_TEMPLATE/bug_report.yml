@@ -2,7 +2,6 @@ name: Bug Report
 description: Something is not working
 title: "[Bug] <short summary>"
 labels: [bug]
-assignees: []
 
 body:
   - type: checkboxes
@@ -12,14 +11,6 @@ body:
       options:
         - label: I searched existing issues and discussions, and I checked the internet for the error messages
           required: true
-
-  - type: input
-    id: summary
-    attributes:
-      label: Summary
-      placeholder: Short description of the issue
-    validations:
-      required: true
 
   - type: textarea
     id: steps
