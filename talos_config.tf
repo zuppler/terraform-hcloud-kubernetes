@@ -222,7 +222,7 @@ locals {
           )
           extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
-            validSubnets = [local.node_ipv4_cidr]
+            validSubnets = [local.network_node_ipv4_cidr]
           }
         }
         kernel = {
@@ -261,8 +261,8 @@ locals {
         allowSchedulingOnControlPlanes = local.talos_allow_scheduling_on_control_planes
         network = {
           dnsDomain      = var.cluster_domain
-          podSubnets     = [local.pod_ipv4_cidr]
-          serviceSubnets = [local.service_ipv4_cidr]
+          podSubnets     = [local.network_pod_ipv4_cidr]
+          serviceSubnets = [local.network_service_ipv4_cidr]
           cni            = { name = "none" }
         }
         coreDNS = {
@@ -369,7 +369,7 @@ locals {
           )
           extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
-            validSubnets = [local.node_ipv4_cidr]
+            validSubnets = [local.network_node_ipv4_cidr]
           }
         }
         kernel = {
@@ -399,8 +399,8 @@ locals {
       cluster = {
         network = {
           dnsDomain      = var.cluster_domain
-          podSubnets     = [local.pod_ipv4_cidr]
-          serviceSubnets = [local.service_ipv4_cidr]
+          podSubnets     = [local.network_pod_ipv4_cidr]
+          serviceSubnets = [local.network_service_ipv4_cidr]
           cni            = { name = "none" }
         }
         proxy = {
@@ -469,7 +469,7 @@ locals {
           )
           extraMounts = local.talos_kubelet_extra_mounts
           nodeIP = {
-            validSubnets = [local.node_ipv4_cidr]
+            validSubnets = [local.network_node_ipv4_cidr]
           }
         }
         kernel = {
@@ -499,8 +499,8 @@ locals {
       cluster = {
         network = {
           dnsDomain      = var.cluster_domain
-          podSubnets     = [local.pod_ipv4_cidr]
-          serviceSubnets = [local.service_ipv4_cidr]
+          podSubnets     = [local.network_pod_ipv4_cidr]
+          serviceSubnets = [local.network_service_ipv4_cidr]
           cni            = { name = "none" }
         }
         proxy = {

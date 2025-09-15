@@ -266,7 +266,7 @@ For integrating Talos nodes with an internal network, configure a default route 
 talos_extra_routes = ["10.0.0.0/8"]
 
 # Optionally, disable NAT for your globally routed CIDR
-network_native_routing_cidr = "10.0.0.0/8"
+network_native_routing_ipv4_cidr = "10.0.0.0/8"
 
 # Optionally, use an existing Network
 hcloud_network_id = 123456789
