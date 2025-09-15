@@ -8,14 +8,16 @@ body:
     attributes:
       label: Confirmation
       options:
-        - label: I searched existing issues and discussions, and I checked the internet for the error messages
+        - label: I searched existing issues and discussions, and I checked the internet for similar problems
           required: true
-
+  
   - type: textarea
-    id: steps
+    id: description
     attributes:
-      label: Steps to Reproduce
+      label: Description
       placeholder: |
+        Describe the issue
+        Steps to reproduce:
         1. ...
         2. ...
         3. ...
