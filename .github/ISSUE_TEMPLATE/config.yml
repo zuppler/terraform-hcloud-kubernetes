@@ -6,7 +6,7 @@ contact_links:
     about: Please use Discussions for general questions and community support
 
   - name: ☁️ Hetzner Cloud Docs
-    url: https://docs.hetzner.cloud/
+    url: https://docs.hetzner.com/cloud
     about: Check Hetzner Cloud documentation for provider-specific details
 
   - name: 🐧 Talos Linux Docs
