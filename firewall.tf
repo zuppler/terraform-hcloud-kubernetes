@@ -107,7 +107,7 @@ data "http" "current_ipv6" {
 }
 
 resource "hcloud_firewall" "this" {
-  name = var.cluster_name
+  name = "${var.cluster_name}"
 
   dynamic "rule" {
     for_each = local.firewall_rules_list

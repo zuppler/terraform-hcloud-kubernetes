@@ -1,5 +1,5 @@
 resource "hcloud_placement_group" "control_plane" {
-  name = "${var.cluster_name}-control-plane-pg"
+  name = "${var.cluster_name}-control-plane"
   type = "spread"
 
   labels = {
@@ -17,7 +17,7 @@ resource "hcloud_placement_group" "worker" {
     } if np.placement_group && np.count > 0
   ]...)
 
-  name = each.key
+  name = "${each.key}"
   type = "spread"
 
   labels = {
